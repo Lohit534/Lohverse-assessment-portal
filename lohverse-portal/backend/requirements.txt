@@ -1,0 +1,28 @@
+# ── Core Flask ──
+flask==3.0.3
+flask-restful==0.3.10
+flask-sqlalchemy==3.1.1
+flask-bcrypt==1.0.1
+flask-jwt-extended==4.6.0
+flask-cors==4.0.1
+
+# ── MySQL driver (pure Python — no C compiler needed on Windows) ──
+PyMySQL==1.1.1
+
+# ── Security ──
+bcrypt==4.1.3
+
+# ── Data Science / AI ──
+pandas
+numpy
+scikit-learn
+nltk
+
+# ── PDF Processing ──
+pdfplumber
+pypdf==4.2.0
+
+# ── HTTP / Utilities ──
+requests==2.31.0
+python-dotenv==1.0.1
+Werkzeug==3.0.3

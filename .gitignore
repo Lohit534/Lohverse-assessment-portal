@@ -1,0 +1,26 @@
+# Node.js
+node_modules/
+dist/
+dist-ssr/
+*.local
+
+# Python env
+venv/
+.venv/
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Backend specific env
+backend/venv/
+backend/.env
+lohverse-portal/backend/venv/
+lohverse-portal/backend/.env
+
+# Local Logs / Config
+logs/
+*.log
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

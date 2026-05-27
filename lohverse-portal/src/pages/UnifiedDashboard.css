@@ -1,0 +1,323 @@
+/* ==========================================================================
+   UNIFIED DASHBOARD STYLES (Candidate & Recruiter Role-Based Console)
+   ========================================================================== */
+
+:root {
+  --ud-bg: #0b0a16;
+  --ud-sidebar-bg: #111026;
+  --ud-card-bg: #171536;
+  --ud-border: rgba(167, 139, 250, 0.15);
+  --ud-text: #f3f0fc;
+  --ud-muted: #9f9ab5;
+  --ud-accent: #7c3aed;
+  --ud-accent-light: #a78bfa;
+  --ud-success: #10b981;
+  --ud-danger: #ef4444;
+  --ud-warning: #f59e0b;
+  --ud-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+}
+
+.light-theme {
+  --ud-bg: #f5f4fc;
+  --ud-sidebar-bg: #ffffff;
+  --ud-card-bg: #ffffff;
+  --ud-border: rgba(124, 58, 237, 0.15);
+  --ud-text: #1e1b30;
+  --ud-muted: #6e6a82;
+  --ud-accent: #6d28d9;
+  --ud-accent-light: #7c3aed;
+  --ud-success: #059669;
+  --ud-danger: #dc2626;
+  --ud-warning: #d97706;
+  --ud-shadow: 0 8px 30px rgba(124, 58, 237, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+  transition: background-color 0.25s ease, border-color 0.25s ease;
+}
+
+/* ── SHELL CONTAINER ── */
+.ud-shell {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--ud-bg);
+  color: var(--ud-text);
+  font-family: 'Outfit', 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* ── SIDEBAR (LEFT) ── */
+.ud-sidebar {
+  width: 260px;
+  background-color: var(--ud-sidebar-bg);
+  border-right: 1px solid var(--ud-border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 100;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--ud-shadow);
+}
+
+.ud-logo {
+  padding: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--ud-border);
+}
+
+.ud-logo-icon {
+  width: 38px;
+  height: 38px;
+  background: linear-gradient(135deg, var(--ud-accent), #3b82f6);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  color: white;
+  font-size: 1.25rem;
+  box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.ud-logo-name {
+  font-weight: 800;
+  font-size: 1.15rem;
+  color: var(--ud-text);
+  letter-spacing: -0.5px;
+  line-height: 1;
+}
+
+.ud-logo-sub {
+  font-size: 0.65rem;
+  color: var(--ud-muted);
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-top: 2px;
+}
+
+/* ── NAVIGATION LIST ── */
+.ud-nav {
+  padding: 1.25rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.ud-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 0.75rem 1rem;
+  color: var(--ud-muted);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.ud-nav-item:hover {
+  background-color: rgba(124, 58, 237, 0.06);
+  color: var(--ud-text);
+  transform: translateX(3px);
+}
+
+.ud-nav-item.active {
+  background: linear-gradient(135deg, var(--ud-accent), rgba(124, 58, 237, 0.85));
+  color: white !important;
+  box-shadow: 0 4px 15px rgba(124, 58, 237, 0.25);
+}
+
+.ud-nav-icon {
+  font-size: 1.1rem;
+}
+
+/* ── SIDEBAR FOOTER ── */
+.ud-sidebar-footer {
+  padding: 1rem;
+  border-top: 1px solid var(--ud-border);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ud-user-chip {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background-color: rgba(124, 58, 237, 0.05);
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.ud-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+}
+
+.ud-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.ud-user-name {
+  font-weight: 700;
+  font-size: 0.825rem;
+  color: var(--ud-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ud-user-email {
+  font-size: 0.68rem;
+  color: var(--ud-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ud-logout-btn {
+  background: transparent;
+  border: 1px solid var(--ud-border);
+  color: var(--ud-muted);
+  padding: 0.6rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  transition: all 0.2s;
+}
+
+.ud-logout-btn:hover {
+  background-color: rgba(239, 68, 68, 0.08);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+}
+
+/* ── MAIN WORKSPACE ── */
+.ud-main {
+  flex: 1;
+  margin-left: 260px;
+  padding: 2rem;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease;
+}
+
+/* ── TOP NAVBAR ── */
+.ud-navbar {
+  height: 70px;
+  background-color: var(--ud-sidebar-bg);
+  border-bottom: 1px solid var(--ud-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 90;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+}
+
+.ud-nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ud-hamburger {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  padding: 0.5rem;
+}
+
+.ud-hamburger span {
+  width: 22px;
+  height: 2px;
+  background-color: var(--ud-text);
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+
+.ud-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.ud-theme-toggle {
+  background: rgba(124, 58, 237, 0.06);
+  border: 1px solid var(--ud-border);
+  font-size: 1.1rem;
+  cursor: pointer;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.ud-theme-toggle:hover {
+  background-color: rgba(124, 58, 237, 0.15);
+  transform: scale(1.05);
+}
+
+/* Backdrop */
+.ud-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(3px);
+  z-index: 95;
+  display: none;
+}
+
+/* ── RESPONSIVE ADAPTATIONS ── */
+@media (max-width: 991px) {
+  .ud-sidebar {
+    transform: translateX(-100%);
+  }
+  .ud-main {
+    margin-left: 0;
+    padding: 1.5rem;
+  }
+  .ud-hamburger {
+    display: flex;
+  }
+  
+  .sidebar-open .ud-sidebar {
+    transform: translateX(0);
+  }
+  .sidebar-open .ud-backdrop {
+    display: block;
+  }
+}

@@ -1,0 +1,172 @@
+/* ─────────────────────────────────────────────────────────────
+   Toast / Loading overlay styles – shared across the portal
+───────────────────────────────────────────────────────────── */
+
+/* ── Container ────────────────────────────────────────────── */
+.toast-container {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  pointer-events: none;
+  width: min(90vw, 420px);
+}
+
+/* ── Individual Toast ─────────────────────────────────────── */
+.toast-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  width: 100%;
+  padding: 0.85rem 1rem 0.85rem 0.85rem;
+  border-radius: 12px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #f0eaff;
+  pointer-events: all;
+  cursor: pointer;
+  overflow: hidden;
+  opacity: 0;
+  transform: translateY(-16px) scale(0.96);
+  transition: opacity 0.28s ease, transform 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.toast-enter {
+  opacity: 1 !important;
+  transform: translateY(0) scale(1) !important;
+}
+
+.toast-leave {
+  opacity: 0 !important;
+  transform: translateY(-12px) scale(0.94) !important;
+  transition: opacity 0.28s ease, transform 0.28s ease !important;
+}
+
+.toast-icon {
+  font-size: 1rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  width: 22px;
+  text-align: center;
+}
+
+.toast-msg {
+  flex: 1;
+  line-height: 1.45;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  color: rgba(240, 234, 255, 0.45);
+  font-size: 0.75rem;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+  transition: color 0.15s;
+}
+.toast-close:hover { color: #f0eaff; }
+
+/* ── Progress bar at bottom of toast ─────────────────────── */
+.toast-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  border-radius: 0 0 12px 12px;
+  animation: toast-shrink 3.5s linear forwards;
+  transform-origin: left;
+}
+@keyframes toast-shrink {
+  from { transform: scaleX(1); }
+  to   { transform: scaleX(0); }
+}
+
+/* ── Full-screen loading overlay ─────────────────────────── */
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 8888;
+  background: rgba(9, 9, 20, 0.82);
+  backdrop-filter: blur(6px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.25rem;
+}
+
+/* ── Page-level loader (replaces inline "Loading…" text) ─── */
+.page-loader {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 2rem;
+  gap: 1rem;
+  min-height: 200px;
+  color: #a78bfa;
+}
+
+.page-loader-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(167, 139, 250, 0.75);
+  letter-spacing: 0.03em;
+}
+
+/* ── Spinner ──────────────────────────────────────────────── */
+.loading-spinner,
+.page-spinner {
+  position: relative;
+  width: 52px;
+  height: 52px;
+}
+
+.page-spinner { width: 44px; height: 44px; }
+
+.spinner-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  border-top-color: #7c3aed;
+  border-right-color: #a78bfa;
+  animation: spin 0.9s linear infinite;
+}
+
+.spinner-ring.delay {
+  border-top-color: transparent;
+  border-right-color: transparent;
+  border-bottom-color: #6d28d9;
+  border-left-color: #c4b5fd;
+  animation-duration: 1.4s;
+  animation-direction: reverse;
+  inset: 6px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-label {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #a78bfa;
+  letter-spacing: 0.04em;
+}
+
+/* ─── Light theme adjustments ────────────────────────────── */
+.light-theme .toast-item {
+  color: #1e1b4b;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+}
