@@ -488,19 +488,93 @@
   border-color: rgba(99, 102, 241, 0.25);
 }
 
+/* Form fields & inputs in light theme */
 .light-theme .sd-form-field input,
 .light-theme .sd-form-field textarea,
-.light-theme .sd-form-field select {
-  background: #f8fafc;
-  border-color: rgba(99, 102, 241, 0.15);
-  color: #0f172a;
+.light-theme .sd-form-field select,
+.light-theme input,
+.light-theme select,
+.light-theme textarea {
+  background: #ffffff !important;
+  border-color: rgba(99, 102, 241, 0.22) !important;
+  color: #0f172a !important;
 }
 
 .light-theme .sd-form-field input:focus,
 .light-theme .sd-form-field textarea:focus,
-.light-theme .sd-form-field select:focus {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+.light-theme .sd-form-field select:focus,
+.light-theme input:focus,
+.light-theme select:focus,
+.light-theme textarea:focus {
+  border-color: #4f46e5 !important;
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12) !important;
+}
+
+/* Ensure dropdown options are dark text on white background in light theme */
+.light-theme select {
+  color-scheme: light !important;
+}
+
+.light-theme option,
+.light-theme select option,
+.light-theme .sd-form-field select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+/* High contrast status badges for light theme */
+.light-theme .sd-badge-green {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+}
+
+.light-theme .sd-badge-red {
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+  border-color: #fca5a5 !important;
+}
+
+.light-theme .sd-badge-yellow {
+  background: #fffbeb !important;
+  color: #b45309 !important;
+  border-color: #fde68a !important;
+}
+
+.light-theme .sd-badge-blue {
+  background: #eff6ff !important;
+  color: #1d4ed8 !important;
+  border-color: #bfdbfe !important;
+}
+
+.light-theme .sd-badge-purple {
+  background: #f5f3ff !important;
+  color: #6d28d9 !important;
+  border-color: #ddd6fe !important;
+}
+
+/* General high contrast alerts in light theme */
+.light-theme .sd-alert-success {
+  background: #ecfdf5 !important;
+  color: #047857 !important;
+  border-color: #a7f3d0 !important;
+}
+
+.light-theme .sd-alert-error {
+  background: #fef2f2 !important;
+  color: #b91c1c !important;
+  border-color: #fca5a5 !important;
+}
+
+/* High contrast table borders and header in light theme */
+.light-theme table th {
+  color: #475569 !important;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.15) !important;
+}
+
+.light-theme table td {
+  color: #0f172a !important;
+  border-bottom: 1px solid rgba(99, 102, 241, 0.08) !important;
 }
 
 /* ── Top Nav Layout Styles ── */

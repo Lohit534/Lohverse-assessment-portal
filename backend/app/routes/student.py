@@ -1,6 +1,6 @@
 import os
 import json
-from flask import Blueprint, request, jsonify, send_from_directory, current_app
+from flask import Blueprint, request, jsonify, redirect, current_app
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from werkzeug.utils import secure_filename
 from app.extensions import db
@@ -101,36 +101,36 @@ def upload_resume():
     if not allowed_file(file.filename):
         return jsonify({'error': 'Only PDF files are allowed'}), 400
 
-    # Upload resume to Cloudinary
-result = cloudinary.uploader.upload(
-    file,
-    resource_type="raw",
-    folder="resumes"
-)
-
-resume_url = result["secure_url"]
-
-# Extract PDF text temporarily for AI processing
-with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+    # Check file size (5MB maximum)
+    file.seek(0, os.SEEK_END)
+    file_size = file.tell()
     file.seek(0)
-    temp_file.write(file.read())
-    temp_path = temp_file.name
+    if file_size > 5 * 1024 * 1024:
+        return jsonify({'error': 'File size exceeds maximum limit of 5MB'}), 400
 
-# Extract text from PDF
-extracted_text = extract_text_from_pdf(temp_path)
+    # Extract PDF text in-memory
+    file.seek(0)
+    extracted_text = extract_text_from_pdf(file)
 
-# Save data in database
-user.resume_filename = resume_url
-user.resume_text = extracted_text
+    # Upload to Cloudinary
+    import cloudinary.uploader
+    file.seek(0)
+    try:
+        upload_result = cloudinary.uploader.upload(
+            file,
+            resource_type="raw",
+            folder="lohverse/resumes",
+            public_id=f"{user.email.split('@')[0]}_resume"
+        )
+        secure_url = upload_result.get("secure_url")
+    except Exception as e:
+        return jsonify({'error': f'Cloudinary upload failed: {str(e)}'}), 500
 
-db.session.commit()
+    user.resume_filename = secure_url
+    user.resume_text     = extracted_text
+    db.session.commit()
 
-return jsonify({
-    'message': 'Resume uploaded successfully',
-    'resumeUrl': resume_url
-}), 200
-
-    return jsonify({'message': 'Resume uploaded', 'filename': filename}), 200
+    return jsonify({'message': 'Resume uploaded', 'filename': secure_url}), 200
 
 
 # ── GET /api/student/resume ──────────────────────────────────
@@ -143,9 +143,9 @@ def download_resume():
     if not user or not user.resume_filename:
         return jsonify({'error': 'No resume found'}), 404
 
-    return jsonify({
-        'resumeUrl': user.resume_filename
-    }), 200
+    # Redirect to secure Cloudinary URL directly
+    return redirect(user.resume_filename)
+
 
 # ── GET /api/student/resume/view ─────────────────────────────
 @student_bp.route('/resume/view', methods=['GET'])
@@ -157,9 +157,8 @@ def view_resume():
     if not user or not user.resume_filename:
         return jsonify({'error': 'No resume found'}), 404
 
-    return jsonify({
-        'resumeUrl': user.resume_filename
-    }), 200
+    # Redirect to secure Cloudinary URL directly
+    return redirect(user.resume_filename)
 
 
 # ── GET /api/student/applications ────────────────────────────

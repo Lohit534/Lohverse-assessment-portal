@@ -12,6 +12,10 @@ psycopg2-binary
 # - Cloudinary -
 cloudinary
 
+# ── PostgreSQL & Cloudinary drivers (Production) ──
+psycopg2-binary==2.9.9
+cloudinary==1.38.0
+
 # ── Security ──
 bcrypt==4.1.3
 

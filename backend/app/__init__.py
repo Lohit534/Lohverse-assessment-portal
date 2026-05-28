@@ -46,18 +46,26 @@ def create_app():
             'message': error_string
         }), 401
 
+    # ── Initialize Cloudinary ──
+    import cloudinary
+    cloudinary.config(
+        cloud_name = app.config['CLOUDINARY_CLOUD_NAME'],
+        api_key    = app.config['CLOUDINARY_API_KEY'],
+        api_secret = app.config['CLOUDINARY_API_SECRET'],
+        secure     = True
+    )
+
+    # ── Dynamic CORS Configuration ──
+    import os
+    frontend_urls = os.getenv(
+        "FRONTEND_URLS",
+        "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174,http://localhost:5175,http://127.0.0.1:5175,http://localhost:5176,http://127.0.0.1:5176"
+    ).split(",")
+    frontend_urls = [url.strip() for url in frontend_urls if url.strip()]
+
     cors.init_app(app, resources={
         r"/api/*": {
-            "origins": [
-                "http://localhost:5173",
-                "http://127.0.0.1:5173",
-                "http://localhost:5174",
-                "http://127.0.0.1:5174",
-                "http://localhost:5175",
-                "http://127.0.0.1:5175",
-                "http://localhost:5176",
-                "http://127.0.0.1:5176",
-            ]
+            "origins": frontend_urls
         }
     })
 

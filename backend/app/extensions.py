@@ -7,8 +7,8 @@ import cloudinary
 # Extensions
 db = SQLAlchemy()
 bcrypt = Bcrypt()
-jwt = JWTManager()
-cors = CORS()
+jwt    = JWTManager()
+cors   = CORS()
 
 # Cloudinary setup function
 def init_cloudinary(app):
@@ -18,3 +18,5 @@ def init_cloudinary(app):
         api_secret=app.config["CLOUDINARY_API_SECRET"],
         secure=True
     )
+
+import cloudinary.uploader

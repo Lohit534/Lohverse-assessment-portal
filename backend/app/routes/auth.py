@@ -11,8 +11,7 @@ from werkzeug.utils import secure_filename
 
 auth_bp = Blueprint('auth', __name__, url_prefix='/api/auth')
 
-UPLOAD_FOLDER  = os.path.join(os.path.dirname(__file__), '..', 'uploads', 'resumes')
-ALLOWED_EXTENSIONS = {'pdf', 'doc', 'docx'}
+ALLOWED_EXTENSIONS = {'pdf'}
 
 
 def allowed_file(filename):
@@ -44,14 +43,38 @@ def register():
 
     # ── Handle resume upload ──
     resume_filename = None
+    resume_text = ""
     if 'resume' in request.files:
         file = request.files['resume']
-        if file and file.filename and allowed_file(file.filename):
-            os.makedirs(UPLOAD_FOLDER, exist_ok=True)
-            safe_name = secure_filename(file.filename)
-            # Prefix with email to avoid collisions
-            resume_filename = f"{data['email'].split('@')[0]}_{safe_name}"
-            file.save(os.path.join(UPLOAD_FOLDER, resume_filename))
+        if file and file.filename:
+            if not allowed_file(file.filename):
+                return jsonify({'error': 'Only PDF files are allowed'}), 400
+            
+            # Check file size (5MB maximum)
+            file.seek(0, os.SEEK_END)
+            file_size = file.tell()
+            file.seek(0)
+            if file_size > 5 * 1024 * 1024:
+                return jsonify({'error': 'File size exceeds maximum limit of 5MB'}), 400
+            
+            # Extract PDF text in-memory
+            from app.utils.ai_utils import extract_text_from_pdf
+            file.seek(0)
+            resume_text = extract_text_from_pdf(file)
+            
+            # Upload to Cloudinary
+            import cloudinary.uploader
+            file.seek(0)
+            try:
+                upload_result = cloudinary.uploader.upload(
+                    file,
+                    resource_type="raw",
+                    folder="lohverse/resumes",
+                    public_id=f"{data['email'].split('@')[0]}_resume"
+                )
+                resume_filename = upload_result.get("secure_url")
+            except Exception as e:
+                return jsonify({'error': f'Cloudinary upload failed: {str(e)}'}), 500
 
     # ── Create user ──
     user = User(
@@ -65,6 +88,7 @@ def register():
         year            = data.get('year', '').strip(),
         email           = data['email'].lower().strip(),
         resume_filename = resume_filename,
+        resume_text     = resume_text,
         role            = 'student',
     )
     user.set_password(data['password'])

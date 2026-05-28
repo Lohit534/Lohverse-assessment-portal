@@ -6,10 +6,10 @@ from pypdf import PdfReader
 from app.extensions import db
 from app.models import User, Job, AssessmentAttempt, CandidateRanking
 
-def extract_text_from_pdf(pdf_path):
-    """Extract text content from a PDF file using pypdf"""
+def extract_text_from_pdf(pdf_file_or_path):
+    """Extract text content from a PDF file or stream using pypdf"""
     try:
-        reader = PdfReader(pdf_path)
+        reader = PdfReader(pdf_file_or_path)
         text = ""
         for page in reader.pages:
             t = page.extract_text()
