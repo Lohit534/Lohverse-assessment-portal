@@ -2,30 +2,79 @@ import os
 from datetime import timedelta
 from dotenv import load_dotenv
 
-# Load .env file
+# Load environment variables
 load_dotenv()
 
 class Config:
-    # ── Database ──
-    # MySQL 5.5.41 compatible connection string using PyMySQL
-    DB_HOST     = os.getenv('DB_HOST', 'localhost')
-    DB_PORT     = int(os.getenv('DB_PORT', 3306))
-    DB_USER     = os.getenv('DB_USER', 'root')
-    DB_PASSWORD = os.getenv('DB_PASSWORD', '')
-    DB_NAME     = os.getenv('DB_NAME', 'lohverse_db')
 
-    SQLALCHEMY_DATABASE_URI = (
-        f"mysql+pymysql://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-        "?charset=utf8"
+    # ─────────────────────────────────────────────
+    # DATABASE CONFIGURATION (PostgreSQL)
+    # ─────────────────────────────────────────────
+    # Example:
+    # DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
+
+    SQLALCHEMY_DATABASE_URI = os.getenv(
+        "DATABASE_URL",
+        "postgresql://postgres:password@localhost:5432/interview_db"
     )
+
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
-    # ── JWT ──
-    JWT_SECRET_KEY          = os.getenv('JWT_SECRET_KEY', 'lohverse-super-secret-change-in-prod')
-    JWT_ACCESS_TOKEN_EXPIRES  = timedelta(hours=8)
+    # ─────────────────────────────────────────────
+    # JWT CONFIGURATION
+    # ─────────────────────────────────────────────
+
+    JWT_SECRET_KEY = os.getenv(
+        "JWT_SECRET_KEY",
+        "change-this-secret-key"
+    )
+
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=8)
+
     JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
-    # ── General ──
-    SECRET_KEY   = os.getenv('SECRET_KEY', 'lohverse-flask-secret')
-    DEBUG        = os.getenv('FLASK_DEBUG', 'true').lower() == 'true'
-    FRONTEND_URL = os.getenv('FRONTEND_URL', 'http://localhost:5173')
+    # ─────────────────────────────────────────────
+    # FLASK CONFIGURATION
+    # ─────────────────────────────────────────────
+
+    SECRET_KEY = os.getenv(
+        "SECRET_KEY",
+        "change-this-flask-secret"
+    )
+
+    DEBUG = os.getenv(
+        "FLASK_DEBUG",
+        "true"
+    ).lower() == "true"
+
+    # ─────────────────────────────────────────────
+    # FRONTEND URL (CORS)
+    # ─────────────────────────────────────────────
+
+    FRONTEND_URL = os.getenv(
+        "FRONTEND_URL",
+        "http://localhost:5173"
+    )
+
+    # ─────────────────────────────────────────────
+    # GEMINI API
+    # ─────────────────────────────────────────────
+
+    GEMINI_API_KEY = os.getenv(
+        "GEMINI_API_KEY",
+        ""
+    )
+
+    # ─────────────────────────────────────────────
+    # OPTIONAL JUDGE0 API
+    # ─────────────────────────────────────────────
+
+    JUDGE0_API_KEY = os.getenv(
+        "JUDGE0_API_KEY",
+        ""
+    )
+
+    JUDGE0_API_URL = os.getenv(
+        "JUDGE0_API_URL",
+        "https://judge0-ce.p.rapidapi.com"
+    )
