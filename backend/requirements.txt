@@ -7,7 +7,10 @@ flask-jwt-extended==4.6.0
 flask-cors==4.0.1
 
 # ── MySQL driver (pure Python — no C compiler needed on Windows) ──
-PyMySQL==1.1.1
+psycopg2-binary
+
+# - Cloudinary -
+cloudinary
 
 # ── Security ──
 bcrypt==4.1.3
