@@ -13,11 +13,11 @@ class Config:
     # Example:
     # DATABASE_URL=postgresql://user:password@host/dbname?sslmode=require
 
-    _db_url = os.getenv(
-        "DATABASE_URL",
-        "postgresql://postgres:password@localhost:5432/interview_db"
-    )
-    if _db_url and _db_url.startswith("postgres://"):
+    _db_url = os.getenv("DATABASE_URL", "").strip()
+    if not _db_url:
+        _db_url = "postgresql://postgres:password@localhost:5432/interview_db"
+        
+    if _db_url.startswith("postgres://"):
         _db_url = _db_url.replace("postgres://", "postgresql://", 1)
 
     SQLALCHEMY_DATABASE_URI = _db_url
