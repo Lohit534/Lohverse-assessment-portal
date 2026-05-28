@@ -72,7 +72,7 @@ export default function CandidateDetail() {
 
   const downloadResume = async () => {
     try {
-      const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+      const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://lohverse-assessment-portal.onrender.com/api';
       const res = await fetch(`${apiBase}/student/resume?userId=${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('recruiter_accessToken')}` }
       });

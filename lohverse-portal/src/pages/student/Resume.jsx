@@ -61,7 +61,7 @@ export default function Resume() {
 
   const hasResume = user?.hasResume;
   const token     = localStorage.getItem('accessToken');
-  const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+  const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://lohverse-assessment-portal.onrender.com/api';
   const resumeViewUrl = `${apiBase}/student/resume/view`;
   const resumeDownloadUrl = `${apiBase}/student/resume`;
 

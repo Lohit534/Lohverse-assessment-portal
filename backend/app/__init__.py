@@ -155,13 +155,12 @@ def create_app():
 
     # ── Create tables on first run ──
     with app.app_context():
-        db.create_all()
         try:
+            db.create_all()
             auto_migrate(db.engine)
-            logger.info('Database auto-migrations executed successfully')
+            logger.info('Database tables created and auto-migrations executed successfully')
         except Exception as e:
-            logger.error(f'Database auto-migration error: {e}')
-        logger.info('Database tables created/verified')
+            logger.error(f'Database initialization/migration error: {e}')
 
     return app
 
