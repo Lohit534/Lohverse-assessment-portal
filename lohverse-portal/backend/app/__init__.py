@@ -19,6 +19,31 @@ def create_app():
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
+
+    # Register custom JWT error handlers to return 401 instead of 422 for invalid/expired tokens
+    from flask import jsonify
+    
+    @jwt.invalid_token_loader
+    def invalid_token_callback(error_string):
+        return jsonify({
+            'error': 'Invalid token',
+            'message': error_string
+        }), 401
+
+    @jwt.expired_token_loader
+    def expired_token_callback(jwt_header, jwt_payload):
+        return jsonify({
+            'error': 'Token has expired',
+            'message': 'The token has expired'
+        }), 401
+
+    @jwt.unauthorized_loader
+    def missing_token_callback(error_string):
+        return jsonify({
+            'error': 'Authorization required',
+            'message': error_string
+        }), 401
+
     cors.init_app(app, resources={
         r"/api/*": {
             "origins": [
@@ -28,6 +53,8 @@ def create_app():
                 "http://127.0.0.1:5174",
                 "http://localhost:5175",
                 "http://127.0.0.1:5175",
+                "http://localhost:5176",
+                "http://127.0.0.1:5176",
             ]
         }
     })
