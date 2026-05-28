@@ -6,24 +6,12 @@ flask-bcrypt==1.0.1
 flask-jwt-extended==4.6.0
 flask-cors==4.0.1
 
-# ── MySQL driver (pure Python — no C compiler needed on Windows) ──
-psycopg2-binary
-
-# - Cloudinary -
-cloudinary
-
 # ── PostgreSQL & Cloudinary drivers (Production) ──
 psycopg2-binary==2.9.9
 cloudinary==1.38.0
 
 # ── Security ──
 bcrypt==4.1.3
-
-# ── Data Science / AI ──
-pandas
-numpy
-scikit-learn
-nltk
 
 # ── PDF Processing ──
 pdfplumber
