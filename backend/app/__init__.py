@@ -1,7 +1,7 @@
 import logging
 from flask import Flask
 from app.config import Config
-from app.extensions import db, bcrypt, jwt, cors
+from app.extensions import db, bcrypt, jwt, cors, init_cloudinary
 
 # Configure logging
 logging.basicConfig(
@@ -19,6 +19,8 @@ def create_app():
     db.init_app(app)
     bcrypt.init_app(app)
     jwt.init_app(app)
+    # Initialize Cloudinary
+    init_cloudinary(app)
 
     # Register custom JWT error handlers to return 401 instead of 422 for invalid/expired tokens
     from flask import jsonify
