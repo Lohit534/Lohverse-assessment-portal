@@ -42,7 +42,8 @@ export default function CandidateDetail() {
 
   const downloadResume = async () => {
     try {
-      const res = await fetch(`http://localhost:5000/api/student/resume?userId=${id}`, {
+      const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+      const res = await fetch(`${apiBase}/student/resume?userId=${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('recruiter_accessToken')}` }
       });
       const blob = await res.blob();

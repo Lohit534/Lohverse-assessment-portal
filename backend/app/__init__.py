@@ -59,7 +59,7 @@ def create_app():
     import os
     frontend_urls = os.getenv(
         "FRONTEND_URLS",
-        "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174,http://localhost:5175,http://127.0.0.1:5175,http://localhost:5176,http://127.0.0.1:5176"
+        "http://localhost:5173,http://127.0.0.1:5173,http://localhost:5174,http://127.0.0.1:5174,http://localhost:5175,http://127.0.0.1:5175,http://localhost:5176,http://127.0.0.1:5176,https://lohverse-student-assessment.vercel.app,https://lohverse-assessment-portal.vercel.app"
     ).split(",")
     frontend_urls = [url.strip() for url in frontend_urls if url.strip()]
 

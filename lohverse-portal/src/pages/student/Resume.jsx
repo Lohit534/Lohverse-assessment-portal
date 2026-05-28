@@ -61,8 +61,9 @@ export default function Resume() {
 
   const hasResume = user?.hasResume;
   const token     = localStorage.getItem('accessToken');
-  const resumeViewUrl = `http://localhost:5000/api/student/resume/view`;
-  const resumeDownloadUrl = `http://localhost:5000/api/student/resume`;
+  const apiBase = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
+  const resumeViewUrl = `${apiBase}/student/resume/view`;
+  const resumeDownloadUrl = `${apiBase}/student/resume`;
 
   // Fetch applications for matching job selector
   useEffect(() => {
