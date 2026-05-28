@@ -6,10 +6,11 @@ from werkzeug.utils import secure_filename
 from app.extensions import db
 from app.models import User, Application, AssessmentAttempt, Assessment, Job, CandidateRanking
 from app.utils.ai_utils import extract_text_from_pdf, recalculate_candidate_ranking, calculate_skill_match
+import cloudinary.uploader
+import tempfile
 
 student_bp = Blueprint('student', __name__, url_prefix='/api/student')
 
-UPLOAD_FOLDER   = os.path.join(os.path.dirname(__file__), '..', 'uploads', 'resumes')
 ALLOWED_EXTS    = {'pdf'}
 
 
@@ -100,25 +101,34 @@ def upload_resume():
     if not allowed_file(file.filename):
         return jsonify({'error': 'Only PDF files are allowed'}), 400
 
-    os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+    # Upload resume to Cloudinary
+result = cloudinary.uploader.upload(
+    file,
+    resource_type="raw",
+    folder="resumes"
+)
 
-    # Delete old resume if exists
-    if user.resume_filename:
-        old_path = os.path.join(UPLOAD_FOLDER, user.resume_filename)
-        if os.path.exists(old_path):
-            os.remove(old_path)
+resume_url = result["secure_url"]
 
-    safe_name = secure_filename(file.filename)
-    filename  = f"{user.email.split('@')[0]}_{safe_name}"
-    full_path = os.path.join(UPLOAD_FOLDER, filename)
-    file.save(full_path)
+# Extract PDF text temporarily for AI processing
+with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+    file.seek(0)
+    temp_file.write(file.read())
+    temp_path = temp_file.name
 
-    # AI PDF parsing and text extraction
-    extracted_text = extract_text_from_pdf(full_path)
+# Extract text from PDF
+extracted_text = extract_text_from_pdf(temp_path)
 
-    user.resume_filename = filename
-    user.resume_text     = extracted_text
-    db.session.commit()
+# Save data in database
+user.resume_filename = resume_url
+user.resume_text = extracted_text
+
+db.session.commit()
+
+return jsonify({
+    'message': 'Resume uploaded successfully',
+    'resumeUrl': resume_url
+}), 200
 
     return jsonify({'message': 'Resume uploaded', 'filename': filename}), 200
 
@@ -128,27 +138,28 @@ def upload_resume():
 @jwt_required()
 def download_resume():
     user_id = int(get_jwt_identity())
-    user    = User.query.get(user_id)
+    user = User.query.get(user_id)
+
     if not user or not user.resume_filename:
         return jsonify({'error': 'No resume found'}), 404
 
-    abs_folder = os.path.abspath(UPLOAD_FOLDER)
-    return send_from_directory(abs_folder, user.resume_filename,
-                               as_attachment=True, mimetype='application/pdf')
-
+    return jsonify({
+        'resumeUrl': user.resume_filename
+    }), 200
 
 # ── GET /api/student/resume/view ─────────────────────────────
 @student_bp.route('/resume/view', methods=['GET'])
 @jwt_required()
 def view_resume():
     user_id = int(get_jwt_identity())
-    user    = User.query.get(user_id)
+    user = User.query.get(user_id)
+
     if not user or not user.resume_filename:
         return jsonify({'error': 'No resume found'}), 404
 
-    abs_folder = os.path.abspath(UPLOAD_FOLDER)
-    return send_from_directory(abs_folder, user.resume_filename,
-                               as_attachment=False, mimetype='application/pdf')
+    return jsonify({
+        'resumeUrl': user.resume_filename
+    }), 200
 
 
 # ── GET /api/student/applications ────────────────────────────
