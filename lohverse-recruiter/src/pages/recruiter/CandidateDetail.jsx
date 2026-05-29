@@ -70,18 +70,21 @@ export default function CandidateDetail() {
     }
   };
 
-  const downloadResume = async () => {
-    try {
-      const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://lohverse-assessment-portal.onrender.com/api';
-      const res = await fetch(`${apiBase}/student/resume?userId=${id}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('recruiter_accessToken')}` }
-      });
-      const blob = await res.blob();
-      const url  = URL.createObjectURL(blob);
-      const a    = document.createElement('a');
-      a.href = url; a.download = `${candidate?.fullName}_Resume.pdf`; a.click();
-      URL.revokeObjectURL(url);
-    } catch { setError('Resume download failed'); }
+  const downloadResume = () => {
+    const cloudinaryUrl = candidate?.resumeFilename;
+    if (!cloudinaryUrl) { setError('No resume found'); return; }
+    const a = document.createElement('a');
+    a.href = cloudinaryUrl;
+    a.download = `${candidate?.fullName}_Resume.pdf`;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.click();
+  };
+
+  const viewResume = () => {
+    const cloudinaryUrl = candidate?.resumeFilename;
+    if (!cloudinaryUrl) { setError('No resume found'); return; }
+    window.open(cloudinaryUrl, '_blank', 'noopener,noreferrer');
   };
 
   if (loading) return <PageLoader label="Loading candidate profile…" />;
@@ -130,7 +133,21 @@ export default function CandidateDetail() {
         </div>
 
         {candidate.hasResume && (
-          <button className="rp-btn rp-btn-primary" onClick={downloadResume}>⬇️ Download Resume</button>
+          <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+            <button
+              className="rp-btn rp-btn-primary"
+              onClick={viewResume}
+              style={{ background: 'linear-gradient(135deg,#7c3aed,#6d28d9)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}
+            >
+              📄 View Resume
+            </button>
+            <button className="rp-btn rp-btn-outline" onClick={downloadResume} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+              ⬇️ Download
+            </button>
+          </div>
+        )}
+        {!candidate.hasResume && (
+          <span style={{ fontSize: '0.8rem', color: 'rgba(200,185,230,0.4)', fontStyle: 'italic' }}>No resume uploaded</span>
         )}
       </div>
 

@@ -61,6 +61,9 @@ export default function Jobs() {
     applied: '⏳', shortlisted: '✅', rejected: '❌'
   }[s] || '⏳');
 
+  const [expandedJobs, setExpandedJobs] = useState({});
+  const toggleExpand = (jobId) => setExpandedJobs(prev => ({ ...prev, [jobId]: !prev[jobId] }));
+
   if (loading) return <div className="sd-loading">⟳ Loading jobs…</div>;
 
   return (
@@ -111,6 +114,9 @@ export default function Jobs() {
             {filtered.map(job => {
               const alreadyApplied = appliedIds.has(job.id);
               const appStatus = myApps.find(a => a.jobId === job.id)?.status;
+              const isExpanded = expandedJobs[job.id];
+              const desc = job.description || '';
+              const PREVIEW_LEN = 150;
 
               return (
                 <div key={job.id} className="sd-card">
@@ -121,10 +127,24 @@ export default function Jobs() {
                         🏢 {job.companyName}
                       </div>
 
-                      {job.description && (
-                        <p style={{ color: 'var(--sd-muted)', fontSize: '0.825rem', lineHeight: 1.5, marginBottom: '0.75rem' }}>
-                          {job.description.slice(0, 200)}{job.description.length > 200 ? '…' : ''}
-                        </p>
+                      {desc && (
+                        <div style={{ marginBottom: '0.75rem' }}>
+                          <p style={{ color: 'var(--sd-muted)', fontSize: '0.825rem', lineHeight: 1.5, margin: 0 }}>
+                            {isExpanded ? desc : `${desc.slice(0, PREVIEW_LEN)}${desc.length > PREVIEW_LEN ? '…' : ''}`}
+                          </p>
+                          {desc.length > PREVIEW_LEN && (
+                            <button
+                              onClick={() => toggleExpand(job.id)}
+                              style={{
+                                background: 'none', border: 'none', cursor: 'pointer',
+                                color: '#7c3aed', fontSize: '0.8rem', fontWeight: 600,
+                                padding: '0.25rem 0', marginTop: '0.25rem',
+                              }}
+                            >
+                              {isExpanded ? '▲ Show Less' : '▼ Read More'}
+                            </button>
+                          )}
+                        </div>
                       )}
 
                       <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>

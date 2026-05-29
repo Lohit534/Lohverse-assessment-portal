@@ -17,9 +17,8 @@ const TOP_NAV = [
   { to: '/dashboard/interviews',  icon: '📹', label: 'Interviews' },
   { to: '/dashboard/ai-interview',icon: '🤖', label: 'AI Interview' },
   { to: '/dashboard/jobs',        icon: '💼', label: 'Job Board' },
-  { to: '/dashboard/results',     icon: '🏆', label: 'My Applications' },
+  { to: '/dashboard/results',     icon: '📊', label: 'My Results' },
   { to: '/dashboard/profile',     icon: '👤', label: 'Profile' },
-  { to: '/dashboard/resume',      icon: '📄', label: 'Resume' }
 ];
 
 export default function StudentDashboard() {

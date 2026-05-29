@@ -358,6 +358,14 @@ export default function JobApplicants() {
                             style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem' }}
                             title="Schedule a video interview"
                           >📹 Interview</button>
+                          {s.resumeFilename && (
+                            <button
+                              className="rp-btn"
+                              onClick={() => window.open(s.resumeFilename, '_blank', 'noopener,noreferrer')}
+                              style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem', background: 'rgba(124,58,237,0.13)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.3)' }}
+                              title="View candidate resume"
+                            >📄 Resume</button>
+                          )}
                           <button
                             className="rp-btn rp-btn-outline"
                             onClick={() => navigate(`/dashboard/candidates/${s.id}`)}

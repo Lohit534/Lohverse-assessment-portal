@@ -120,31 +120,22 @@ export default function Resume() {
   };
 
   const handleDownload = () => {
-    fetch(resumeDownloadUrl, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(r => r.blob())
-      .then(blob => {
-        const url = URL.createObjectURL(blob);
-        const a   = document.createElement('a');
-        a.href     = url;
-        a.download = `${user.fullName || 'Resume'}_Resume.pdf`;
-        a.click();
-        URL.revokeObjectURL(url);
-      })
-      .catch(() => setError('Download failed'));
+    // resumeFilename stores the Cloudinary secure_url directly
+    const cloudinaryUrl = user?.resumeFilename;
+    if (!cloudinaryUrl) { setError('No resume found'); return; }
+    const a = document.createElement('a');
+    a.href = cloudinaryUrl;
+    a.download = `${user.fullName || 'Resume'}_Resume.pdf`;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.click();
   };
 
   const handlePreview = () => {
-    fetch(resumeViewUrl, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(r => r.blob())
-      .then(blob => {
-        const url = URL.createObjectURL(blob);
-        setPreviewUrl(url);
-      })
-      .catch(() => setError('Preview failed'));
+    // Open Cloudinary URL directly in a new browser tab for inline PDF viewing
+    const cloudinaryUrl = user?.resumeFilename;
+    if (!cloudinaryUrl) { setError('No resume found'); return; }
+    window.open(cloudinaryUrl, '_blank', 'noopener,noreferrer');
   };
 
   // Profile completeness calculations based on active user context
