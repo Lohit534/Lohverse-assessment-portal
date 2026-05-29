@@ -337,41 +337,72 @@ export default function JobApplicants() {
                           textTransform: 'capitalize',
                         }}>{st}</span>
                       </td>
-                      {/* Actions */}
+                      {/* Actions — conditional on status */}
                       <td>
-                        <div style={{ display: 'flex', gap: '0.3rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-                          <button
-                            className="rp-btn"
-                            disabled={updatingId === s.id}
-                            onClick={() => handleStatusChange(s.id, 'shortlisted')}
-                            style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem', background: 'rgba(16,185,129,0.13)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)' }}
-                          >✓ Shortlist</button>
-                          <button
-                            className="rp-btn"
-                            disabled={updatingId === s.id}
-                            onClick={() => handleStatusChange(s.id, 'rejected')}
-                            style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem', background: 'rgba(239,68,68,0.13)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }}
-                          >✕ Reject</button>
-                          <button
-                            className="rp-btn rp-btn-outline"
-                            onClick={() => { setSchedModal({ candidateId: s.id, candidateName: s.fullName }); }}
-                            style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem' }}
-                            title="Schedule a video interview"
-                          >📹 Interview</button>
-                          {s.resumeFilename && (
+                        {st === 'rejected' ? (
+                          /* Rejected: no actions */
+                          <span style={{ fontSize: '0.72rem', color: 'var(--r-muted)', fontStyle: 'italic' }}>—</span>
+                        ) : st === 'shortlisted' ? (
+                          /* Shortlisted: Assessment info + Interview + Profile */
+                          <div style={{ display: 'flex', gap: '0.3rem', justifyContent: 'center', flexWrap: 'wrap' }}>
+                            <span
+                              style={{
+                                padding: '0.22rem 0.55rem', fontSize: '0.7rem', borderRadius: 6, fontWeight: 600,
+                                background: asmt.assessmentTitle ? 'rgba(251,191,36,0.12)' : 'rgba(255,255,255,0.04)',
+                                color: asmt.assessmentTitle ? '#fbbf24' : 'var(--r-muted)',
+                                border: `1px solid ${asmt.assessmentTitle ? 'rgba(251,191,36,0.3)' : 'rgba(255,255,255,0.08)'}`,
+                              }}
+                              title="Assessment linked to this job"
+                            >
+                              📋 {asmt.assessmentTitle
+                                ? (asmt.passed ? '✓ Passed' : asmt.attemptStatus === 'completed' ? '✗ Failed' : 'Pending')
+                                : 'No Assessment'}
+                            </span>
+                            <button
+                              className="rp-btn rp-btn-outline"
+                              onClick={() => { setSchedModal({ candidateId: s.id, candidateName: s.fullName }); }}
+                              style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem' }}
+                              title="Schedule a video interview"
+                            >📹 Interview</button>
+                            <button
+                              className="rp-btn rp-btn-outline"
+                              onClick={() => navigate(`/dashboard/candidates/${s.id}`)}
+                              style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem' }}
+                            >👤 Profile</button>
+                          </div>
+                        ) : (
+                          /* Applied (under review): Shortlist + Reject + Resume + Profile */
+                          <div style={{ display: 'flex', gap: '0.3rem', justifyContent: 'center', flexWrap: 'wrap' }}>
                             <button
                               className="rp-btn"
-                              onClick={() => window.open(s.resumeFilename, '_blank', 'noopener,noreferrer')}
-                              style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem', background: 'rgba(124,58,237,0.13)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.3)' }}
-                              title="View candidate resume"
-                            >📄 Resume</button>
-                          )}
-                          <button
-                            className="rp-btn rp-btn-outline"
-                            onClick={() => navigate(`/dashboard/candidates/${s.id}`)}
-                            style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem' }}
-                          >👤 Profile</button>
-                        </div>
+                              disabled={updatingId === s.id}
+                              onClick={() => handleStatusChange(s.id, 'shortlisted')}
+                              style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem', background: 'rgba(16,185,129,0.13)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)' }}
+                            >✓ Shortlist</button>
+                            <button
+                              className="rp-btn"
+                              disabled={updatingId === s.id}
+                              onClick={() => handleStatusChange(s.id, 'rejected')}
+                              style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem', background: 'rgba(239,68,68,0.13)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }}
+                            >✕ Reject</button>
+                            {s.resumeFilename && (
+                              <button
+                                className="rp-btn"
+                                onClick={() => window.open(
+                                  `https://docs.google.com/viewer?url=${encodeURIComponent(s.resumeFilename)}&embedded=false`,
+                                  '_blank', 'noopener,noreferrer'
+                                )}
+                                style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem', background: 'rgba(124,58,237,0.13)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.3)' }}
+                                title="View resume before shortlisting"
+                              >📄 Resume</button>
+                            )}
+                            <button
+                              className="rp-btn rp-btn-outline"
+                              onClick={() => navigate(`/dashboard/candidates/${s.id}`)}
+                              style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem' }}
+                            >👤 Profile</button>
+                          </div>
+                        )}
                       </td>
                     </tr>
                   );
