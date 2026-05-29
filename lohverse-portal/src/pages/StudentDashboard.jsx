@@ -1,24 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { Routes, Route, NavLink, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import Profile       from './student/Profile';
-import Resume        from './student/Resume';
-import Assessments   from './student/Assessments';
-import TakeAssessment from './student/TakeAssessment';
-import Results       from './student/Results';
-import Jobs          from './student/Jobs';
-import AIInterview   from './student/AIInterview';
-import Interviews    from './student/Interviews';
-import InterviewRoom from './student/InterviewRoom';
+import Profile          from './student/Profile';
+import Resume           from './student/Resume';
+import Assessments      from './student/Assessments';
+import TakeAssessment   from './student/TakeAssessment';
+import MyApplications   from './student/MyApplications';
+import Jobs             from './student/Jobs';
+import AIInterview      from './student/AIInterview';
+import Interviews       from './student/Interviews';
+import InterviewRoom    from './student/InterviewRoom';
 import './StudentDashboard.css';
 
 const TOP_NAV = [
-  { to: '/dashboard/assessments', icon: '📋', label: 'My Tests' },
-  { to: '/dashboard/interviews',  icon: '📹', label: 'Interviews' },
-  { to: '/dashboard/ai-interview',icon: '🤖', label: 'AI Interview' },
-  { to: '/dashboard/jobs',        icon: '💼', label: 'Job Board' },
-  { to: '/dashboard/results',     icon: '📊', label: 'My Results' },
-  { to: '/dashboard/profile',     icon: '👤', label: 'Profile' },
+  { to: '/dashboard/assessments',   icon: '📋', label: 'My Tests' },
+  { to: '/dashboard/interviews',    icon: '📹', label: 'Interviews' },
+  { to: '/dashboard/ai-interview',  icon: '🤖', label: 'AI Interview' },
+  { to: '/dashboard/jobs',          icon: '💼', label: 'Job Board' },
+  { to: '/dashboard/applications',  icon: '📋', label: 'My Applications' },
+  { to: '/dashboard/profile',       icon: '👤', label: 'Profile' },
 ];
 
 export default function StudentDashboard() {
@@ -180,16 +180,16 @@ export default function StudentDashboard() {
       <main className="sd-main-top-layout">
         <div className="sd-page-content-wrapper">
           <Routes>
-            <Route index                    element={<Navigate to="/dashboard/assessments" replace />} />
-            <Route path="profile"           element={<Profile />} />
-            <Route path="resume"            element={<Resume />} />
-            <Route path="jobs"              element={<Jobs />} />
-            <Route path="assessments"       element={<Assessments />} />
-            <Route path="interviews"        element={<Interviews />} />
+            <Route index                         element={<Navigate to="/dashboard/assessments" replace />} />
+            <Route path="profile"                element={<Profile />} />
+            <Route path="resume"                 element={<Resume />} />
+            <Route path="jobs"                   element={<Jobs />} />
+            <Route path="assessments"            element={<Assessments />} />
+            <Route path="interviews"             element={<Interviews />} />
             <Route path="interview-room/:roomId" element={<InterviewRoom />} />
-            <Route path="results"           element={<Results />} />
-            <Route path="ai-interview"      element={<AIInterview />} />
-            <Route path="*"                 element={<Navigate to="/dashboard/assessments" replace />} />
+            <Route path="applications"           element={<MyApplications />} />
+            <Route path="ai-interview"           element={<AIInterview />} />
+            <Route path="*"                      element={<Navigate to="/dashboard/assessments" replace />} />
           </Routes>
         </div>
       </main>
