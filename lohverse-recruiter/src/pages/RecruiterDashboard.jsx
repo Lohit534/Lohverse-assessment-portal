@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Routes, Route, NavLink, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Overview        from './recruiter/Overview';
+import AIMatch         from './recruiter/AIMatch';
 import Jobs            from './recruiter/Jobs';
 import CreateJob       from './recruiter/CreateJob';
 import EditJob         from './recruiter/EditJob';
@@ -17,6 +18,7 @@ import './RecruiterDashboard.css';
 
 const NAV = [
   { to: '/dashboard',             icon: '📊', label: 'Overview',    exact: true },
+  { to: '/dashboard/ai-match',    icon: '🤖', label: 'AI Match' },
   { to: '/dashboard/jobs',        icon: '💼', label: 'Jobs' },
   { to: '/dashboard/assessments', icon: '📝', label: 'Assessments' },
   { to: '/dashboard/interviews',  icon: '📹', label: 'Interviews' },
@@ -93,6 +95,7 @@ export default function RecruiterDashboard() {
       <main className="rd2-main">
         <Routes>
           <Route index           element={<Overview />} />
+          <Route path="ai-match" element={<AIMatch />} />
           <Route path="jobs"     element={<Jobs />} />
           <Route path="jobs/create" element={<CreateJob />} />
           <Route path="jobs/:id/edit" element={<EditJob />} />
