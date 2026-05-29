@@ -11,14 +11,41 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const stored = localStorage.getItem('user');
     const token  = localStorage.getItem('accessToken');
+    const loginTimestamp = localStorage.getItem('loginTimestamp');
+    const maxSessionDuration = 24 * 60 * 60 * 1000; // 24 hours in ms
+
     if (stored && token) {
-      try {
-        setUser(JSON.parse(stored));
-      } catch {
-        localStorage.clear();
+      if (loginTimestamp && (Date.now() - parseInt(loginTimestamp, 10) > maxSessionDuration)) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        localStorage.removeItem('loginTimestamp');
+        setUser(null);
+        window.location.href = '/';
+      } else {
+        try {
+          setUser(JSON.parse(stored));
+        } catch {
+          localStorage.clear();
+        }
       }
     }
     setLoading(false);
+
+    // Periodic check every 30 seconds for 24-hour expiration
+    const interval = setInterval(() => {
+      const ts = localStorage.getItem('loginTimestamp');
+      if (ts && (Date.now() - parseInt(ts, 10) > maxSessionDuration)) {
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+        localStorage.removeItem('loginTimestamp');
+        setUser(null);
+        window.location.href = '/';
+      }
+    }, 30000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const login = async (email, password) => {
@@ -27,6 +54,7 @@ export function AuthProvider({ children }) {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('user', JSON.stringify(u));
+    localStorage.setItem('loginTimestamp', Date.now().toString());
     setUser(u);
     return u;
   };
@@ -40,6 +68,7 @@ export function AuthProvider({ children }) {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('user', JSON.stringify(u));
+    localStorage.setItem('loginTimestamp', Date.now().toString());
     setUser(u);
     return u;
   };
@@ -49,6 +78,7 @@ export function AuthProvider({ children }) {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('user');
+    localStorage.removeItem('loginTimestamp');
     setUser(null);
   };
 
