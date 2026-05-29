@@ -22,6 +22,43 @@ function ScoreBadge({ value, total }) {
   );
 }
 
+// ── Animated circular progress score ──────────────────────────────────────
+function CircleScore({ value, max = 100, label, color, size = 95 }) {
+  const r = (size / 2) - 8;
+  const circ = 2 * Math.PI * r;
+  const pct = Math.min(100, Math.round((value / max) * 100));
+  const offset = circ - (pct / 100) * circ;
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.25rem' }}>
+      <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={6} />
+        <circle cx={size/2} cy={size/2} r={r} fill="none" stroke={color} strokeWidth={6}
+          strokeDasharray={circ} strokeDashoffset={offset}
+          strokeLinecap="round"
+          style={{ transition: 'stroke-dashoffset 1.2s ease', transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
+        />
+        <text x={size/2} y={size/2 + 4} textAnchor="middle" fill="white" fontSize={14} fontWeight={900}>{pct}%</text>
+      </svg>
+      <span style={{ fontSize: '0.68rem', color: 'var(--r-muted)', fontWeight: 600, textAlign: 'center', maxWidth: size }}>{label}</span>
+    </div>
+  );
+}
+
+// ── Skill pill ──────────────────────────────────────────────────────
+function SkillPill({ skill, matched }) {
+  return (
+    <span style={{
+      padding: '0.25rem 0.6rem', borderRadius: 999, fontSize: '0.7rem', fontWeight: 600,
+      background: matched ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.12)',
+      color:      matched ? '#34d399'              : '#f87171',
+      border:     matched ? '1px solid rgba(16,185,129,0.3)' : '1px solid rgba(239,68,68,0.25)',
+      display: 'inline-flex', alignItems: 'center', gap: '0.2rem',
+    }}>
+      {matched ? '✓' : '✗'} {skill}
+    </span>
+  );
+}
+
 /* ─── main component ──────────────────────────────────────── */
 export default function JobApplicants() {
   const { jobId } = useParams();
@@ -51,6 +88,26 @@ export default function JobApplicants() {
 
   // Status update loading
   const [updatingId, setUpdatingId] = useState(null);
+
+  // Resume and AI Match modal states
+  const [resumeModalCandidate, setResumeModalCandidate] = useState(null);
+  const [resumeModalRanking, setResumeModalRanking] = useState(null);
+  const [loadingRanking, setLoadingRanking] = useState(false);
+
+  const handleOpenResume = async (student) => {
+    setResumeModalCandidate(student);
+    setLoadingRanking(true);
+    setResumeModalRanking(null);
+    try {
+      const res = await API.get(`/recruiter/jobs/${jobId}/rankings`);
+      const rank = (res.data.rankings || []).find(r => r.student?.id === student.id);
+      setResumeModalRanking(rank || null);
+    } catch (e) {
+      console.error('Failed to load AI ranking details', e);
+    } finally {
+      setLoadingRanking(false);
+    }
+  };
 
   /* ── load data ── */
   const load = async () => {
@@ -388,12 +445,9 @@ export default function JobApplicants() {
                             {s.resumeFilename && (
                               <button
                                 className="rp-btn"
-                                onClick={() => window.open(
-                                  `https://docs.google.com/viewer?url=${encodeURIComponent(s.resumeFilename)}&embedded=false`,
-                                  '_blank', 'noopener,noreferrer'
-                                )}
+                                onClick={() => handleOpenResume(s)}
                                 style={{ padding: '0.22rem 0.5rem', fontSize: '0.7rem', background: 'rgba(124,58,237,0.13)', color: '#a78bfa', border: '1px solid rgba(124,58,237,0.3)' }}
-                                title="View resume before shortlisting"
+                                title="View resume and AI Match score before shortlisting"
                               >📄 Resume</button>
                             )}
                             <button
@@ -562,6 +616,154 @@ export default function JobApplicants() {
                 style={{ flex: 1, padding: '0.65rem' }}
                 onClick={() => setSchedModal(null)}
               >Cancel</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ─── RESUME & AI MATCH MODAL ─── */}
+      {resumeModalCandidate && (
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 1050,
+          background: 'rgba(13,13,26,0.85)', display: 'flex', alignItems: 'center',
+          justifyContent: 'center', backdropFilter: 'blur(5px)', padding: '2rem'
+        }}>
+          <div style={{
+            width: '100%', maxWidth: '1280px', height: '90vh',
+            background: '#12112a', border: '1px solid var(--r-border)',
+            borderRadius: '16px', display: 'grid', gridTemplateColumns: '1fr 420px',
+            overflow: 'hidden', boxShadow: '0 15px 35px rgba(0,0,0,0.6)'
+          }}>
+            {/* LEFT: Resume Document Viewer */}
+            <div style={{ display: 'flex', flexDirection: 'column', borderRight: '1px solid var(--r-border)', background: '#0d0d1a' }}>
+              <div style={{
+                padding: '1rem 1.5rem', background: '#12112a', borderBottom: '1px solid var(--r-border)',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+              }}>
+                <div>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--r-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Candidate Resume</span>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'white', marginTop: 2 }}>{resumeModalCandidate.fullName}</h3>
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <a
+                    href={`https://docs.google.com/viewer?url=${encodeURIComponent(resumeModalCandidate.resumeFilename)}&embedded=false`}
+                    target="_blank" rel="noopener noreferrer"
+                    className="rp-btn rp-btn-outline"
+                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
+                  >
+                    ↗ Open Original
+                  </a>
+                </div>
+              </div>
+              <div style={{ flex: 1, position: 'relative' }}>
+                <iframe
+                  src={`https://docs.google.com/viewer?url=${encodeURIComponent(resumeModalCandidate.resumeFilename)}&embedded=true`}
+                  style={{ width: '100%', height: '100%', border: 'none' }}
+                  title="Candidate Resume"
+                />
+              </div>
+            </div>
+
+            {/* RIGHT: AI Match & Skill Gap Scorecard */}
+            <div style={{ display: 'flex', flexDirection: 'column', background: '#12112a', height: '100%', overflowY: 'auto' }}>
+              <div style={{
+                padding: '1rem 1.5rem', borderBottom: '1px solid var(--r-border)',
+                display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(124,58,237,0.04)'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <span style={{ fontSize: '1.25rem' }}>🤖</span>
+                  <span style={{ fontWeight: 800, fontSize: '0.95rem', color: 'var(--r-accent-light)' }}>AI Match Analysis</span>
+                </div>
+                <button
+                  onClick={() => setResumeModalCandidate(null)}
+                  style={{ background: 'none', border: 'none', color: 'var(--r-muted)', fontSize: '1.5rem', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                >×</button>
+              </div>
+
+              <div style={{ padding: '1.5rem', flex: 1, display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {loadingRanking ? (
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', height: '100%', color: 'var(--r-accent-light)', gap: '0.75rem', padding: '3rem 0' }}>
+                    <div style={{ width: 36, height: 36, borderRadius: '50%', border: '3px solid transparent', borderTopColor: '#7c3aed', borderRightColor: '#a78bfa', animation: 'spin 0.8s linear infinite' }} />
+                    <span style={{ fontSize: '0.85rem', fontWeight: 600 }}>Analyzing resume & matching skills…</span>
+                  </div>
+                ) : resumeModalRanking ? (
+                  <>
+                    {/* Circular gauges row */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '12px', border: '1px solid var(--r-border)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-around', alignItems: 'center' }}>
+                        <CircleScore value={resumeModalRanking.overallScore} label="Overall Match" color="#a78bfa" size={90} />
+                        <CircleScore value={resumeModalRanking.resumeMatchPct} label="Resume Text" color="#3b82f6" size={80} />
+                        <CircleScore value={resumeModalRanking.skillMatchPct} label="Skill coverage" color="#f59e0b" size={80} />
+                      </div>
+                      <div style={{ height: 1, background: 'var(--r-border)' }} />
+                      <div style={{ fontSize: '0.7rem', color: 'var(--r-muted)', textAlign: 'center', lineHeight: 1.4 }}>
+                        Resume similarity uses TF-IDF matching. Core technical keywords boost candidate scores.
+                      </div>
+                    </div>
+
+                    {/* Skill gap detailed lists */}
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--r-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Skills Match & Gap Analysis
+                      </div>
+
+                      {resumeModalRanking.skillsGap?.matchedSkills?.length > 0 && (
+                        <div>
+                          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#34d399', marginBottom: '0.35rem' }}>
+                            ✓ Matched Skills ({resumeModalRanking.skillsGap.matchedSkills.length})
+                          </div>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                            {resumeModalRanking.skillsGap.matchedSkills.map(s => <SkillPill key={s} skill={s} matched={true} />)}
+                          </div>
+                        </div>
+                      )}
+
+                      {resumeModalRanking.skillsGap?.missingSkills?.length > 0 && (
+                        <div>
+                          <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#f87171', marginBottom: '0.35rem' }}>
+                            ✗ Missing Skills ({resumeModalRanking.skillsGap.missingSkills.length})
+                          </div>
+                          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+                            {resumeModalRanking.skillsGap.missingSkills.map(s => <SkillPill key={s} skill={s} matched={false} />)}
+                          </div>
+                        </div>
+                      )}
+
+                      {(!resumeModalRanking.skillsGap?.matchedSkills?.length && !resumeModalRanking.skillsGap?.missingSkills?.length) && (
+                        <div style={{ color: 'var(--r-muted)', fontSize: '0.8rem', fontStyle: 'italic' }}>
+                          No specific skill matches detected. Check candidate profile or job requirements.
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Action and status updates inside the modal */}
+                    <div style={{ marginTop: 'auto', borderTop: '1px solid var(--r-border)', paddingTop: '1rem' }}>
+                      <div style={{ display: 'flex', gap: '0.5rem', width: '100%' }}>
+                        <button
+                          disabled={updatingId === resumeModalCandidate.id}
+                          onClick={async () => {
+                            await handleStatusChange(resumeModalCandidate.id, 'shortlisted');
+                            setResumeModalCandidate(null);
+                          }}
+                          style={{ flex: 1, padding: '0.6rem', fontSize: '0.8rem', background: 'rgba(16,185,129,0.13)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }}
+                        >✓ Shortlist</button>
+                        <button
+                          disabled={updatingId === resumeModalCandidate.id}
+                          onClick={async () => {
+                            await handleStatusChange(resumeModalCandidate.id, 'rejected');
+                            setResumeModalCandidate(null);
+                          }}
+                          style={{ flex: 1, padding: '0.6rem', fontSize: '0.8rem', background: 'rgba(239,68,68,0.13)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)', borderRadius: '8px', cursor: 'pointer', fontWeight: 700 }}
+                        >✗ Reject</button>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div style={{ color: 'var(--r-muted)', fontSize: '0.8rem', textAlign: 'center', padding: '2rem 0' }}>
+                    No AI scoring details found for this candidate against this job.
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
