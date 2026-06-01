@@ -41,7 +41,7 @@ export default function Register({ onBack }) {
       if (!form.college.trim())  e.college  = 'College name is required';
       if (!form.course.trim())   e.course   = 'Course is required';
       if (!form.branch.trim())   e.branch   = 'Branch is required';
-      if (!form.year)            e.year     = 'Year of study is required';
+      if (!form.year)            e.year     = 'Year of passout is required';
     }
     if (step === 3) {
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) e.email = 'Enter a valid email';
@@ -198,14 +198,14 @@ export default function Register({ onBack }) {
               <Field label="BRANCH / SPECIALIZATION" required error={errors.branch}>
                 <input value={form.branch} onChange={e => set('branch', e.target.value)} placeholder="e.g., Computer Science" />
               </Field>
-              <Field label="YEAR OF STUDY" required error={errors.year}>
+              <Field label="YEAR OF PASSOUT" required error={errors.year}>
                 <select value={form.year} onChange={e => set('year', e.target.value)}>
-                  <option value="">Select year</option>
-                  <option value="1">1st Year</option>
-                  <option value="2">2nd Year</option>
-                  <option value="3">3rd Year</option>
-                  <option value="4">4th Year</option>
-                  <option value="5">5th Year</option>
+                  <option value="">Select year of passout</option>
+                  <option value="2024">2024</option>
+                  <option value="2025">2025</option>
+                  <option value="2026">2026</option>
+                  <option value="2027">2027</option>
+                  <option value="2028">2028</option>
                 </select>
               </Field>
             </div>
@@ -258,7 +258,7 @@ export default function Register({ onBack }) {
                 <ReviewRow label="College"  value={form.college} />
                 <ReviewRow label="Course"   value={form.course} />
                 <ReviewRow label="Branch"   value={form.branch} />
-                <ReviewRow label="Year"     value={`${form.year}${form.year === '1' ? 'st' : form.year === '2' ? 'nd' : form.year === '3' ? 'rd' : 'th'} Year`} />
+                 <ReviewRow label="Year of Passout"     value={form.year} />
               </ReviewSection>
               <ReviewSection title="Account">
                 <ReviewRow label="Email" value={form.email} />

@@ -11,7 +11,7 @@ const FIELDS = [
   { key: 'degree',         label: 'Degree',           type: 'text',  col: 1 },
   { key: 'branch',         label: 'Branch',           type: 'text',  col: 1 },
   { key: 'course',         label: 'Course',           type: 'text',  col: 1 },
-  { key: 'year',           label: 'Year',             type: 'text',  col: 1 },
+  { key: 'year',           label: 'Year of Passout',   type: 'text',  col: 1 },
   { key: 'cgpa',           label: 'CGPA',             type: 'text',  col: 1 },
   { key: 'address',        label: 'Address',          type: 'textarea', col: 2 },
   { key: 'skills',         label: 'Skills (comma-separated)', type: 'text', col: 2 },
@@ -118,7 +118,7 @@ export default function Profile() {
             {form.fullName || '—'}
           </div>
           <div style={{ color: 'var(--sd-muted)', fontSize: '0.875rem', marginTop: '2px' }}>
-            {form.college && `${form.college} • `}{form.branch || ''} {form.year ? `• Year ${form.year}` : ''}
+            {form.college && `${form.college} • `}{form.branch || ''} {form.year ? `• Passout ${form.year}` : ''}
           </div>
           <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
             {form.linkedinUrl && (

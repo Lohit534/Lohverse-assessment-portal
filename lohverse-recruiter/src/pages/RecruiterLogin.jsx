@@ -8,6 +8,7 @@ export default function RecruiterLogin() {
   const [form, setForm]   = useState({ email: '', password: '' });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -99,29 +100,61 @@ export default function RecruiterLogin() {
         )}
 
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-          {[
-            { key: 'email', label: 'Email Address', type: 'email', placeholder: 'recruiter@company.com' },
-            { key: 'password', label: 'Password', type: 'password', placeholder: '••••••••' },
-          ].map(f => (
-            <div key={f.key} style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
-              <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'rgba(200,185,230,0.7)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>{f.label}</label>
+          {/* Email Address */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'rgba(200,185,230,0.7)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Email Address</label>
+            <input
+              id="login-email"
+              type="email"
+              value={form.email}
+              onChange={e => setForm(p => ({ ...p, email: e.target.value }))}
+              placeholder="recruiter@company.com"
+              required
+              style={{
+                background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(167,139,250,0.2)',
+                borderRadius: 10, padding: '0.75rem 1rem', color: '#f1edff', fontSize: '0.95rem',
+                outline: 'none', fontFamily: 'inherit',
+              }}
+              onFocus={e => e.target.style.borderColor = '#7c3aed'}
+              onBlur={e => e.target.style.borderColor = 'rgba(167,139,250,0.2)'}
+            />
+          </div>
+
+          {/* Password */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'rgba(200,185,230,0.7)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Password</label>
+            <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
               <input
-                id={`login-${f.key}`}
-                type={f.type}
-                value={form[f.key]}
-                onChange={e => setForm(p => ({ ...p, [f.key]: e.target.value }))}
-                placeholder={f.placeholder}
+                id="login-password"
+                type={showPassword ? 'text' : 'password'}
+                value={form.password}
+                onChange={e => setForm(p => ({ ...p, password: e.target.value }))}
+                placeholder="••••••••"
                 required
                 style={{
+                  width: '100%',
                   background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(167,139,250,0.2)',
-                  borderRadius: 10, padding: '0.75rem 1rem', color: '#f1edff', fontSize: '0.95rem',
+                  borderRadius: 10, padding: '0.75rem 3rem 0.75rem 1rem', color: '#f1edff', fontSize: '0.95rem',
                   outline: 'none', fontFamily: 'inherit',
                 }}
                 onFocus={e => e.target.style.borderColor = '#7c3aed'}
                 onBlur={e => e.target.style.borderColor = 'rgba(167,139,250,0.2)'}
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                style={{
+                  position: 'absolute', right: '12px', background: 'none', border: 'none',
+                  color: 'rgba(200,185,230,0.5)', cursor: 'pointer', outline: 'none',
+                  fontSize: '1.25rem', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  padding: '4px', zIndex: 10
+                }}
+                title={showPassword ? 'Hide Password' : 'Show Password'}
+              >
+                {showPassword ? '👁️' : '🙈'}
+              </button>
             </div>
-          ))}
+          </div>
 
           <button
             type="submit"
