@@ -132,6 +132,17 @@ def ai_generate_assessment():
     total_marks = int(body.get('totalMarks', 100))
     job_id = body.get('jobId')
 
+    job_title = None
+    job_description = None
+    job_skills = None
+
+    if job_id:
+        job = Job.query.get(job_id)
+        if job:
+            job_title = job.title
+            job_description = job.description
+            job_skills = job.required_skills
+
     # Determine assessment type based on counts
     if mcq_count > 0 and coding_count > 0:
         a_type = 'combined'
@@ -156,7 +167,10 @@ def ai_generate_assessment():
 
     try:
         # Generate the questions
-        mcqs, codings = generate_ai_questions(topic, difficulty, mcq_count, coding_count)
+        mcqs, codings = generate_ai_questions(
+            topic, difficulty, mcq_count, coding_count,
+            job_title=job_title, job_description=job_description, job_skills=job_skills
+        )
 
         # Distribute marks
         total_q_count = len(mcqs) + len(codings)
@@ -533,22 +547,35 @@ def submit_assessment(assessment_id, attempt_id):
         elif submitted:
             wrong_count += 1
 
-    percentage = round((score / a.total_marks) * 100, 2) if a.total_marks > 0 else 0
-
-    attempt.answers       = json.dumps(answers)
-    attempt.score         = score
-    attempt.percentage    = percentage
+    attempt.mcq_score     = score
+    attempt.score         = score + (attempt.coding_score or 0)
+    attempt.percentage    = round((attempt.score / a.total_marks) * 100, 2) if a.total_marks > 0 else 0
     attempt.correct_count = correct_count
     attempt.wrong_count   = wrong_count
-    attempt.passed        = score >= a.passing_marks
+    attempt.passed        = attempt.score >= a.passing_marks
+    attempt.answers       = json.dumps(answers)
     attempt.status        = 'completed'
     attempt.completed_at  = datetime.utcnow()
 
     db.session.commit()
 
     # Calculate rank after commit
-    attempt.rank = _compute_rank(assessment_id, score)
+    attempt.rank = _compute_rank(assessment_id, attempt.score)
     db.session.commit()
+
+    # Auto-reject application on failure
+    if a.job_id:
+        from app.models import Application, Notification
+        app = Application.query.filter_by(student_id=user_id, job_id=a.job_id).first()
+        if app and not attempt.passed:
+            app.status = 'rejected'
+            notif = Notification(
+                user_id=user_id,
+                title="Application Status Update - Assessment",
+                message=f"Your application for the position of '{a.job.title}' at {a.job.company_name} has been rejected because you did not meet the passing criteria in the assessment."
+            )
+            db.session.add(notif)
+            db.session.commit()
 
     return jsonify({
         'message':  'Assessment submitted',

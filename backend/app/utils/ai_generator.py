@@ -128,6 +128,83 @@ LOCAL_MCQS = {
          "optionC": "Static Inheritance Structure",
          "optionD": "State Segregation Standard",
          "correctAnswer": "a", "marks": 5}
+    ],
+    "aptitude": [
+        {"questionText": "If a car travels at a constant speed of 60 km/h, how long will it take to travel 150 km?",
+         "optionA": "2 hours", "optionB": "2.5 hours", "optionC": "3 hours", "optionD": "1.5 hours",
+         "correctAnswer": "b", "marks": 5},
+        {"questionText": "Find the missing number in the sequence: 2, 6, 12, 20, 30, ?",
+         "optionA": "36", "optionB": "40", "optionC": "42", "optionD": "45",
+         "correctAnswer": "c", "marks": 5},
+        {"questionText": "A train 120 meters long passes a telegraph post in 6 seconds. What is the speed of the train in km/h?",
+         "optionA": "72 km/h", "optionB": "60 km/h", "optionC": "54 km/h", "optionD": "80 km/h",
+         "correctAnswer": "a", "marks": 5},
+        {"questionText": "Pointing to a photograph, a man said, 'I have no brother or sister but that man's father is my father's son.' Whose photograph was it?",
+         "optionA": "His own", "optionB": "His father's", "optionC": "His son's", "optionD": "His nephew's",
+         "correctAnswer": "c", "marks": 5},
+        {"questionText": "If 'white' is called 'black', 'black' is called 'red', 'red' is called 'blue', and 'blue' is called 'yellow', what is the color of human blood?",
+         "optionA": "Red", "optionB": "Black", "optionC": "Blue", "optionD": "Yellow",
+         "correctAnswer": "c", "marks": 5},
+        {"questionText": "A father is twice as old as his son. Twenty years ago, the age of the father was 12 times the age of the son. What is the father's current age?",
+         "optionA": "40 years", "optionB": "44 years", "optionC": "36 years", "optionD": "48 years",
+         "correctAnswer": "b", "marks": 5},
+        {"questionText": "In a group of cows and chickens, the number of legs is 14 more than twice the number of heads. How many cows are there?",
+         "optionA": "5", "optionB": "7", "optionC": "10", "optionD": "12",
+         "correctAnswer": "b", "marks": 5},
+        {"questionText": "What is the angle between the hour hand and the minute hand of a clock at 3:30?",
+         "optionA": "90 degrees", "optionB": "75 degrees", "optionC": "60 degrees", "optionD": "85 degrees",
+         "correctAnswer": "b", "marks": 5},
+        {"questionText": "If a metal sheet measuring 10m x 8m has 1m squares cut from all four corners, and the remaining sides are folded to make an open box, what is the volume of the box?",
+         "optionA": "48 cubic meters", "optionB": "80 cubic meters", "optionC": "64 cubic meters", "optionD": "52 cubic meters",
+         "correctAnswer": "a", "marks": 5},
+        {"questionText": "If 5 workers can build 5 tables in 5 days, how many days will it take 10 workers to build 10 tables?",
+         "optionA": "10 days", "optionB": "5 days", "optionC": "1 day", "optionD": "2.5 days",
+         "correctAnswer": "b", "marks": 5},
+        {"questionText": "A sum of money doubles itself in 8 years under simple interest. What is the annual interest rate?",
+         "optionA": "12.5%", "optionB": "10%", "optionC": "15%", "optionD": "8%",
+         "correctAnswer": "a", "marks": 5},
+        {"questionText": "If January 1st of a certain non-leap year is a Monday, what day of the week will January 1st of the next year be?",
+         "optionA": "Monday", "optionB": "Tuesday", "optionC": "Wednesday", "optionD": "Sunday",
+         "correctAnswer": "b", "marks": 5},
+        {"questionText": "Find the odd one out in this group: 27, 64, 125, 144, 216.",
+         "optionA": "27", "optionB": "64", "optionC": "144", "optionD": "216",
+         "correctAnswer": "c", "marks": 5},
+        {"questionText": "If the word 'CODER' is encrypted as 'DPEFS', how would 'HELLO' be encrypted?",
+         "optionA": "IFMMP", "optionB": "IGOMP", "optionC": "IGNMP", "optionD": "IFOMP",
+         "correctAnswer": "a", "marks": 5},
+        {"questionText": "A boat goes 8 km downstream in 40 minutes and returns upstream in 1 hour. What is the speed of the boat in still water?",
+         "optionA": "10 km/h", "optionB": "12 km/h", "optionC": "8 km/h", "optionD": "9 km/h",
+         "correctAnswer": "a", "marks": 5},
+        {"questionText": "A basket contains 3 red, 4 blue, and 5 green marbles. If one marble is drawn at random, what is the probability that it is green?",
+         "optionA": "5/12", "optionB": "1/3", "optionC": "1/4", "optionD": "5/7",
+         "correctAnswer": "a", "marks": 5},
+        {"questionText": "Three partners A, B, and C invest in a business. A invests 3 times as much as B, and B invests 2/3 of what C invests. If total profit is Rs. 6600, what is B's share?",
+         "optionA": "Rs. 1200", "optionB": "Rs. 1800", "optionC": "Rs. 3600", "optionD": "Rs. 1500",
+         "correctAnswer": "a", "marks": 5},
+        {"questionText": "In a code, '329' means 'you are sad', '952' means 'sad but active', and '358' means 'you but happy'. Which digit represents 'happy'?",
+         "optionA": "3", "optionB": "5", "optionC": "8", "optionD": "9",
+         "correctAnswer": "c", "marks": 5},
+        {"questionText": "An employee's salary is increased by 10% and then decreased by 10%. What is the net change in salary?",
+         "optionA": "No change", "optionB": "1% increase", "optionC": "1% decrease", "optionD": "2% decrease",
+         "correctAnswer": "c", "marks": 5},
+        {"questionText": "How many times do the hands of a clock overlap in a single day (24 hours)?",
+         "optionA": "24 times", "optionB": "22 times", "optionC": "12 times", "optionD": "44 times",
+         "correctAnswer": "b", "marks": 5},
+        {"questionText": "If A is taller than B, B is taller than C, and D is taller than A, who is the shortest?",
+         "optionA": "A", "optionB": "B", "optionC": "C", "optionD": "D",
+         "correctAnswer": "c", "marks": 5},
+        {"questionText": "A pump can fill a tank in 2 hours. Because of a leak, it took 2 hours and 20 minutes to fill. How long would the leak take to empty a full tank?",
+         "optionA": "14 hours", "optionB": "12 hours", "optionC": "16 hours", "optionD": "10 hours",
+         "correctAnswer": "a", "marks": 5},
+        {"questionText": "If A=1, B=2, C=3, and so on, what is the sum of letters in 'CAT'?",
+         "optionA": "24", "optionB": "20", "optionC": "26", "optionD": "28",
+         "correctAnswer": "a", "marks": 5},
+        {"questionText": "A trader marks his goods 20% above cost price and allows a 10% discount. What is his profit percentage?",
+         "optionA": "10%", "optionB": "8%", "optionC": "12%", "optionD": "5%",
+         "correctAnswer": "b", "marks": 5},
+        {"questionText": "If 6 boys or 8 girls can complete a project in 10 days, how long will it take 3 boys and 4 girls together to complete it?",
+         "optionA": "10 days", "optionB": "20 days", "optionC": "5 days", "optionD": "8 days",
+         "correctAnswer": "a", "marks": 5}
     ]
 }
 
@@ -199,30 +276,42 @@ LOCAL_CODINGS = [
 
 
 def generate_local_questions(topic, difficulty, mcq_count, coding_count):
-    """Fallback generator using internal dictionary fuzzy matching"""
+    """Fallback generator using internal dictionary fuzzy matching with 25 aptitude questions first"""
     topic_clean = str(topic).lower()
     
-    # 1. Gather relevant MCQs
-    pool = []
-    for k, questions in LOCAL_MCQS.items():
-        if k in topic_clean:
-            pool.extend(questions)
-            
-    # Default to general if pool is too small
-    if len(pool) < mcq_count:
-        pool.extend(LOCAL_MCQS["general"])
-    if len(pool) < mcq_count:
-        # Pull everything to satisfy the request
-        for qlist in LOCAL_MCQS.values():
-            for q in qlist:
-                if q not in pool:
-                    pool.append(q)
-                    
-    # Shuffle and pick
-    selected_mcqs = random.sample(pool, min(len(pool), mcq_count))
-    # Make deep copy
-    mcqs = [dict(q) for q in selected_mcqs]
+    # 1. Gather MCQs
+    selected_mcqs = []
     
+    # Identify how many aptitude and how many technical questions are needed
+    apt_count = min(mcq_count, 25)
+    tech_count = max(0, mcq_count - 25)
+    
+    # Pull aptitude questions
+    apt_pool = list(LOCAL_MCQS.get("aptitude", []))
+    if len(apt_pool) < apt_count:
+        apt_pool.extend(LOCAL_MCQS.get("general", []))
+    selected_apt = random.sample(apt_pool, min(len(apt_pool), apt_count))
+    selected_mcqs.extend([dict(q) for q in selected_apt])
+    
+    # Pull technical questions if needed
+    if tech_count > 0:
+        pool = []
+        for k, questions in LOCAL_MCQS.items():
+            if k != "aptitude" and k in topic_clean:
+                pool.extend(questions)
+        # Default to general if pool is too small
+        if len(pool) < tech_count:
+            pool.extend(LOCAL_MCQS.get("general", []))
+        if len(pool) < tech_count:
+            # Pull everything except aptitude to satisfy request
+            for k, qlist in LOCAL_MCQS.items():
+                if k != "aptitude":
+                    for q in qlist:
+                        if q not in pool:
+                            pool.append(q)
+        selected_tech = random.sample(pool, min(len(pool), tech_count))
+        selected_mcqs.extend([dict(q) for q in selected_tech])
+        
     # 2. Gather relevant Codings
     coding_pool = list(LOCAL_CODINGS)
     selected_codings = random.sample(coding_pool, min(len(coding_pool), coding_count))
@@ -232,65 +321,13 @@ def generate_local_questions(topic, difficulty, mcq_count, coding_count):
     for c in codings:
         c["difficulty"] = difficulty
         
-    return mcqs, codings
+    return selected_mcqs[:mcq_count], codings[:coding_count]
 
 
-def generate_ai_questions(topic, difficulty, mcq_count, coding_count):
-    """
-    Attempts to call Gemini API if key is present, otherwise falls back to local.
-    """
-    api_key = os.environ.get("GEMINI_API_KEY")
-    if not api_key:
-        print("GEMINI_API_KEY not found in environment. Using robust local fallback generator.")
-        return generate_local_questions(topic, difficulty, mcq_count, coding_count)
-        
+def _call_gemini(prompt, api_key):
+    """Utility to post requests to Gemini API and parse JSON response"""
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={api_key}"
     headers = {"Content-Type": "application/json"}
-    
-    prompt = f"""
-    You are an expert technical interviewer. Generate an assessment dataset in strict JSON format based on:
-    Topic/Role: {topic}
-    Difficulty: {difficulty}
-    MCQ Questions Count: {mcq_count}
-    Coding Challenges Count: {coding_count}
-    
-    The response MUST be a raw JSON object matching this schema exactly (do not wrap in ```json markers, return only the raw string):
-    {{
-      "mcqs": [
-        {{
-          "questionText": "...",
-          "optionA": "...",
-          "optionB": "...",
-          "optionC": "...",
-          "optionD": "...",
-          "correctAnswer": "a", // must be a, b, c, or d
-          "marks": 5
-        }}
-      ],
-      "coding": [
-        {{
-          "title": "...",
-          "description": "Detailed description in markdown format...",
-          "difficulty": "Easy", // Easy | Medium | Hard
-          "inputFormat": "...",
-          "outputFormat": "...",
-          "constraints": "...",
-          "sampleInput": "...",
-          "sampleOutput": "...",
-          "testCases": [ // Minimum 3 test cases. The inputs and outputs must be standard text representations.
-            {{ "input": "...", "output": "...", "is_hidden": false }},
-            {{ "input": "...", "output": "...", "is_hidden": true }}
-          ],
-          "templatePython": "def solve(x):\n    pass",
-          "templateJavascript": "function solve(x) {{\n}}",
-          "templateCpp": "int solve(int x) {{\n}}",
-          "templateJava": "public class Solution {{\n}}",
-          "marks": 20
-        }}
-      ]
-    }}
-    """
-    
     body = {
         "contents": [{
             "parts": [{"text": prompt}]
@@ -299,23 +336,159 @@ def generate_ai_questions(topic, difficulty, mcq_count, coding_count):
             "responseMimeType": "application/json"
         }
     }
-    
     try:
-        res = requests.post(url, json=body, headers=headers, timeout=30)
+        res = requests.post(url, json=body, headers=headers, timeout=40)
         if res.status_code == 200:
             data = res.json()
             text_response = data["candidates"][0]["content"]["parts"][0]["text"].strip()
-            parsed = json.loads(text_response)
-            
-            mcqs = parsed.get("mcqs", [])
-            codings = parsed.get("coding", [])
-            
-            # Keep counts correct
-            if len(mcqs) > 0 and len(codings) > 0:
-                return mcqs[:mcq_count], codings[:coding_count]
+            return json.loads(text_response)
         else:
-            print(f"Gemini API returned status {res.status_code}. Falling back.")
+            print(f"Gemini API returned status {res.status_code}: {res.text}")
     except Exception as e:
-        print(f"Error calling Gemini API: {e}. Falling back.")
+        print(f"Error calling Gemini API: {e}")
+    return None
+
+
+def generate_ai_questions(topic, difficulty, mcq_count, coding_count, job_title=None, job_description=None, job_skills=None):
+    """
+    Attempts to call Gemini API using a batched approach (max 25 questions per prompt)
+    to handle up to 150 questions without truncations or timeouts.
+    """
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if not api_key:
+        print("GEMINI_API_KEY not found in environment. Using robust local fallback generator.")
+        return generate_local_questions(topic, difficulty, mcq_count, coding_count)
+
+    all_mcqs = []
+    all_codings = []
+
+    # 1. GENERATE APTITUDE & LOGICAL REASONING MCQS
+    apt_needed = min(mcq_count, 25)
+    if apt_needed > 0:
+        apt_prompt = f"""
+        You are an expert technical interviewer. Generate a dataset of General Aptitude and Logical Reasoning multiple-choice questions in strict JSON format.
+        Difficulty Level: {difficulty}
+        Questions Count: {apt_needed}
         
-    return generate_local_questions(topic, difficulty, mcq_count, coding_count)
+        The response MUST be a raw JSON object matching this schema exactly (do not wrap in markdown tags):
+        {{
+          "mcqs": [
+            {{
+              "questionText": "A clear, realistic math, logic, verbal, calendar or blood relation reasoning question...",
+              "optionA": "...",
+              "optionB": "...",
+              "optionC": "...",
+              "optionD": "...",
+              "correctAnswer": "a", // must be a, b, c, or d in lowercase
+              "marks": 5
+            }}
+          ]
+        }}
+        """
+        res_json = _call_gemini(apt_prompt, api_key)
+        if res_json and "mcqs" in res_json:
+            all_mcqs.extend(res_json["mcqs"])
+        else:
+            print("Failed to generate Aptitude MCQs using AI. Falling back.")
+            return generate_local_questions(topic, difficulty, mcq_count, coding_count)
+
+    # 2. GENERATE JOB ROLE SPECIFIC TECHNICAL MCQS
+    tech_needed = max(0, mcq_count - 25)
+    already_generated_questions = []
+
+    # Batch tech MCQs in chunks of 25
+    tech_batches = []
+    while tech_needed > 0:
+        chunk = min(tech_needed, 25)
+        tech_batches.append(chunk)
+        tech_needed -= chunk
+
+    for i, batch_size in enumerate(tech_batches):
+        avoid_instr = ""
+        if already_generated_questions:
+            avoid_instr = f"Do NOT generate the following questions or exact variations of them to ensure variety: {json.dumps(already_generated_questions[:40])}"
+
+        tech_prompt = f"""
+        You are an expert technical interviewer. Generate a dataset of technical role-specific multiple-choice questions in strict JSON format based on:
+        Topic/Keywords: {topic}
+        Job Title: {job_title or 'N/A'}
+        Job Description: {job_description or 'N/A'}
+        Job Required Skills: {job_skills or 'N/A'}
+        Difficulty Level: {difficulty}
+        Questions Count: {batch_size}
+        
+        {avoid_instr}
+        
+        The questions MUST be highly tailored to the specific job role and description above. Avoid generic questions.
+        
+        The response MUST be a raw JSON object matching this schema exactly (do not wrap in markdown tags):
+        {{
+          "mcqs": [
+            {{
+              "questionText": "...",
+              "optionA": "...",
+              "optionB": "...",
+              "optionC": "...",
+              "optionD": "...",
+              "correctAnswer": "a", // must be a, b, c, or d in lowercase
+              "marks": 5
+            }}
+          ]
+        }}
+        """
+        res_json = _call_gemini(tech_prompt, api_key)
+        if res_json and "mcqs" in res_json:
+            batch_qs = res_json["mcqs"]
+            all_mcqs.extend(batch_qs)
+            already_generated_questions.extend([q.get("questionText", "") for q in batch_qs])
+        else:
+            print(f"Failed to generate Technical MCQ batch {i+1} using AI. Falling back.")
+            return generate_local_questions(topic, difficulty, mcq_count, coding_count)
+
+    # 3. GENERATE CODING CHALLENGES
+    if coding_count > 0:
+        coding_prompt = f"""
+        You are an expert coding challenge creator. Generate role-specific programming/coding challenges in strict JSON format based on:
+        Topic/Keywords: {topic}
+        Job Title: {job_title or 'N/A'}
+        Job Description: {job_description or 'N/A'}
+        Job Required Skills: {job_skills or 'N/A'}
+        Difficulty Level: {difficulty}
+        Coding Challenges Count: {coding_count}
+        
+        The challenges must be highly tailored to the specific job role and description above.
+        
+        The response MUST be a raw JSON object matching this schema exactly (do not wrap in markdown tags):
+        {{
+          "coding": [
+            {{
+              "title": "...",
+              "description": "Detailed description in markdown format...",
+              "difficulty": "{difficulty}", // Easy | Medium | Hard
+              "inputFormat": "...",
+              "outputFormat": "...",
+              "constraints": "...",
+              "sampleInput": "...",
+              "sampleOutput": "...",
+              "testCases": [ // Minimum 3 test cases. The inputs and outputs must be standard text representations.
+                {{ "input": "...", "output": "...", "is_hidden": false }},
+                {{ "input": "...", "output": "...", "is_hidden": true }}
+              ],
+              "templatePython": "def solve(x):\n    pass",
+              "templateJavascript": "function solve(x) {{\n}}",
+              "templateCpp": "int solve(int x) {{\n}}",
+              "templateJava": "public class Solution {{\n}}",
+              "marks": 20
+            }}
+          ]
+        }}
+        """
+        res_json = _call_gemini(coding_prompt, api_key)
+        if res_json and "coding" in res_json:
+            all_codings.extend(res_json["coding"])
+        else:
+            print("Failed to generate Coding challenges using AI. Falling back.")
+            return generate_local_questions(topic, difficulty, mcq_count, coding_count)
+
+    # Keep counts exact
+    return all_mcqs[:mcq_count], all_codings[:coding_count]

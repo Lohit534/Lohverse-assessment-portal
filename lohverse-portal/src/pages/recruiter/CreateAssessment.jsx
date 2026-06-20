@@ -111,9 +111,9 @@ export default function CreateAssessment() {
     if (!jobId) return;
     const selected = jobs.find(j => j.id === parseInt(jobId));
     if (selected) {
-      setAI('title', `AI Assessment - ${selected.title}`);
+      setAI('title', `Assessment - ${selected.title}`);
       setAI('topic', `${selected.title} role, skills: ${selected.requiredSkills || ''}`);
-      setAI('description', `Automated AI test covering core skills required for the ${selected.title} position at ${selected.companyName}.`);
+      setAI('description', `Automated test covering core skills required for the ${selected.title} position at ${selected.companyName}.`);
     }
   };
 
@@ -548,12 +548,12 @@ export default function CreateAssessment() {
 
               <div className="rp-field">
                 <label>MCQ Count</label>
-                <input type="number" min={0} max={25} value={aiForm.mcqCount} onChange={e => setAI('mcqCount', parseInt(e.target.value) || 0)} />
+                <input type="number" min={0} max={150} value={aiForm.mcqCount} onChange={e => setAI('mcqCount', parseInt(e.target.value) || 0)} />
               </div>
 
               <div className="rp-field">
                 <label>Coding Challenges Count</label>
-                <input type="number" min={0} max={5} value={aiForm.codingCount} onChange={e => setAI('codingCount', parseInt(e.target.value) || 0)} />
+                <input type="number" min={0} max={15} value={aiForm.codingCount} onChange={e => setAI('codingCount', parseInt(e.target.value) || 0)} />
               </div>
 
               <div className="rp-field">

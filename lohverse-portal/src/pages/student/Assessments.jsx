@@ -46,8 +46,8 @@ function AssessmentCard({ a, onStart }) {
             {type.icon} {type.label}
           </span>
           {a.attempted && (
-            <span className={`sd-badge ${passed ? 'sd-badge-green' : 'sd-badge-red'}`}>
-              {passed ? '✓ Passed' : '✗ Failed'} — {a.attemptScore} pts
+            <span className="sd-badge sd-badge-green">
+              ✓ Completed
             </span>
           )}
         </div>
@@ -58,26 +58,8 @@ function AssessmentCard({ a, onStart }) {
         <span className="sd-badge sd-badge-purple">⏱ {a.durationMins} mins</span>
         {a.mcqCount > 0   && <span className="sd-badge sd-badge-blue">📝 {a.mcqCount} MCQ</span>}
         {a.codingCount > 0 && <span className="sd-badge sd-badge-green">💻 {a.codingCount} Coding</span>}
-        <span className="sd-badge sd-badge-yellow">🎯 Pass: {a.passingMarks}/{a.totalMarks}</span>
         {a.isExpired && <span className="sd-badge sd-badge-red" style={{ background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)' }}>⚠️ Expired</span>}
       </div>
-
-      {/* Score progress bar if attempted */}
-      {a.attempted && (
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--sd-muted)', marginBottom: '0.3rem' }}>
-            <span>Your Score</span>
-            <span>{Math.round((a.attemptScore / a.totalMarks) * 100)}%</span>
-          </div>
-          <div style={{ height: 5, background: 'rgba(255,255,255,0.07)', borderRadius: 4, overflow: 'hidden' }}>
-            <div style={{
-              height: '100%', borderRadius: 4, transition: 'width 0.6s ease',
-              width: `${Math.min(100, (a.attemptScore / a.totalMarks) * 100)}%`,
-              background: passed ? 'linear-gradient(90deg,#10b981,#34d399)' : 'linear-gradient(90deg,#ef4444,#f87171)',
-            }} />
-          </div>
-        </div>
-      )}
 
       {/* Action */}
       <div style={{ display: 'flex', justifyContent: 'flex-end' }}>

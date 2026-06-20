@@ -343,47 +343,22 @@ export default function TakeAssessment() {
   if (phase === 'result') return (
     <div className="sd-page">
       <div className="sd-page-header">
-        <h1 className="sd-page-title">🏆 Assessment Result</h1>
+        <h1 className="sd-page-title">🏆 Assessment Submitted</h1>
         <p className="sd-page-sub">{assessment?.title}</p>
       </div>
 
-      <div className="sd-card" style={{ textAlign: 'center', padding: '2.5rem', marginBottom: '1.5rem' }}>
-        <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>
-          {result?.passed ? '🎉' : '😔'}
+      <div className="sd-card" style={{ textAlign: 'center', padding: '3.5rem', marginBottom: '1.5rem' }}>
+        <div style={{ fontSize: '5rem', marginBottom: '1.5rem' }}>🎉</div>
+        <div style={{ fontSize: '2rem', fontWeight: 800, color: 'var(--sd-text)', marginBottom: '0.75rem' }}>
+          Assessment Completed Successfully!
         </div>
-        <div style={{ fontSize: '3rem', fontWeight: 900, color: result?.passed ? '#34d399' : '#f87171', marginBottom: '0.5rem' }}>
-          {result?.score} / {assessment?.totalMarks}
-        </div>
-        <div style={{ fontSize: '1.1rem', color: 'var(--sd-muted)', marginBottom: '1rem' }}>
-          {result?.percentage}% · {result?.passed ? 'PASSED ✓' : 'FAILED ✗'}
-        </div>
-        <span className={`sd-badge ${result?.passed ? 'sd-badge-green' : 'sd-badge-red'}`} style={{ fontSize: '0.9rem', padding: '0.4rem 1rem' }}>
-          {result?.passed ? 'Congratulations! You passed.' : 'Better luck next time.'}
-        </span>
+        <p style={{ color: 'var(--sd-muted)', fontSize: '1rem', lineHeight: 1.6, maxWidth: '600px', margin: '0 auto 1.5rem auto' }}>
+          Your responses have been recorded and sent to the recruitment team for evaluation. You will be notified of the updates once the evaluation is finalized.
+        </p>
       </div>
 
-      <div className="sd-grid-3" style={{ marginBottom: '1.5rem' }}>
-        {[
-          { label: 'Total Score', value: `${result?.score}/${assessment?.totalMarks}`, icon: '🎯', color: 'purple' },
-          { label: 'MCQ Score',  value: result?.mcqScore,  icon: '📝', color: 'blue' },
-          { label: 'Coding Score',value: result?.codingScore, icon: '💻', color: 'green' },
-          { label: 'Global Rank', value: `#${result?.rank}`,    icon: '🏅', color: 'yellow' },
-          { label: 'Percentage',  value: `${result?.percentage}%`, icon: '📊', color: 'blue' },
-          { label: 'Status',      value: result?.passed ? 'Pass' : 'Fail', icon: '📋', color: result?.passed ? 'green' : 'red' },
-        ].map(s => (
-          <div key={s.label} className="sd-card" style={{ textAlign: 'center' }}>
-            <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>{s.icon}</div>
-            <div style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--sd-text)' }}>{s.value ?? '—'}</div>
-            <div style={{ fontSize: '0.75rem', color: 'var(--sd-muted)', marginTop: '2px' }}>{s.label}</div>
-          </div>
-        ))}
-      </div>
-
-      <div style={{ display: 'flex', gap: '0.75rem' }}>
-        <button className="sd-btn sd-btn-primary" onClick={() => navigate('/dashboard/results')}>
-          📊 View All Results
-        </button>
-        <button className="sd-btn sd-btn-outline" onClick={() => navigate('/dashboard/assessments')}>
+      <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+        <button className="sd-btn sd-btn-primary" onClick={() => navigate('/dashboard/assessments')} style={{ minWidth: 200 }}>
           ← Back to Assessments
         </button>
       </div>
@@ -396,23 +371,19 @@ export default function TakeAssessment() {
   const totalMCQs = questions.filter(x => !x.isCoding).length;
 
   return (
-    <div className="sd-page" style={{ maxWidth: q?.isCoding ? '100%' : '1100px', width: '100%' }}>
-      {/* Header with timer */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+    <div className="sd-page" style={{ maxWidth: '100%', width: '100%', padding: '1rem 2rem' }}>
+      {/* Title Header */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
         <div>
-          <h1 className="sd-page-title" style={{ fontSize: '1.25rem' }}>{assessment?.title}</h1>
-          <p className="sd-page-sub">
+          <h1 className="sd-page-title" style={{ fontSize: '1.25rem', margin: 0 }}>{assessment?.title}</h1>
+          <p className="sd-page-sub" style={{ margin: '4px 0 0 0' }}>
             {q?.isCoding ? `Coding Challenge [${q.difficulty}]` : `MCQ question: ${answeredMCQs} of ${totalMCQs} answered`}
           </p>
         </div>
-        <Timer
-          totalSeconds={assessment.durationMins * 60}
-          onExpire={() => handleSubmitAssessment(true)}
-        />
       </div>
 
       {/* Progress bar */}
-      <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 4, marginBottom: '1rem', overflow: 'hidden' }}>
+      <div style={{ height: 4, background: 'rgba(255,255,255,0.06)', borderRadius: 4, marginBottom: '1.25rem', overflow: 'hidden' }}>
         <div style={{
           height: '100%', background: 'linear-gradient(90deg,#7c3aed,#a78bfa)',
           width: `${((currentQ + 1) / questions.length) * 100}%`,
@@ -420,302 +391,246 @@ export default function TakeAssessment() {
         }} />
       </div>
 
-      {/* Question Grid Navigator */}
-      <div className="sd-card" style={{ marginBottom: '1rem', padding: '1rem' }}>
-        <div className="sd-card-title" style={{ fontSize: '0.85rem', marginBottom: '0.5rem' }}>Question Navigator</div>
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-          {questions.map((item, i) => {
-            const isAnswered = item.isCoding 
-              ? codeDrafts[item.id]?.code && codeDrafts[item.id].code.length > 50
-              : answers[String(item.id)];
-            
-            return (
-              <button
-                key={i}
-                onClick={() => {
-                  setCurrentQ(i);
-                  // Reset output logs for coding when switching questions
-                  setCodeOutput(null);
-                  setTestCaseResults(null);
-                }}
-                style={{
-                  width: 36, height: 36, borderRadius: '8px', border: 'none',
-                  cursor: 'pointer', fontWeight: 600, fontSize: '0.8rem',
-                  background: isAnswered
-                    ? 'rgba(16,185,129,0.3)' : i === currentQ
-                      ? 'rgba(124,58,237,0.4)' : 'rgba(255,255,255,0.07)',
-                  color: i === currentQ ? '#a78bfa' : isAnswered ? '#34d399' : 'var(--sd-muted)',
-                  outline: i === currentQ ? '2px solid #7c3aed' : 'none',
-                }}
-              >
-                {item.isCoding ? `💻${i+1}` : i + 1}
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Split pane for coding vs MCQ */}
-      {q?.isCoding ? (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.25rem', height: 'calc(100vh - 280px)', minHeight: '600px' }}>
-          
-          {/* LEFT PANEL: Challenge Description */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', overflowY: 'auto', paddingRight: '0.25rem' }}>
-            <div className="sd-card" style={{ flex: 1 }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                <span className={`sd-badge ${q.difficulty === 'Easy' ? 'sd-badge-green' : q.difficulty === 'Hard' ? 'sd-badge-red' : 'sd-badge-purple'}`}>
-                  {q.difficulty}
-                </span>
-                <span style={{ fontSize: '0.9rem', color: 'var(--sd-accent-light)', fontWeight: 700 }}>{q.marks} Marks</span>
-              </div>
+      {/* Grid Layout: Main Workspace on the left, Sidebar on the right */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: '1.5rem', alignItems: 'start' }}>
+        
+        {/* LEFT COLUMN: MCQ or Coding Questions */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          {q?.isCoding ? (
+            /* CODING SPLIT VIEW */
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '1rem', height: 'calc(100vh - 240px)', minHeight: '550px' }}>
               
-              <h2 style={{ fontSize: '1.3rem', fontWeight: 800, marginBottom: '0.75rem', color: 'var(--sd-text)' }}>{q.title}</h2>
-              
-              <div style={{ color: 'var(--sd-text)', fontSize: '0.925rem', lineHeight: 1.7, whiteSpace: 'pre-line', marginBottom: '1.5rem' }}>
-                {q.description}
-              </div>
-
-              {q.constraints && (
-                <div style={{ marginBottom: '1rem' }}>
-                  <h4 style={{ fontSize: '0.85rem', color: 'var(--sd-accent-light)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Constraints</h4>
-                  <pre style={{ background: 'rgba(0,0,0,0.2)', padding: '0.5rem', borderRadius: 6, fontSize: '0.85rem' }}>{q.constraints}</pre>
+              {/* Description */}
+              <div className="sd-card" style={{ overflowY: 'auto', padding: '1rem', display: 'flex', flexDirection: 'column', height: '100%' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                  <span className={`sd-badge ${q.difficulty === 'Easy' ? 'sd-badge-green' : q.difficulty === 'Hard' ? 'sd-badge-red' : 'sd-badge-purple'}`}>
+                    {q.difficulty}
+                  </span>
+                  <span style={{ fontSize: '0.85rem', color: 'var(--sd-accent-light)', fontWeight: 700 }}>{q.marks} Marks</span>
                 </div>
-              )}
-
-              {q.input_format && (
-                <div style={{ marginBottom: '1rem' }}>
-                  <h4 style={{ fontSize: '0.85rem', color: 'var(--sd-accent-light)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Input Format</h4>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--sd-muted)' }}>{q.input_format}</p>
+                
+                <h2 style={{ fontSize: '1.15rem', fontWeight: 800, marginBottom: '0.5rem', color: 'var(--sd-text)' }}>{q.title}</h2>
+                <div style={{ color: 'var(--sd-text)', fontSize: '0.875rem', lineHeight: 1.6, whiteSpace: 'pre-line', marginBottom: '1rem', flex: 1 }}>
+                  {q.description}
                 </div>
-              )}
 
-              {q.output_format && (
-                <div style={{ marginBottom: '1.5rem' }}>
-                  <h4 style={{ fontSize: '0.85rem', color: 'var(--sd-accent-light)', textTransform: 'uppercase', marginBottom: '0.25rem' }}>Output Format</h4>
-                  <p style={{ fontSize: '0.875rem', color: 'var(--sd-muted)' }}>{q.output_format}</p>
-                </div>
-              )}
-
-              {q.sampleInput && (
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
-                  <div>
-                    <h4 style={{ fontSize: '0.8rem', color: 'var(--sd-muted)', marginBottom: '0.25rem' }}>Sample Input</h4>
-                    <pre style={{ background: 'rgba(0,0,0,0.3)', padding: '0.6rem', borderRadius: 8, fontSize: '0.8rem', fontFamily: 'monospace' }}>{q.sampleInput}</pre>
+                {q.constraints && (
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <h4 style={{ fontSize: '0.75rem', color: 'var(--sd-accent-light)', textTransform: 'uppercase', marginBottom: '0.2' }}>Constraints</h4>
+                    <pre style={{ background: 'rgba(0,0,0,0.2)', padding: '0.4rem', borderRadius: 6, fontSize: '0.75rem', fontFamily: 'monospace' }}>{q.constraints}</pre>
                   </div>
-                  <div>
-                    <h4 style={{ fontSize: '0.8rem', color: 'var(--sd-muted)', marginBottom: '0.25rem' }}>Sample Output</h4>
-                    <pre style={{ background: 'rgba(0,0,0,0.3)', padding: '0.6rem', borderRadius: 8, fontSize: '0.8rem', fontFamily: 'monospace' }}>{q.sampleOutput}</pre>
-                  </div>
-                </div>
-              )}
-            </div>
+                )}
 
-          </div>
-
-          {/* RIGHT PANEL: Monaco Code Editor */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', overflowY: 'auto', paddingRight: '0.25rem' }}>
-            <div className="sd-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0.75rem', overflow: 'hidden', minHeight: '400px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-                <span style={{ fontSize: '0.85rem', color: 'var(--sd-muted)', fontWeight: 600 }}>SELECT ENVIRONMENT</span>
-                <select
-                  value={codeDrafts[q.id]?.language || 'python'}
-                  onChange={(e) => handleLanguageChange(e.target.value)}
-                  style={{
-                    background: 'var(--sd-card)', color: 'var(--sd-text)', border: '1px solid var(--sd-border)',
-                    padding: '0.35rem 1rem', borderRadius: 8, fontWeight: 600, fontSize: '0.85rem', cursor: 'pointer'
-                  }}
-                >
-                  <option value="python" style={{ background: 'var(--sd-sidebar-bg)', color: 'var(--sd-text)' }}>Python 3 (3.8.1)</option>
-                  <option value="javascript" style={{ background: 'var(--sd-sidebar-bg)', color: 'var(--sd-text)' }}>JavaScript / Node.js</option>
-                  <option value="cpp" style={{ background: 'var(--sd-sidebar-bg)', color: 'var(--sd-text)' }}>C++ (GCC 9.2)</option>
-                  <option value="java" style={{ background: 'var(--sd-sidebar-bg)', color: 'var(--sd-text)' }}>Java (OpenJDK 13)</option>
-                </select>
-              </div>
-
-              {/* Editor wrapper */}
-              <div style={{ flex: 1, background: '#1e1e1e', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--sd-border)' }}>
-                <Editor
-                  height="100%"
-                  theme="vs-dark"
-                  language={codeDrafts[q.id]?.language === 'javascript' ? 'javascript' : codeDrafts[q.id]?.language === 'cpp' ? 'cpp' : codeDrafts[q.id]?.language === 'java' ? 'java' : 'python'}
-                  value={codeDrafts[q.id]?.code || ''}
-                  onChange={handleCodeChange}
-                  options={{
-                    fontSize: 14,
-                    minimap: { enabled: false },
-                    automaticLayout: true,
-                    scrollbar: { vertical: 'visible' },
-                    cursorBlinking: 'smooth',
-                    cursorSmoothCaretAnimation: 'on'
-                  }}
-                />
-              </div>
-
-              {/* Code execution console triggers */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.75rem' }}>
-                <button
-                  className="sd-btn sd-btn-outline"
-                  onClick={handleRunCode}
-                  disabled={runningCode || submittingCode}
-                  style={{ padding: '0.6rem 1.2rem', fontSize: '0.85rem' }}
-                >
-                  {runningCode ? '⌛ Compiling…' : '▶ Run Custom Input'}
-                </button>
-                <button
-                  className="sd-btn sd-btn-primary"
-                  onClick={handleSubmitCode}
-                  disabled={runningCode || submittingCode}
-                  style={{ padding: '0.6rem 1.5rem', fontSize: '0.85rem', background: 'linear-gradient(135deg,#7c3aed,#5b21b6)' }}
-                >
-                  {submittingCode ? '⌛ Evaluating…' : '🚀 Submit Code Challenge'}
-                </button>
-              </div>
-            </div>
-
-            {/* Custom Input / Compilation Output box */}
-            <div className="sd-card" style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <div style={{ display: 'flex', gap: '1rem' }}>
-                <div style={{ flex: 1 }}>
-                  <div className="sd-card-title" style={{ fontSize: '0.85rem', marginBottom: '0.25rem' }}>Custom Stdin Input</div>
-                  <textarea
-                    value={customInput}
-                    onChange={(e) => setCustomInput(e.target.value)}
-                    placeholder="Enter command line inputs here..."
-                    style={{
-                      width: '100%', height: '60px', background: 'rgba(255,255,255,0.03)', border: '1px solid var(--sd-border)',
-                      borderRadius: 8, padding: '0.4rem 0.6rem', color: 'var(--sd-text)', fontSize: '0.8rem', fontFamily: 'monospace', resize: 'none'
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Compilation logs */}
-              {codeOutput && (
-                <div style={{ background: 'rgba(0,0,0,0.35)', padding: '0.75rem', borderRadius: 8, borderLeft: `4px solid ${codeOutput.success ? '#10b981' : '#ef4444'}` }}>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
-                    <strong style={{ fontSize: '0.85rem', color: codeOutput.success ? '#34d399' : '#f87171' }}>
-                      Status: {codeOutput.status}
-                    </strong>
-                    {codeOutput.time_ms && <span style={{ fontSize: '0.75rem', color: 'var(--sd-muted)' }}>Runtime: {codeOutput.time_ms}ms</span>}
-                  </div>
-                  {codeOutput.stdout && (
+                {q.sampleInput && (
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
                     <div>
-                      <div style={{ fontSize: '0.75rem', color: 'var(--sd-muted)' }}>Stdout:</div>
-                      <pre style={{ fontSize: '0.8rem', color: 'var(--sd-text)', whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>{codeOutput.stdout}</pre>
+                      <h4 style={{ fontSize: '0.75rem', color: 'var(--sd-muted)', marginBottom: '0.2rem' }}>Sample Input</h4>
+                      <pre style={{ background: 'rgba(0,0,0,0.3)', padding: '0.5rem', borderRadius: 6, fontSize: '0.75rem', fontFamily: 'monospace' }}>{q.sampleInput}</pre>
                     </div>
-                  )}
-                  {codeOutput.stderr && (
                     <div>
-                      <div style={{ fontSize: '0.75rem', color: '#f87171' }}>Stderr:</div>
-                      <pre style={{ fontSize: '0.8rem', color: '#f87171', whiteSpace: 'pre-wrap', fontFamily: 'monospace' }}>{codeOutput.stderr}</pre>
+                      <h4 style={{ fontSize: '0.75rem', color: 'var(--sd-muted)', marginBottom: '0.2rem' }}>Sample Output</h4>
+                      <pre style={{ background: 'rgba(0,0,0,0.3)', padding: '0.5rem', borderRadius: 6, fontSize: '0.75rem', fontFamily: 'monospace' }}>{q.sampleOutput}</pre>
                     </div>
-                  )}
-                </div>
-              )}
-
-              {/* Test Cases Score Details */}
-              {testCaseResults && (
-                <div style={{ marginTop: '0.5rem' }}>
-                  <strong style={{ fontSize: '0.85rem', color: 'var(--sd-accent-light)', display: 'block', marginBottom: '0.25rem' }}>Secret Test Cases Evaluation:</strong>
-                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
-                    {testCaseResults.testTestCaseResults?.map((tc, index) => (
-                      <span
-                        key={index}
-                        title={tc.status}
-                        style={{
-                          fontSize: '0.75rem', padding: '0.2rem 0.5rem', borderRadius: '4px', fontWeight: 'bold',
-                          background: tc.passed ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)',
-                          color: tc.passed ? '#34d399' : '#f87171', border: `1px solid ${tc.passed ? '#10b981' : '#ef4444'}`
-                        }}
-                      >
-                        Case {index + 1}: {tc.passed ? 'PASS ✓' : 'FAIL ✗'} {tc.isHidden ? '(Secret)' : ''}
-                      </span>
-                    ))}
                   </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      ) : (
-        /* MCQ QUESTION VIEW */
-        q && (
-          <div className="sd-card" style={{ marginBottom: '1.5rem' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
-              <span style={{ fontSize: '0.8rem', color: 'var(--sd-muted)', fontWeight: 600 }}>
-                QUESTION {currentQ + 1} OF {questions.length}
-              </span>
-              <span className="sd-badge sd-badge-purple">{q.marks} mark{q.marks !== 1 ? 's' : ''}</span>
-            </div>
+                )}
+              </div>
 
-            <p style={{ fontSize: '1.05rem', fontWeight: 600, lineHeight: 1.6, marginBottom: '1.5rem', color: 'var(--sd-text)' }}>
-              {q.questionText}
-            </p>
+              {/* Editor & Execution Panel */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', height: '100%' }}>
+                <div className="sd-card" style={{ flex: 1, display: 'flex', flexDirection: 'column', padding: '0.75rem', overflow: 'hidden' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                     <span style={{ fontSize: '0.75rem', color: 'var(--sd-muted)', fontWeight: 600 }}>ENVIRONMENT</span>
+                     <select
+                       value={codeDrafts[q.id]?.language || 'python'}
+                       onChange={(e) => handleLanguageChange(e.target.value)}
+                       style={{
+                         background: 'var(--sd-card)', color: 'var(--sd-text)', border: '1px solid var(--sd-border)',
+                         padding: '0.25rem 0.5rem', borderRadius: 6, fontSize: '0.75rem', cursor: 'pointer'
+                       }}
+                     >
+                       <option value="python">Python 3</option>
+                       <option value="javascript">JavaScript</option>
+                       <option value="cpp">C++</option>
+                       <option value="java">Java</option>
+                     </select>
+                   </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
-              {[
-                { key: 'a', label: 'A', text: q.optionA },
-                { key: 'b', label: 'B', text: q.optionB },
-                { key: 'c', label: 'C', text: q.optionC },
-                { key: 'd', label: 'D', text: q.optionD },
-              ].map(opt => {
-                const selected = answers[String(q.id)] === opt.key;
-                return (
-                  <button
-                    key={opt.key}
-                    onClick={() => handleSelectMCQ(q.id, opt.key)}
-                    style={{
-                      display: 'flex', alignItems: 'center', gap: '0.875rem',
-                      padding: '0.875rem 1rem',
-                      border: selected ? '1px solid #7c3aed' : '1px solid var(--sd-border)',
-                      borderRadius: '10px', cursor: 'pointer', textAlign: 'left',
-                      background: selected ? 'rgba(124,58,237,0.2)' : 'rgba(255,255,255,0.03)',
-                      color: selected ? '#e2d9f3' : 'var(--sd-muted)',
-                      transition: 'all 0.15s', fontFamily: 'inherit', fontSize: '0.9rem',
-                    }}
-                  >
-                    <span style={{
-                      width: 28, height: 28, borderRadius: '50%',
-                      background: selected ? '#7c3aed' : 'rgba(255,255,255,0.07)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      fontWeight: 700, fontSize: '0.8rem', flexShrink: 0,
-                      color: selected ? 'white' : 'var(--sd-muted)',
-                    }}>{opt.label}</span>
-                    {opt.text}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        )
-      )}
+                   <div style={{ flex: 1, background: '#1e1e1e', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--sd-border)' }}>
+                     <Editor
+                       height="100%"
+                       theme="vs-dark"
+                       language={codeDrafts[q.id]?.language || 'python'}
+                       value={codeDrafts[q.id]?.code || ''}
+                       onChange={handleCodeChange}
+                       options={{
+                         fontSize: 13,
+                         minimap: { enabled: false },
+                         automaticLayout: true,
+                         scrollbar: { vertical: 'visible' }
+                       }}
+                     />
+                   </div>
 
-      {/* Footer Navigation Bar */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem', marginTop: '1rem' }}>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button className="sd-btn sd-btn-outline" onClick={() => setCurrentQ(Math.max(0, currentQ - 1))} disabled={currentQ === 0}>
-            ← Prev
-          </button>
-          <button 
-            className="sd-btn sd-btn-outline" 
-            onClick={async () => {
-              await autoSave();
-              setCurrentQ(Math.min(questions.length - 1, currentQ + 1));
-            }} 
-            disabled={currentQ === questions.length - 1}
-          >
-            Save & Next →
-          </button>
-        </div>
-        <button
-          className="sd-btn sd-btn-primary"
-          onClick={() => handleSubmitAssessment(false)}
-          disabled={submitting}
-          style={{ background: 'linear-gradient(135deg,#059669,#047857)', minWidth: 180 }}
-        >
-          {submitting ? '⟳ Submitting…' : '✓ Finish & Submit Test'}
-        </button>
-      </div>
-    </div>
-  );
-}
+                   <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.5rem', marginTop: '0.5rem' }}>
+                     <button className="sd-btn sd-btn-outline" onClick={handleRunCode} disabled={runningCode || submittingCode} style={{ padding: '0.45rem 1rem', fontSize: '0.78rem' }}>
+                       {runningCode ? '⌛ Run...' : '▶ Run Custom Input'}
+                     </button>
+                     <button className="sd-btn sd-btn-primary" onClick={handleSubmitCode} disabled={runningCode || submittingCode} style={{ padding: '0.45rem 1rem', fontSize: '0.78rem' }}>
+                       {submittingCode ? '⌛ Submit...' : '🚀 Submit Code'}
+                     </button>
+                   </div>
+                 </div>
+
+                 {/* Console Output logs */}
+                 {(codeOutput || testCaseResults) && (
+                   <div className="sd-card" style={{ maxHeight: '150px', overflowY: 'auto', padding: '0.75rem' }}>
+                     {codeOutput && (
+                       <pre style={{ fontSize: '0.75rem', color: codeOutput.success ? '#34d399' : '#f87171', margin: 0, fontFamily: 'monospace' }}>
+                         {codeOutput.stdout || codeOutput.stderr || codeOutput.status}
+                       </pre>
+                     )}
+                     {testCaseResults && (
+                       <span style={{ fontSize: '0.75rem', fontWeight: 'bold', color: '#34d399' }}>
+                         Passed {testCaseResults.passedCases}/{testCaseResults.totalCases} secret cases.
+                       </span>
+                     )}
+                   </div>
+                 )}
+               </div>
+             </div>
+           ) : (
+             /* MCQ QUESTION VIEW */
+             <div className="sd-card" style={{ padding: '1.5rem' }}>
+               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                 <span style={{ fontSize: '0.75rem', color: 'var(--sd-muted)', fontWeight: 600 }}>QUESTION {currentQ + 1} OF {questions.length}</span>
+                 <span className="sd-badge sd-badge-purple">{q?.marks} Marks</span>
+               </div>
+               <p style={{ fontSize: '1rem', fontWeight: 600, lineHeight: 1.5, marginBottom: '1.25rem', color: 'var(--sd-text)' }}>
+                 {q?.questionText}
+               </p>
+               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                 {[
+                   { key: 'a', label: 'A', text: q?.optionA },
+                   { key: 'b', label: 'B', text: q?.optionB },
+                   { key: 'c', label: 'C', text: q?.optionC },
+                   { key: 'd', label: 'D', text: q?.optionD },
+                 ].map(opt => {
+                   const selected = answers[String(q?.id)] === opt.key;
+                   return (
+                     <button
+                       key={opt.key}
+                       onClick={() => handleSelectMCQ(q.id, opt.key)}
+                       style={{
+                         display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.75rem 1rem',
+                         border: selected ? '1px solid #7c3aed' : '1px solid var(--sd-border)',
+                         borderRadius: '8px', cursor: 'pointer', textAlign: 'left',
+                         background: selected ? 'rgba(124,58,237,0.18)' : 'rgba(255,255,255,0.02)',
+                         color: selected ? '#e2d9f3' : 'var(--sd-muted)',
+                         fontFamily: 'inherit', fontSize: '0.85rem', width: '100%'
+                       }}
+                     >
+                       <span style={{
+                         width: 24, height: 24, borderRadius: '50%',
+                         background: selected ? '#7c3aed' : 'rgba(255,255,255,0.06)',
+                         display: 'flex', alignItems: 'center', justifyContent: 'center',
+                         fontWeight: 700, fontSize: '0.75rem', color: selected ? 'white' : 'var(--sd-muted)'
+                       }}>{opt.label}</span>
+                       {opt.text}
+                     </button>
+                   );
+                 })}
+               </div>
+             </div>
+           )}
+
+           {/* Navigation controls at the bottom of the left column */}
+           <div style={{ display: 'flex', gap: '0.5rem' }}>
+             <button className="sd-btn sd-btn-outline" onClick={() => setCurrentQ(Math.max(0, currentQ - 1))} disabled={currentQ === 0}>
+               ← Prev
+             </button>
+             <button
+               className="sd-btn sd-btn-outline"
+               onClick={async () => {
+                 await autoSave();
+                 setCurrentQ(Math.min(questions.length - 1, currentQ + 1));
+               }}
+               disabled={currentQ === questions.length - 1}
+             >
+               Save & Next →
+             </button>
+           </div>
+         </div>
+
+         {/* RIGHT COLUMN (SIDEBAR): Timer & Navigator & Submit */}
+         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'sticky', top: '1rem' }}>
+           
+           {/* Unified Navigator Box containing Timer & Navigator */}
+           <div className="sd-card" style={{ padding: '1rem', border: '1px solid var(--sd-border)' }}>
+             <div style={{ marginBottom: '1rem' }}>
+               <Timer
+                 totalSeconds={assessment.durationMins * 60}
+                 onExpire={() => handleSubmitAssessment(true)}
+               />
+             </div>
+             
+             <div className="sd-card-title" style={{ fontSize: '0.8rem', marginBottom: '0.5rem', color: 'var(--sd-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+               Questions Map
+             </div>
+             
+             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '0.35rem', maxHeight: '280px', overflowY: 'auto', paddingRight: '2px' }}>
+               {questions.map((item, i) => {
+                 const isAnswered = item.isCoding
+                   ? codeDrafts[item.id]?.code && codeDrafts[item.id].code.length > 50
+                   : answers[String(item.id)];
+                 
+                 return (
+                   <button
+                     key={i}
+                     onClick={() => {
+                       setCurrentQ(i);
+                       setCodeOutput(null);
+                       setTestCaseResults(null);
+                     }}
+                     style={{
+                       height: '32px', borderRadius: '6px', border: 'none',
+                       cursor: 'pointer', fontWeight: 600, fontSize: '0.75rem',
+                       background: isAnswered
+                         ? 'rgba(16,185,129,0.25)' : i === currentQ
+                           ? 'rgba(124,58,237,0.35)' : 'rgba(255,255,255,0.05)',
+                       color: i === currentQ ? '#a78bfa' : isAnswered ? '#34d399' : 'var(--sd-muted)',
+                       outline: i === currentQ ? '1.5px solid #7c3aed' : 'none',
+                     }}
+                   >
+                     {i + 1}
+                   </button>
+                 );
+               })}
+             </div>
+           </div>
+
+           {/* Submit Button placed at the bottom right corner (relative to sidebar/page layout) */}
+           <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+             <button
+               className="sd-btn sd-btn-primary"
+               onClick={() => handleSubmitAssessment(false)}
+               disabled={submitting}
+               style={{
+                 width: '100%',
+                 padding: '0.75rem',
+                 background: 'linear-gradient(135deg,#059669,#047857)',
+                 fontWeight: 800,
+                 fontSize: '0.9rem',
+                 borderRadius: '8px',
+                 boxShadow: '0 4px 12px rgba(4,120,87,0.25)'
+               }}
+             >
+               {submitting ? 'Submitting…' : '✓ Finish & Submit Test'}
+             </button>
+           </div>
+
+         </div>
+
+       </div>
+     </div>
+   );
+ }
