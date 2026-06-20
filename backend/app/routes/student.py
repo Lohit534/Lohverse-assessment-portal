@@ -138,7 +138,19 @@ def upload_resume():
 @jwt_required()
 def download_resume():
     user_id = int(get_jwt_identity())
-    user = User.query.get(user_id)
+    current_user = User.query.get(user_id)
+    if not current_user:
+        return jsonify({'error': 'User not found'}), 404
+
+    if current_user.role == 'recruiter':
+        target_id = request.args.get('userId')
+        if not target_id:
+            return jsonify({'error': 'userId parameter is required for recruiters'}), 400
+        user = User.query.filter_by(id=int(target_id), role='student').first()
+        if not user:
+            return jsonify({'error': 'Candidate student not found'}), 404
+    else:
+        user = current_user
 
     if not user or not user.resume_filename:
         return jsonify({'error': 'No resume found'}), 404
@@ -152,7 +164,19 @@ def download_resume():
 @jwt_required()
 def view_resume():
     user_id = int(get_jwt_identity())
-    user = User.query.get(user_id)
+    current_user = User.query.get(user_id)
+    if not current_user:
+        return jsonify({'error': 'User not found'}), 404
+
+    if current_user.role == 'recruiter':
+        target_id = request.args.get('userId')
+        if not target_id:
+            return jsonify({'error': 'userId parameter is required for recruiters'}), 400
+        user = User.query.filter_by(id=int(target_id), role='student').first()
+        if not user:
+            return jsonify({'error': 'Candidate student not found'}), 404
+    else:
+        user = current_user
 
     if not user or not user.resume_filename:
         return jsonify({'error': 'No resume found'}), 404

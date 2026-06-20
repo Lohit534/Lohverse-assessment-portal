@@ -119,16 +119,24 @@ export default function Resume() {
     }
   };
 
-  const handleDownload = () => {
-    // resumeFilename stores the Cloudinary secure_url directly
-    const cloudinaryUrl = user?.resumeFilename;
-    if (!cloudinaryUrl) { setError('No resume found'); return; }
-    const a = document.createElement('a');
-    a.href = cloudinaryUrl;
-    a.download = `${user.fullName || 'Resume'}_Resume.pdf`;
-    a.target = '_blank';
-    a.rel = 'noopener noreferrer';
-    a.click();
+  const handleDownload = async () => {
+    try {
+      const token = localStorage.getItem('accessToken');
+      const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://lohverse-assessment-portal.onrender.com/api';
+      const res = await fetch(`${apiBase}/student/resume`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Download failed');
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = `${user?.fullName || 'Resume'}_Resume.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError('Resume download failed');
+    }
   };
 
   const handlePreview = () => {

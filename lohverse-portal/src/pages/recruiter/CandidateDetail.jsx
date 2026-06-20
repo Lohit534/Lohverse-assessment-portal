@@ -40,12 +40,22 @@ export default function CandidateDetail() {
     }
   };
 
+  const handlePreview = () => {
+    const cloudinaryUrl = candidate?.resumeFilename;
+    if (!cloudinaryUrl) {
+      setError('No resume found');
+      return;
+    }
+    window.open(cloudinaryUrl, '_blank', 'noopener,noreferrer');
+  };
+
   const downloadResume = async () => {
     try {
       const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://lohverse-assessment-portal.onrender.com/api';
       const res = await fetch(`${apiBase}/student/resume?userId=${id}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('recruiter_accessToken')}` }
       });
+      if (!res.ok) throw new Error('Download failed');
       const blob = await res.blob();
       const url  = URL.createObjectURL(blob);
       const a    = document.createElement('a');
@@ -102,7 +112,10 @@ export default function CandidateDetail() {
         </div>
 
         {candidate.hasResume && (
-          <button className="rp-btn rp-btn-primary" onClick={downloadResume}>⬇️ Download Resume</button>
+          <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap' }}>
+            <button className="rp-btn rp-btn-outline" onClick={handlePreview}>👁️ Preview</button>
+            <button className="rp-btn rp-btn-primary" onClick={downloadResume}>⬇️ Download Resume</button>
+          </div>
         )}
       </div>
 
