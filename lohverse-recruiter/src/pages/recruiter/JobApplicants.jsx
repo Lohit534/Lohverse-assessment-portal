@@ -338,7 +338,8 @@ export default function JobApplicants() {
                 {filtered.map(app => {
                   const s = app.student || {};
                   const asmt = (app.assessments || [])[0] || {};
-                  const st = app.status || 'applied';
+                  const st_db = app.status || 'applied';
+                  const st = (asmt.attemptStatus === 'completed' && asmt.passed === false) ? 'rejected' : st_db;
                   const statusColor = st === 'shortlisted' ? '#34d399' : st === 'rejected' ? '#f87171' : '#a78bfa';
                   const statusBg = st === 'shortlisted' ? 'rgba(16,185,129,0.12)' : st === 'rejected' ? 'rgba(239,68,68,0.12)' : 'rgba(124,58,237,0.12)';
 
