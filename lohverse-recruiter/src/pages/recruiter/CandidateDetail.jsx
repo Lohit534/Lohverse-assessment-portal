@@ -70,14 +70,24 @@ export default function CandidateDetail() {
     }
   };
 
-  const downloadResume = () => {
-    const cloudinaryUrl = candidate?.resumeFilename;
-    if (!cloudinaryUrl) { setError('No resume found'); return; }
-    const a = document.createElement('a');
-    a.href = cloudinaryUrl;
-    a.download = `${candidate?.fullName}_Resume.pdf`;
-    a.rel = 'noopener noreferrer';
-    a.click();
+  const downloadResume = async () => {
+    try {
+      const token = localStorage.getItem('recruiter_accessToken');
+      const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://lohverse-assessment-portal.onrender.com/api';
+      const res = await fetch(`${apiBase}/student/resume?userId=${id}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (!res.ok) throw new Error('Download failed');
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+      a.href = url;
+      a.download = `${candidate?.fullName || 'Candidate'}_Resume.pdf`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      setError('Resume download failed');
+    }
   };
 
   const viewResume = () => {
