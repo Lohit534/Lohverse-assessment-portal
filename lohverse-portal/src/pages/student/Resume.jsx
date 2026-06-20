@@ -140,10 +140,10 @@ export default function Resume() {
   };
 
   const handlePreview = () => {
-    // Open Cloudinary URL directly in a new browser tab for inline PDF viewing
     const cloudinaryUrl = user?.resumeFilename;
     if (!cloudinaryUrl) { setError('No resume found'); return; }
-    window.open(cloudinaryUrl, '_blank', 'noopener,noreferrer');
+    const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(cloudinaryUrl)}&embedded=false`;
+    window.open(viewerUrl, '_blank', 'noopener,noreferrer');
   };
 
   // Profile completeness calculations based on active user context
