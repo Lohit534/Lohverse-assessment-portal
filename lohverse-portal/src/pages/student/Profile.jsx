@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../../context/AuthContext';
 import API from '../../api/axios';
 import '../StudentDashboard.css';
@@ -28,6 +28,115 @@ export default function Profile() {
   const [success, setSuccess]   = useState('');
   const [error, setError]       = useState('');
   const [editMode, setEditMode] = useState(false);
+
+  // Resume Upload State
+  const [uploading, setUploading] = useState(false);
+  const [dragActive, setDragActive] = useState(false);
+  const [resumeSuccess, setResumeSuccess] = useState('');
+  const [resumeError, setResumeError] = useState('');
+  const fileInputRef = useRef(null);
+
+  // Handle drag events
+  const handleDrag = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (uploading) return;
+    if (e.type === 'dragenter' || e.type === 'dragover') {
+      setDragActive(true);
+    } else if (e.type === 'dragleave') {
+      setDragActive(false);
+    }
+  };
+
+  // Handle drop event
+  const handleDrop = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (uploading) return;
+    setDragActive(false);
+    
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      await uploadFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  // Handle file select
+  const handleFileSelect = async (e) => {
+    if (uploading) return;
+    if (e.target.files && e.target.files[0]) {
+      await uploadFile(e.target.files[0]);
+    }
+  };
+
+  // Upload file logic
+  const uploadFile = async (file) => {
+    if (!file) return;
+    if (file.type !== 'application/pdf') {
+      setResumeError('Only PDF files are accepted.');
+      setResumeSuccess('');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setResumeError('File size must be under 5 MB.');
+      setResumeSuccess('');
+      return;
+    }
+
+    setUploading(true);
+    setResumeError('');
+    setResumeSuccess('');
+    
+    const fd = new FormData();
+    fd.append('resume', file);
+
+    try {
+      await API.post('/student/resume', fd, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      await refreshUser();
+      setResumeSuccess('Resume uploaded successfully!');
+      setResumeError('');
+    } catch (e) {
+      setResumeError(e.response?.data?.error || 'Upload failed');
+      setResumeSuccess('');
+    } finally {
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const handlePreview = () => {
+    const cloudinaryUrl = user?.resumeFilename;
+    if (!cloudinaryUrl) {
+      setResumeError('No resume found');
+      return;
+    }
+    window.open(cloudinaryUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleDownload = () => {
+    const cloudinaryUrl = user?.resumeFilename;
+    if (!cloudinaryUrl) {
+      setResumeError('No resume found');
+      return;
+    }
+    const a = document.createElement('a');
+    a.href = cloudinaryUrl;
+    a.download = `${user.fullName || 'Resume'}_Resume.pdf`;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.click();
+  };
+
+  const getResumeName = () => {
+    if (!user?.resumeFilename) return 'resume.pdf';
+    try {
+      const parts = user.resumeFilename.split('/');
+      return decodeURIComponent(parts[parts.length - 1]);
+    } catch {
+      return 'resume.pdf';
+    }
+  };
 
   useEffect(() => {
     if (user) {
@@ -158,6 +267,119 @@ export default function Profile() {
               )}
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* Resume / CV Section */}
+      <div className="sd-card" style={{ marginBottom: '1.5rem' }}>
+        <div className="sd-card-title" style={{ justifyContent: 'space-between' }}>
+          <span>📄 Resume / CV</span>
+          {user?.hasResume && (
+            <span className="sd-badge sd-badge-green">Active</span>
+          )}
+        </div>
+
+        {resumeSuccess && <div className="sd-alert sd-alert-success" style={{ padding: '0.6rem 0.8rem', fontSize: '0.825rem', marginBottom: '1rem' }}>✓ {resumeSuccess}</div>}
+        {resumeError   && <div className="sd-alert sd-alert-error" style={{ padding: '0.6rem 0.8rem', fontSize: '0.825rem', marginBottom: '1rem' }}>✕ {resumeError}</div>}
+
+        <div
+          onDragEnter={handleDrag}
+          onDragOver={handleDrag}
+          onDragLeave={handleDrag}
+          onDrop={handleDrop}
+          onClick={() => { if (!uploading) fileInputRef.current?.click(); }}
+          style={{
+            border: dragActive 
+              ? '2px dashed var(--sd-accent-light)' 
+              : '2px dashed var(--sd-border)',
+            borderRadius: '12px',
+            padding: '2rem 1.5rem',
+            textAlign: 'center',
+            background: dragActive 
+              ? 'rgba(124, 58, 237, 0.08)' 
+              : 'rgba(255, 255, 255, 0.01)',
+            cursor: 'pointer',
+            transition: 'all 0.2s ease',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.8rem',
+            outline: 'none',
+          }}
+          onMouseEnter={(e) => {
+            if (!dragActive) {
+              e.currentTarget.style.borderColor = 'rgba(167,139,250,0.3)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (!dragActive) {
+              e.currentTarget.style.borderColor = 'var(--sd-border)';
+              e.currentTarget.style.background = 'rgba(255, 255, 255, 0.01)';
+            }
+          }}
+        >
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".pdf"
+            style={{ display: 'none' }}
+            onChange={handleFileSelect}
+          />
+          
+          {uploading ? (
+            <div style={{ padding: '1rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+              <span style={{ fontSize: '1.5rem', animation: 'spin 1s linear infinite', display: 'inline-block' }}>⟳</span>
+              <span style={{ fontSize: '0.9rem', color: 'var(--sd-muted)' }}>Uploading PDF resume...</span>
+            </div>
+          ) : user?.hasResume ? (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.6rem', width: '100%' }} onClick={(e) => e.stopPropagation()}>
+              <div style={{ fontSize: '2.5rem' }}>📄</div>
+              <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--sd-text)', wordBreak: 'break-all', maxWidth: '80%' }}>
+                {getResumeName()}
+              </div>
+              <div style={{ color: 'var(--sd-muted)', fontSize: '0.8rem', marginBottom: '0.4rem' }}>
+                Your resume is active. Drag & drop a new PDF here to replace it, or click the button below.
+              </div>
+              <div style={{ display: 'flex', gap: '0.6rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+                <button 
+                  className="sd-btn sd-btn-outline" 
+                  style={{ padding: '0.4rem 1rem', fontSize: '0.8rem' }}
+                  onClick={handlePreview}
+                >
+                  👁️ Preview
+                </button>
+                <button 
+                  className="sd-btn sd-btn-outline" 
+                  style={{ padding: '0.4rem 1rem', fontSize: '0.8rem' }}
+                  onClick={handleDownload}
+                >
+                  ⬇️ Download
+                </button>
+                <button 
+                  className="sd-btn sd-btn-primary" 
+                  style={{ padding: '0.4rem 1rem', fontSize: '0.8rem', background: 'linear-gradient(135deg,#059669,#047857)' }}
+                  onClick={() => fileInputRef.current?.click()}
+                >
+                  🔁 Replace Resume
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ fontSize: '2.5rem', color: 'var(--sd-muted)' }}>📤</div>
+              <div style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--sd-text)' }}>
+                Drag & drop your Resume or CV here
+              </div>
+              <div style={{ fontSize: '0.85rem', color: 'var(--sd-muted)' }}>
+                or <span style={{ color: 'var(--sd-accent-light)', textDecoration: 'underline', fontWeight: 600 }}>browse your files</span>
+              </div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--sd-muted)', marginTop: '0.2rem' }}>
+                Supports PDF format only (Max 5MB)
+              </div>
+            </div>
+          )}
         </div>
       </div>
 
