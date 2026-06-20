@@ -46,10 +46,11 @@ def list_assessments():
         assessments = Assessment.query.filter_by(created_by=user_id)\
                                       .order_by(Assessment.created_at.desc()).all()
     else:
-        # Students only see assessments for jobs they applied to
-        applied_job_ids = [app.job_id for app in Application.query.filter_by(student_id=user_id).all()]
-        if applied_job_ids:
-            assessments = Assessment.query.filter(Assessment.job_id.in_(applied_job_ids)).order_by(Assessment.created_at.desc()).all()
+        # Students only see assessments for jobs they are shortlisted for
+        shortlisted_apps = Application.query.filter_by(student_id=user_id, status='shortlisted').all()
+        shortlisted_job_ids = [app.job_id for app in shortlisted_apps]
+        if shortlisted_job_ids:
+            assessments = Assessment.query.filter(Assessment.job_id.in_(shortlisted_job_ids)).order_by(Assessment.created_at.desc()).all()
         else:
             assessments = []
 
@@ -456,13 +457,15 @@ def start_assessment(assessment_id):
 
     a = Assessment.query.get_or_404(assessment_id)
 
-    # Verify student has applied to the job posting
+    # Verify student has applied and is shortlisted for the job posting
     from app.models import Application
     from datetime import datetime
     if a.job_id:
         applied = Application.query.filter_by(student_id=user_id, job_id=a.job_id).first()
         if not applied:
             return jsonify({'error': 'You must apply to this job posting before attempting its assessment.'}), 403
+        if applied.status != 'shortlisted':
+            return jsonify({'error': 'You must be shortlisted by the recruiter to access this assessment.'}), 403
 
     # Verify assessment is open (scheduled within time / not expired)
     if a.job and a.job.deadline:
