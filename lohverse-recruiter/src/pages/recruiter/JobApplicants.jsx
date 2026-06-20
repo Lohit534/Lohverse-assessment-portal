@@ -645,16 +645,6 @@ export default function JobApplicants() {
                   <span style={{ fontSize: '0.72rem', color: 'var(--r-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Candidate Resume</span>
                   <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'white', marginTop: 2 }}>{resumeModalCandidate.fullName}</h3>
                 </div>
-                <div style={{ display: 'flex', gap: '0.5rem' }}>
-                  <a
-                    href={`https://docs.google.com/viewer?url=${encodeURIComponent(resumeModalCandidate.resumeFilename)}&embedded=false`}
-                    target="_blank" rel="noopener noreferrer"
-                    className="rp-btn rp-btn-outline"
-                    style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem', textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.3rem' }}
-                  >
-                    ↗ Open Original
-                  </a>
-                </div>
               </div>
               <div style={{ flex: 1, position: 'relative' }}>
                 <iframe
