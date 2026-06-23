@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import API from '../../api/axios';
@@ -9,79 +9,39 @@ export default function InterviewRoom() {
   const navigate = useNavigate();
   const { user } = useAuth();
   
-  const [jitsiLoaded, setJitsiLoaded] = useState(false);
   const [rating, setRating] = useState(5);
   const [notes, setNotes] = useState('');
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
   const [savingFeedback, setSavingFeedback] = useState(false);
-  
-  const jitsiContainerRef = useRef(null);
-  const jitsiApiRef = useRef(null);
+  const [candidateName, setCandidateName] = useState('');
 
-  // Load Jitsi script dynamically
+  // Fetch interview details to show candidate name
   useEffect(() => {
-    const loadScript = () => {
-      return new Promise((resolve) => {
-        if (window.JitsiMeetExternalAPI) {
-          resolve(true);
-          return;
+    const fetchInterviewDetails = async () => {
+      try {
+        const res = await API.get('/recruiter/interviews');
+        const list = res.data.interviews || [];
+        const match = list.find(i => i.roomId === roomId);
+        if (match) {
+          setCandidateName(match.candidateName || match.studentName || '');
         }
-        const script = document.createElement('script');
-        script.src = 'https://meet.ffmuc.net/external_api.js';
-        script.async = true;
-        script.onload = () => resolve(true);
-        document.body.appendChild(script);
-      });
-    };
-
-    loadScript().then(() => {
-      setJitsiLoaded(true);
-    });
-  }, []);
-
-  // Initialize Jitsi Meet Iframe
-  useEffect(() => {
-    if (!jitsiLoaded || !jitsiContainerRef.current || !roomId) return;
-
-    const domain = 'meet.ffmuc.net';
-    const options = {
-      roomName: roomId,
-      width: '100%',
-      height: '100%',
-      parentNode: jitsiContainerRef.current,
-      userInfo: {
-        displayName: user?.fullName || 'Recruiter'
-      },
-      configOverwrite: {
-        startWithAudioMuted: true,
-        startWithVideoMuted: true,
-        disableDeepLinking: true,
-      },
-      interfaceConfigOverwrite: {
-        SHOW_JITSI_WATERMARK: false,
-        SHOW_WATERMARK_FOR_GUESTS: false,
+      } catch (e) {
+        console.error("Failed to load interview details:", e);
       }
     };
+    if (roomId) {
+      fetchInterviewDetails();
+    }
+  }, [roomId]);
 
-    const api = new window.JitsiMeetExternalAPI(domain, options);
-    jitsiApiRef.current = api;
-
-    // Listen to video call exit event
-    api.addEventListener('videoConferenceLeft', () => {
-      setShowFeedbackModal(true);
-    });
-
-    return () => {
-      if (jitsiApiRef.current) {
-        jitsiApiRef.current.dispose();
-      }
-    };
-  }, [jitsiLoaded, roomId, user]);
+  const handleLaunchCall = () => {
+    if (!roomId) return;
+    window.open(`https://meet.jit.si/${roomId}`, '_blank', 'noopener,noreferrer');
+  };
 
   const handleSubmitFeedback = async () => {
     setSavingFeedback(true);
     try {
-      // Find interview by room ID to submit feedback
       const res = await API.get('/recruiter/interviews');
       const list = res.data.interviews || [];
       const match = list.find(i => i.roomId === roomId);
@@ -103,37 +63,78 @@ export default function InterviewRoom() {
   };
 
   return (
-    <div className="rp-page" style={{ height: 'calc(100vh - 100px)', display: 'flex', flexDirection: 'column', padding: '1rem' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-        <div>
-          <h1 className="rp-title" style={{ fontSize: '1.25rem', margin: 0 }}>📹 Live Interview Room</h1>
-          <p className="rp-sub" style={{ margin: 0, fontSize: '0.75rem' }}>One-to-One Embedded Jitsi Video Session</p>
+    <div className="rp-page" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: 'calc(100vh - 180px)', animation: 'fadeUp 0.35s ease both' }}>
+      <div className="rp-card" style={{ maxWidth: '550px', width: '100%', padding: '2.5rem 2rem', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.5rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--r-border)', borderRadius: '16px' }}>
+        
+        {/* Animated Camera Icon */}
+        <div style={{
+          width: '84px',
+          height: '84px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, rgba(124, 58, 237, 0.15), rgba(167, 139, 250, 0.15))',
+          border: '1px solid rgba(167, 139, 250, 0.25)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '2.5rem',
+          boxShadow: '0 8px 24px rgba(124, 58, 237, 0.15)',
+        }}>
+          👥
         </div>
-        <button 
-          className="rp-btn rp-btn-outline" 
-          onClick={() => {
-            if (window.confirm("Are you sure you want to exit the meeting room?")) {
-              setShowFeedbackModal(true);
-            }
-          }}
-          style={{ padding: '0.4rem 1rem', fontSize: '0.8rem' }}
-        >
-          Exit Meeting
-        </button>
-      </div>
 
-      {/* Embedded Iframe Container */}
-      <div 
-        ref={jitsiContainerRef} 
-        id="jitsi-container"
-        style={{ 
-          flex: 1, 
-          background: '#09090e', 
-          borderRadius: '12px', 
-          border: '1px solid var(--sd-border)',
-          overflow: 'hidden'
-        }}
-      />
+        <div>
+          <h1 className="rp-title" style={{ fontSize: '1.5rem', marginBottom: '0.5rem', fontWeight: 800 }}>Recruiter Interview Lobby</h1>
+          <p className="rp-sub" style={{ fontSize: '0.875rem', lineHeight: '1.5', color: 'var(--r-muted)' }}>
+            Conducting interview for {candidateName ? <strong>{candidateName}</strong> : 'the candidate'}. To bypass connection blocks and access all host/moderator features with unlimited duration, we host calls in a secure browser tab.
+          </p>
+        </div>
+
+        {/* Feature List */}
+        <div style={{ width: '100%', textAlign: 'left', background: 'rgba(0, 0, 0, 0.15)', padding: '1rem', borderRadius: '10px', fontSize: '0.8rem', border: '1px solid rgba(255,255,255,0.02)', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <span style={{ color: '#34d399' }}>✓</span>
+            <span style={{ color: 'var(--r-text)' }}><strong>Unlimited Time</strong> (no 5-minute sandbox timeout limits)</span>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <span style={{ color: '#34d399' }}>✓</span>
+            <span style={{ color: 'var(--r-text)' }}><strong>Full Moderation</strong> (kick, mute, record, screen-share)</span>
+          </div>
+          <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+            <span style={{ color: '#34d399' }}>✓</span>
+            <span style={{ color: 'var(--r-text)' }}><strong>100% Free</strong> (no account setup required)</span>
+          </div>
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', width: '100%', marginTop: '0.5rem' }}>
+          <button 
+            className="rp-btn rp-btn-primary" 
+            onClick={handleLaunchCall}
+            style={{ width: '100%', padding: '0.75rem', justifyContent: 'center', fontSize: '0.95rem' }}
+          >
+            🚀 Launch Jitsi Call
+          </button>
+          
+          <button 
+            className="rp-btn rp-btn-success" 
+            onClick={() => setShowFeedbackModal(true)}
+            style={{ width: '100%', padding: '0.75rem', justifyContent: 'center', fontSize: '0.95rem' }}
+          >
+            📝 Complete & Evaluate Candidate
+          </button>
+          
+          <button 
+            className="rp-btn rp-btn-outline" 
+            onClick={() => navigate('/dashboard/interviews')}
+            style={{ width: '100%', padding: '0.75rem', justifyContent: 'center', fontSize: '0.95rem' }}
+          >
+            Back to Dashboard
+          </button>
+        </div>
+
+        <div style={{ fontSize: '0.72rem', color: 'var(--r-muted)' }}>
+          Tip: Once the meeting tab is open, keep this lobby dashboard open in the background to submit candidate evaluation when done.
+        </div>
+      </div>
 
       {/* Recruiter Rating/Feedback Modal */}
       {showFeedbackModal && (
@@ -142,7 +143,7 @@ export default function InterviewRoom() {
           background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(3px)',
           display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1.5rem'
         }}>
-          <div className="rp-card" style={{ maxWidth: '450px', width: '100%', background: '#12112a', border: '1px solid var(--sd-border)' }}>
+          <div className="rp-card" style={{ maxWidth: '450px', width: '100%', background: '#12112a', border: '1px solid var(--r-border)' }}>
             <div className="rp-card-title">📝 Candidate Interview Feedback</div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginTop: '1rem' }}>
@@ -151,7 +152,7 @@ export default function InterviewRoom() {
                 <select 
                   value={rating} 
                   onChange={e => setRating(parseInt(e.target.value))}
-                  style={{ width: '100%', padding: '0.5rem', background: '#09090e', color: 'white', border: '1px solid var(--sd-border)', borderRadius: '6px' }}
+                  style={{ width: '100%', padding: '0.5rem', background: '#09090e', color: 'white', border: '1px solid var(--r-border)', borderRadius: '6px' }}
                 >
                   {[...Array(10)].map((_, i) => (
                     <option key={i+1} value={i+1}>{i+1} - {i+1 === 10 ? 'Exceptional' : i+1 >= 7 ? 'Good' : i+1 >= 5 ? 'Average' : 'Poor'}</option>
@@ -165,7 +166,7 @@ export default function InterviewRoom() {
                   value={notes}
                   onChange={e => setNotes(e.target.value)}
                   placeholder="Detail candidate technical skills, soft skills, and placement fit..."
-                  style={{ width: '100%', height: '110px', background: '#09090e', color: 'white', border: '1px solid var(--sd-border)', borderRadius: '6px', padding: '0.5rem' }}
+                  style={{ width: '100%', height: '110px', background: '#09090e', color: 'white', border: '1px solid var(--r-border)', borderRadius: '6px', padding: '0.5rem' }}
                 />
               </div>
 
@@ -180,7 +181,7 @@ export default function InterviewRoom() {
                 </button>
                 <button 
                   className="rp-btn rp-btn-outline" 
-                  onClick={() => navigate('/dashboard/interviews')}
+                  onClick={() => setShowFeedbackModal(false)}
                   style={{ flex: 1, padding: '0.6rem' }}
                 >
                   Cancel
@@ -193,3 +194,4 @@ export default function InterviewRoom() {
     </div>
   );
 }
+
