@@ -316,7 +316,7 @@ def schedule_interview():
         return jsonify({'error': 'Candidate not found'}), 404
         
     room_id = f"lohverse-meeting-{uuid.uuid4().hex[:12]}"
-    meeting_link = f"https://meet.jit.si/{room_id}"
+    meeting_link = f"https://meet.ffmuc.net/{room_id}"
     
     interview = JitsiInterview(
         recruiter_id   = user_id,

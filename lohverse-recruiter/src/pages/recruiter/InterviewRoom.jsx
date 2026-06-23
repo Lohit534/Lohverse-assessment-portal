@@ -27,7 +27,7 @@ export default function InterviewRoom() {
           return;
         }
         const script = document.createElement('script');
-        script.src = 'https://meet.jit.si/external_api.js';
+        script.src = 'https://meet.ffmuc.net/external_api.js';
         script.async = true;
         script.onload = () => resolve(true);
         document.body.appendChild(script);
@@ -43,7 +43,7 @@ export default function InterviewRoom() {
   useEffect(() => {
     if (!jitsiLoaded || !jitsiContainerRef.current || !roomId) return;
 
-    const domain = 'meet.jit.si';
+    const domain = 'meet.ffmuc.net';
     const options = {
       roomName: roomId,
       width: '100%',
