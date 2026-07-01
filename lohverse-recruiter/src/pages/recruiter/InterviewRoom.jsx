@@ -151,24 +151,25 @@ export default function InterviewRoom() {
                       {app.status}
                     </span>
                   </div>
-                  <div style={{ display: 'flex', gap: '0.3rem' }}>
-                    <button
-                      className="rp-btn"
-                      disabled={app.status === 'shortlisted'}
-                      onClick={() => handleUpdateCandidateStatus(app.jobId, candidateId, 'shortlisted')}
-                      style={{ padding: '0.2rem 0.45rem', fontSize: '0.68rem', background: 'rgba(16,185,129,0.15)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)', opacity: app.status === 'shortlisted' ? 0.55 : 1, cursor: app.status === 'shortlisted' ? 'not-allowed' : 'pointer' }}
-                    >
-                      ✓ Shortlist
-                    </button>
-                    <button
-                      className="rp-btn"
-                      disabled={app.status === 'rejected'}
-                      onClick={() => handleUpdateCandidateStatus(app.jobId, candidateId, 'rejected')}
-                      style={{ padding: '0.2rem 0.45rem', fontSize: '0.68rem', background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)', opacity: app.status === 'rejected' ? 0.55 : 1, cursor: app.status === 'rejected' ? 'not-allowed' : 'pointer' }}
-                    >
-                      ✕ Reject
-                    </button>
-                  </div>
+                  {app.status !== 'rejected' && (
+                    <div style={{ display: 'flex', gap: '0.3rem' }}>
+                      <button
+                        className="rp-btn"
+                        disabled={app.status === 'shortlisted'}
+                        onClick={() => handleUpdateCandidateStatus(app.jobId, candidateId, 'shortlisted')}
+                        style={{ padding: '0.2rem 0.45rem', fontSize: '0.68rem', background: 'rgba(16,185,129,0.15)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)', opacity: app.status === 'shortlisted' ? 0.55 : 1, cursor: app.status === 'shortlisted' ? 'not-allowed' : 'pointer' }}
+                      >
+                        ✓ Shortlist
+                      </button>
+                      <button
+                        className="rp-btn"
+                        onClick={() => handleUpdateCandidateStatus(app.jobId, candidateId, 'rejected')}
+                        style={{ padding: '0.2rem 0.45rem', fontSize: '0.68rem', background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)', cursor: 'pointer' }}
+                      >
+                        ✕ Reject
+                      </button>
+                    </div>
+                  )}
                 </div>
               );
             })}
