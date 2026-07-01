@@ -281,7 +281,7 @@ def recruiter_analytics():
 @recruiter_bp.route('/interviews', methods=['GET'])
 @require_recruiter
 def list_interviews():
-    from app.models import JitsiInterview
+    from app.models import JitsiInterview, Application, Job
     user_id = int(get_jwt_identity())
     interviews = JitsiInterview.query.filter_by(recruiter_id=user_id).order_by(JitsiInterview.scheduled_date.desc(), JitsiInterview.scheduled_time.desc()).all()
     
@@ -291,6 +291,19 @@ def list_interviews():
         d['candidateName'] = i.candidate.full_name if i.candidate else 'Candidate'
         d['candidateEmail'] = i.candidate.email if i.candidate else ''
         d['feedback'] = i.feedback.to_dict() if i.feedback else None
+        
+        # Find applications for this candidate that belong to this recruiter's jobs
+        apps = Application.query.join(Job).filter(
+            Application.student_id == i.candidate_id,
+            Job.recruiter_id == user_id
+        ).all()
+        d['applications'] = [{
+            'id': app.id,
+            'jobId': app.job_id,
+            'jobTitle': app.job.title if app.job else 'Job',
+            'status': app.status
+        } for app in apps]
+        
         result.append(d)
         
     return jsonify({'interviews': result}), 200

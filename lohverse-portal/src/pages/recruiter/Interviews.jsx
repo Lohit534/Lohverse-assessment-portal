@@ -53,6 +53,28 @@ export default function Interviews() {
     }
   };
 
+  const handleUpdateCandidateStatus = async (jobId, studentId, status) => {
+    try {
+      await API.put(`/jobs/${jobId}/applicants/${studentId}`, { status });
+      // Update local state for interviews
+      setInterviews(prev => prev.map(item => {
+        if (item.candidateId === studentId) {
+          const updatedApps = (item.applications || []).map(app => {
+            if (app.jobId === jobId) {
+              return { ...app, status };
+            }
+            return app;
+          });
+          return { ...item, applications: updatedApps };
+        }
+        return item;
+      }));
+      alert(`Candidate ${status}`);
+    } catch (e) {
+      alert('Failed to update status.');
+    }
+  };
+
   const handleSchedule = async (e) => {
     e.preventDefault();
     if (!form.candidateId || !form.scheduledDate || !form.scheduledTime) {
@@ -115,6 +137,57 @@ export default function Interviews() {
                     <div style={{ marginTop: '0.5rem', padding: '0.5rem', background: 'rgba(16,185,129,0.06)', borderRadius: '6px', border: '1px solid rgba(16,185,129,0.15)' }}>
                       <div style={{ fontSize: '0.78rem', color: '#34d399', fontWeight: 'bold' }}>⭐ Candidate Rating: {item.feedback.rating}/10</div>
                       <p style={{ margin: '0.25rem 0 0 0', fontSize: '0.825rem', fontStyle: 'italic', opacity: 0.8 }}>Notes: {item.feedback.notes}</p>
+                    </div>
+                  )}
+
+                  {/* Connected Job Applications */}
+                  {item.applications && item.applications.length > 0 && (
+                    <div style={{ marginTop: '0.75rem', display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                      <div style={{ fontSize: '0.72rem', fontWeight: 700, color: 'var(--r-muted)', textTransform: 'uppercase', letterSpacing: '0.04em' }}>
+                        Job Applications
+                      </div>
+                      {item.applications.map(app => {
+                        const statusColor = app.status === 'shortlisted' ? '#34d399' : app.status === 'rejected' ? '#f87171' : '#a78bfa';
+                        const statusBg = app.status === 'shortlisted' ? 'rgba(16,185,129,0.12)' : app.status === 'rejected' ? 'rgba(239,68,68,0.12)' : 'rgba(124,58,237,0.12)';
+                        return (
+                          <div key={app.id} style={{ display: 'flex', alignItems: 'center', gap: '1rem', justifyContent: 'space-between', background: 'rgba(255,255,255,0.02)', padding: '0.4rem 0.6rem', borderRadius: '6px', border: '1px solid var(--r-border)', maxWidth: '420px' }}>
+                            <div style={{ display: 'flex', flexDirection: 'column' }}>
+                              <span style={{ fontSize: '0.8rem', fontWeight: 600 }}>{app.jobTitle}</span>
+                              <span style={{ 
+                                alignSelf: 'flex-start',
+                                marginTop: '0.15rem',
+                                padding: '0.1rem 0.35rem', 
+                                fontSize: '0.65rem', 
+                                borderRadius: '4px',
+                                background: statusBg,
+                                color: statusColor,
+                                textTransform: 'capitalize',
+                                fontWeight: 700
+                              }}>
+                                {app.status}
+                              </span>
+                            </div>
+                            <div style={{ display: 'flex', gap: '0.3rem' }}>
+                              <button
+                                className="rp-btn"
+                                disabled={app.status === 'shortlisted'}
+                                onClick={() => handleUpdateCandidateStatus(app.jobId, item.candidateId, 'shortlisted')}
+                                style={{ padding: '0.2rem 0.45rem', fontSize: '0.68rem', background: 'rgba(16,185,129,0.15)', color: '#34d399', border: '1px solid rgba(16,185,129,0.3)', opacity: app.status === 'shortlisted' ? 0.55 : 1, cursor: app.status === 'shortlisted' ? 'not-allowed' : 'pointer' }}
+                              >
+                                ✓ Shortlist
+                              </button>
+                              <button
+                                className="rp-btn"
+                                disabled={app.status === 'rejected'}
+                                onClick={() => handleUpdateCandidateStatus(app.jobId, item.candidateId, 'rejected')}
+                                style={{ padding: '0.2rem 0.45rem', fontSize: '0.68rem', background: 'rgba(239,68,68,0.15)', color: '#f87171', border: '1px solid rgba(239,68,68,0.3)', opacity: app.status === 'rejected' ? 0.55 : 1, cursor: app.status === 'rejected' ? 'not-allowed' : 'pointer' }}
+                              >
+                                ✕ Reject
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
