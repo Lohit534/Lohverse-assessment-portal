@@ -46,6 +46,14 @@ def create_app():
             'message': error_string
         }), 401
 
+    @app.errorhandler(Exception)
+    def handle_exception(e):
+        logger.error(f"Unhandled Exception: {e}", exc_info=True)
+        return jsonify({
+            'error': 'Internal Server Error',
+            'message': str(e) if app.config.get("DEBUG") else "An unexpected server error occurred."
+        }), 500
+
     # ── Initialize Cloudinary ──
     import cloudinary
     cloudinary.config(
@@ -135,7 +143,7 @@ def create_app():
                 if 'resume_filename' not in columns:
                     conn.execute(sa.text("ALTER TABLE users ADD COLUMN resume_filename VARCHAR(255) NULL"))
                 if 'resume_text' not in columns:
-                    conn.execute(sa.text("ALTER TABLE users ADD COLUMN resume_text LONGTEXT NULL"))
+                    conn.execute(sa.text("ALTER TABLE users ADD COLUMN resume_text TEXT NULL"))
 
         # 2. Migrate assessments table
         if 'assessments' in inspector.get_table_names():
