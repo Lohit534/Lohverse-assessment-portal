@@ -26,6 +26,32 @@ def _current_student():
     return user, None, None
 
 
+def _get_authenticated_user_manual():
+    # 1. Try Authorization header
+    auth_header = request.headers.get('Authorization')
+    token = None
+    if auth_header and auth_header.startswith('Bearer '):
+        token = auth_header.split(' ', 1)[1]
+    
+    # 2. Try query parameters fallback
+    if not token:
+        token = request.args.get('token') or request.args.get('jwt')
+        
+    if not token:
+        return None, jsonify({'error': 'Authorization required', 'message': 'Missing token'}), 401
+        
+    from flask_jwt_extended import decode_token
+    try:
+        decoded = decode_token(token)
+        user_id = int(decoded['sub'])
+        current_user = User.query.get(user_id)
+        if not current_user:
+            return None, jsonify({'error': 'User not found'}), 404
+        return current_user, None, None
+    except Exception as e:
+        return None, jsonify({'error': 'Invalid token', 'message': str(e)}), 401
+
+
 # ── GET /api/student/profile ─────────────────────────────────
 @student_bp.route('/profile', methods=['GET'])
 @jwt_required()
@@ -144,24 +170,10 @@ def upload_resume():
 
 # ── GET /api/student/resume ──────────────────────────────────
 @student_bp.route('/resume', methods=['GET'])
-@jwt_required(optional=True)
 def download_resume():
-    user_id_str = get_jwt_identity()
-    if user_id_str:
-        current_user = User.query.get(int(user_id_str))
-    else:
-        token = request.args.get('token') or request.args.get('jwt')
-        if not token:
-            return jsonify({'error': 'Authorization token required'}), 401
-        from flask_jwt_extended import decode_token
-        try:
-            decoded = decode_token(token)
-            current_user = User.query.get(int(decoded['sub']))
-        except Exception:
-            return jsonify({'error': 'Invalid token'}), 401
-
-    if not current_user:
-        return jsonify({'error': 'User not found'}), 404
+    current_user, err_resp, code = _get_authenticated_user_manual()
+    if err_resp:
+        return err_resp, code
 
     if current_user.role == 'recruiter':
         target_id = request.args.get('userId')
@@ -200,24 +212,10 @@ def download_resume():
 
 # ── GET /api/student/resume/view ─────────────────────────────
 @student_bp.route('/resume/view', methods=['GET'])
-@jwt_required(optional=True)
 def view_resume():
-    user_id_str = get_jwt_identity()
-    if user_id_str:
-        current_user = User.query.get(int(user_id_str))
-    else:
-        token = request.args.get('token') or request.args.get('jwt')
-        if not token:
-            return jsonify({'error': 'Authorization token required'}), 401
-        from flask_jwt_extended import decode_token
-        try:
-            decoded = decode_token(token)
-            current_user = User.query.get(int(decoded['sub']))
-        except Exception:
-            return jsonify({'error': 'Invalid token'}), 401
-
-    if not current_user:
-        return jsonify({'error': 'User not found'}), 404
+    current_user, err_resp, code = _get_authenticated_user_manual()
+    if err_resp:
+        return err_resp, code
 
     if current_user.role == 'recruiter':
         target_id = request.args.get('userId')
