@@ -142,8 +142,7 @@ export default function Resume() {
   const handlePreview = () => {
     const cloudinaryUrl = user?.resumeFilename;
     if (!cloudinaryUrl) { setError('No resume found'); return; }
-    const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(cloudinaryUrl)}&embedded=false`;
-    window.open(viewerUrl, '_blank', 'noopener,noreferrer');
+    window.open(cloudinaryUrl, '_blank', 'noopener,noreferrer');
   };
 
   // Profile completeness calculations based on active user context

@@ -93,9 +93,7 @@ export default function CandidateDetail() {
   const viewResume = () => {
     const cloudinaryUrl = candidate?.resumeFilename;
     if (!cloudinaryUrl) { setError('No resume found'); return; }
-    // Use Google Docs Viewer to render PDF inline (avoids Cloudinary raw auto-download)
-    const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(cloudinaryUrl)}&embedded=false`;
-    window.open(viewerUrl, '_blank', 'noopener,noreferrer');
+    window.open(cloudinaryUrl, '_blank', 'noopener,noreferrer');
   };
 
   if (loading) return <PageLoader label="Loading candidate profile…" />;

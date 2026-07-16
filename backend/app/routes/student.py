@@ -91,6 +91,15 @@ def upload_resume():
     if not user:
         return jsonify({'error': 'User not found'}), 404
 
+    # Verify Cloudinary configuration variables
+    cloud_name = current_app.config.get('CLOUDINARY_CLOUD_NAME')
+    api_key    = current_app.config.get('CLOUDINARY_API_KEY')
+    api_secret = current_app.config.get('CLOUDINARY_API_SECRET')
+    if not cloud_name or not api_key or not api_secret:
+        return jsonify({
+            'error': 'Cloudinary is not configured on the server. Please set the environment variables: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET'
+        }), 500
+
     if 'resume' not in request.files:
         return jsonify({'error': 'No resume file provided'}), 400
 
@@ -118,7 +127,7 @@ def upload_resume():
     try:
         upload_result = cloudinary.uploader.upload(
             file,
-            resource_type="raw",
+            resource_type="auto",
             folder="lohverse/resumes",
             public_id=f"{user.email.split('@')[0]}_resume"
         )
@@ -155,8 +164,26 @@ def download_resume():
     if not user or not user.resume_filename:
         return jsonify({'error': 'No resume found'}), 404
 
-    # Redirect to secure Cloudinary URL directly
-    return redirect(user.resume_filename)
+    # Stream the PDF file from Cloudinary directly to bypass CORS redirect issues with Authorization headers
+    import requests
+    from flask import Response
+
+    try:
+        r = requests.get(user.resume_filename, stream=True)
+        r.raise_for_status()
+
+        def generate():
+            for chunk in r.iter_content(chunk_size=4096):
+                yield chunk
+
+        headers = {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': f'attachment; filename="{user.full_name}_Resume.pdf"'
+        }
+        return Response(generate(), headers=headers)
+    except Exception as e:
+        # Fall back to redirect if streaming fails
+        return redirect(user.resume_filename)
 
 
 # ── GET /api/student/resume/view ─────────────────────────────
@@ -181,8 +208,26 @@ def view_resume():
     if not user or not user.resume_filename:
         return jsonify({'error': 'No resume found'}), 404
 
-    # Redirect to secure Cloudinary URL directly
-    return redirect(user.resume_filename)
+    # Stream the PDF file from Cloudinary inline directly
+    import requests
+    from flask import Response
+
+    try:
+        r = requests.get(user.resume_filename, stream=True)
+        r.raise_for_status()
+
+        def generate():
+            for chunk in r.iter_content(chunk_size=4096):
+                yield chunk
+
+        headers = {
+            'Content-Type': 'application/pdf',
+            'Content-Disposition': 'inline'
+        }
+        return Response(generate(), headers=headers)
+    except Exception as e:
+        # Fall back to redirect if streaming fails
+        return redirect(user.resume_filename)
 
 
 # ── GET /api/student/applications ────────────────────────────

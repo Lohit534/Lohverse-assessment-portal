@@ -641,14 +641,39 @@ export default function JobApplicants() {
                 padding: '1rem 1.5rem', background: '#12112a', borderBottom: '1px solid var(--r-border)',
                 display: 'flex', justifyContent: 'space-between', alignItems: 'center'
               }}>
-                <div>
-                  <span style={{ fontSize: '0.72rem', color: 'var(--r-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Candidate Resume</span>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'white', marginTop: 2 }}>{resumeModalCandidate.fullName}</h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                  <div>
+                    <span style={{ fontSize: '0.72rem', color: 'var(--r-muted)', textTransform: 'uppercase', fontWeight: 700 }}>Candidate Resume</span>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'white', marginTop: 2 }}>{resumeModalCandidate.fullName}</h3>
+                  </div>
+                  <a
+                    href={resumeModalCandidate.resumeFilename}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="rp-btn"
+                    style={{
+                      padding: '0.35rem 0.75rem',
+                      fontSize: '0.75rem',
+                      background: 'rgba(124,58,237,0.1)',
+                      color: 'var(--r-accent-light)',
+                      border: '1px solid rgba(124,58,237,0.3)',
+                      borderRadius: '6px',
+                      textDecoration: 'none',
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      cursor: 'pointer',
+                      fontWeight: 600,
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    Open Original ↗
+                  </a>
                 </div>
               </div>
               <div style={{ flex: 1, position: 'relative' }}>
                 <iframe
-                  src={`https://docs.google.com/viewer?url=${encodeURIComponent(resumeModalCandidate.resumeFilename)}&embedded=true`}
+                  src={resumeModalCandidate.resumeFilename}
                   style={{ width: '100%', height: '100%', border: 'none' }}
                   title="Candidate Resume"
                 />

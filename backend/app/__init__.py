@@ -73,7 +73,8 @@ def create_app():
 
     cors.init_app(app, resources={
         r"/api/*": {
-            "origins": frontend_urls
+            "origins": "*",
+            "allow_headers": ["Content-Type", "Authorization", "Access-Control-Allow-Origin"]
         }
     })
 

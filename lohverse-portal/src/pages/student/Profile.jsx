@@ -111,8 +111,7 @@ export default function Profile() {
       setResumeError('No resume found');
       return;
     }
-    const viewerUrl = `https://docs.google.com/viewer?url=${encodeURIComponent(cloudinaryUrl)}&embedded=false`;
-    window.open(viewerUrl, '_blank', 'noopener,noreferrer');
+    window.open(cloudinaryUrl, '_blank', 'noopener,noreferrer');
   };
 
   const handleDownload = async () => {

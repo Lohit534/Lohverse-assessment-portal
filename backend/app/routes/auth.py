@@ -62,13 +62,22 @@ def register():
             file.seek(0)
             resume_text = extract_text_from_pdf(file)
             
-            # Upload to Cloudinary
+            # Verify Cloudinary configuration variables
             import cloudinary.uploader
+            from flask import current_app
+            cloud_name = current_app.config.get('CLOUDINARY_CLOUD_NAME')
+            api_key    = current_app.config.get('CLOUDINARY_API_KEY')
+            api_secret = current_app.config.get('CLOUDINARY_API_SECRET')
+            if not cloud_name or not api_key or not api_secret:
+                return jsonify({
+                    'error': 'Cloudinary is not configured on the server. Please set the environment variables: CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET'
+                }), 500
+
             file.seek(0)
             try:
                 upload_result = cloudinary.uploader.upload(
                     file,
-                    resource_type="raw",
+                    resource_type="auto",
                     folder="lohverse/resumes",
                     public_id=f"{data['email'].split('@')[0]}_resume"
                 )
