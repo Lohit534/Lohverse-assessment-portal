@@ -77,7 +77,7 @@ def register():
             try:
                 upload_result = cloudinary.uploader.upload(
                     file,
-                    resource_type="auto",
+                    resource_type="raw",
                     folder="lohverse/resumes",
                     public_id=f"{data['email'].split('@')[0]}_resume"
                 )

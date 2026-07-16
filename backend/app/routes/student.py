@@ -127,7 +127,7 @@ def upload_resume():
     try:
         upload_result = cloudinary.uploader.upload(
             file,
-            resource_type="auto",
+            resource_type="raw",
             folder="lohverse/resumes",
             public_id=f"{user.email.split('@')[0]}_resume"
         )
@@ -144,10 +144,22 @@ def upload_resume():
 
 # ── GET /api/student/resume ──────────────────────────────────
 @student_bp.route('/resume', methods=['GET'])
-@jwt_required()
+@jwt_required(optional=True)
 def download_resume():
-    user_id = int(get_jwt_identity())
-    current_user = User.query.get(user_id)
+    user_id_str = get_jwt_identity()
+    if user_id_str:
+        current_user = User.query.get(int(user_id_str))
+    else:
+        token = request.args.get('token') or request.args.get('jwt')
+        if not token:
+            return jsonify({'error': 'Authorization token required'}), 401
+        from flask_jwt_extended import decode_token
+        try:
+            decoded = decode_token(token)
+            current_user = User.query.get(int(decoded['sub']))
+        except Exception:
+            return jsonify({'error': 'Invalid token'}), 401
+
     if not current_user:
         return jsonify({'error': 'User not found'}), 404
 
@@ -188,10 +200,22 @@ def download_resume():
 
 # ── GET /api/student/resume/view ─────────────────────────────
 @student_bp.route('/resume/view', methods=['GET'])
-@jwt_required()
+@jwt_required(optional=True)
 def view_resume():
-    user_id = int(get_jwt_identity())
-    current_user = User.query.get(user_id)
+    user_id_str = get_jwt_identity()
+    if user_id_str:
+        current_user = User.query.get(int(user_id_str))
+    else:
+        token = request.args.get('token') or request.args.get('jwt')
+        if not token:
+            return jsonify({'error': 'Authorization token required'}), 401
+        from flask_jwt_extended import decode_token
+        try:
+            decoded = decode_token(token)
+            current_user = User.query.get(int(decoded['sub']))
+        except Exception:
+            return jsonify({'error': 'Invalid token'}), 401
+
     if not current_user:
         return jsonify({'error': 'User not found'}), 404
 

@@ -647,7 +647,7 @@ export default function JobApplicants() {
                     <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: 'white', marginTop: 2 }}>{resumeModalCandidate.fullName}</h3>
                   </div>
                   <a
-                    href={resumeModalCandidate.resumeFilename}
+                    href={`${import.meta.env.VITE_API_BASE_URL || 'https://lohverse-assessment-portal.onrender.com/api'}/student/resume/view?userId=${resumeModalCandidate.id}&jwt=${localStorage.getItem('recruiter_accessToken')}`}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="rp-btn"
@@ -673,7 +673,7 @@ export default function JobApplicants() {
               </div>
               <div style={{ flex: 1, position: 'relative' }}>
                 <iframe
-                  src={resumeModalCandidate.resumeFilename}
+                  src={`${import.meta.env.VITE_API_BASE_URL || 'https://lohverse-assessment-portal.onrender.com/api'}/student/resume/view?userId=${resumeModalCandidate.id}&jwt=${localStorage.getItem('recruiter_accessToken')}`}
                   style={{ width: '100%', height: '100%', border: 'none' }}
                   title="Candidate Resume"
                 />

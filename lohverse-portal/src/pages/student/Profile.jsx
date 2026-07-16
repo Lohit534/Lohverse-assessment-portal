@@ -106,12 +106,13 @@ export default function Profile() {
   };
 
   const handlePreview = () => {
-    const cloudinaryUrl = user?.resumeFilename;
-    if (!cloudinaryUrl) {
+    if (!user?.resumeFilename) {
       setResumeError('No resume found');
       return;
     }
-    window.open(cloudinaryUrl, '_blank', 'noopener,noreferrer');
+    const token = localStorage.getItem('accessToken');
+    const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://lohverse-assessment-portal.onrender.com/api';
+    window.open(`${apiBase}/student/resume/view?jwt=${token}`, '_blank', 'noopener,noreferrer');
   };
 
   const handleDownload = async () => {
