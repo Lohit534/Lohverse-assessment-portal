@@ -94,7 +94,21 @@ def create_app():
     # ── Health check ──
     @app.route('/api/health')
     def health():
-        return {'status': 'ok', 'service': 'Lohverse API', 'version': '1.0.0'}, 200
+        import sqlalchemy as sa
+        try:
+            # Query database to verify connection and keep Neon PostgreSQL compute node awake
+            db.session.execute(sa.text("SELECT 1"))
+            db_status = "connected"
+        except Exception as e:
+            logger.error(f"Database health check failed: {e}")
+            db_status = f"error: {str(e)}"
+            
+        return {
+            'status': 'ok',
+            'service': 'Lohverse API',
+            'version': '1.0.0',
+            'database': db_status
+        }, 200
 
     # ── Error handlers ──
     @app.errorhandler(404)
