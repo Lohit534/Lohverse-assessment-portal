@@ -193,7 +193,8 @@ def download_resume():
     from flask import Response
 
     try:
-        r = requests.get(user.resume_filename, stream=True)
+        # verify=False bypasses local SSL chain verification issues on host containers (e.g. Render)
+        r = requests.get(user.resume_filename, stream=True, verify=False)
         r.raise_for_status()
 
         def generate():
@@ -206,8 +207,9 @@ def download_resume():
         }
         return Response(generate(), headers=headers)
     except Exception as e:
-        # Fall back to redirect if streaming fails
-        return redirect(user.resume_filename)
+        from flask import current_app
+        current_app.logger.error(f"Resume streaming failed: {e}", exc_info=True)
+        return jsonify({'error': f'Failed to stream resume: {str(e)}'}), 500
 
 
 # ── GET /api/student/resume/view ─────────────────────────────
@@ -235,7 +237,8 @@ def view_resume():
     from flask import Response
 
     try:
-        r = requests.get(user.resume_filename, stream=True)
+        # verify=False bypasses local SSL chain verification issues on host containers (e.g. Render)
+        r = requests.get(user.resume_filename, stream=True, verify=False)
         r.raise_for_status()
 
         def generate():
@@ -248,8 +251,9 @@ def view_resume():
         }
         return Response(generate(), headers=headers)
     except Exception as e:
-        # Fall back to redirect if streaming fails
-        return redirect(user.resume_filename)
+        from flask import current_app
+        current_app.logger.error(f"Resume view streaming failed: {e}", exc_info=True)
+        return jsonify({'error': f'Failed to stream resume: {str(e)}'}), 500
 
 
 # ── GET /api/student/applications ────────────────────────────
