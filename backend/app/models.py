@@ -74,7 +74,7 @@ class User(db.Model):
             'role':           self.role,
             'hasResume':      bool(self.resume_filename),
             'resumeFilename': self.resume_filename,
-            'createdAt':      self.created_at.isoformat(),
+            'createdAt':      self.created_at.isoformat() if self.created_at else None,
         }
 
     def __repr__(self):
@@ -169,7 +169,7 @@ class Job(db.Model):
             'salaryRange':    self.salary_range,
             'deadline':       self.deadline.isoformat() if self.deadline else None,
             'status':         self.status,
-            'createdAt':      self.created_at.isoformat(),
+            'createdAt':      self.created_at.isoformat() if self.created_at else None,
         }
 
 
@@ -247,7 +247,7 @@ class Assessment(db.Model):
             'questionCount': len(self.questions) + len(self.coding_questions),
             'mcqCount': len(self.questions),
             'codingCount': len(self.coding_questions),
-            'createdAt':    self.created_at.isoformat(),
+            'createdAt':    self.created_at.isoformat() if self.created_at else None,
         }
 
 
@@ -303,7 +303,7 @@ class Application(db.Model):
             'studentId': self.student_id,
             'jobId':     self.job_id,
             'status':    self.status,
-            'appliedAt': self.applied_at.isoformat(),
+            'appliedAt': self.applied_at.isoformat() if self.applied_at else None,
         }
 
 
@@ -345,7 +345,7 @@ class AssessmentAttempt(db.Model):
             'rank':         self.rank,
             'passed':       self.passed,
             'status':       self.status,
-            'startedAt':    self.started_at.isoformat(),
+            'startedAt':    self.started_at.isoformat() if self.started_at else None,
             'completedAt':  self.completed_at.isoformat() if self.completed_at else None,
         }
 
@@ -405,7 +405,7 @@ class CodingQuestion(db.Model):
             'templateCpp':        self.template_cpp,
             'templateJavascript': self.template_javascript,
             'marks':              self.marks,
-            'createdAt':          self.created_at.isoformat(),
+            'createdAt':          self.created_at.isoformat() if self.created_at else None,
         }
         if include_test_cases:
             d['testCases'] = self.test_cases
@@ -440,7 +440,7 @@ class CodingSubmission(db.Model):
             'totalCases':       self.total_cases,
             'score':            self.score,
             'runtimeMs':        self.runtime_ms,
-            'createdAt':        self.created_at.isoformat(),
+            'createdAt':        self.created_at.isoformat() if self.created_at else None,
         }
 
 
@@ -471,7 +471,7 @@ class CandidateRanking(db.Model):
             'skillMatchPct':          self.skill_match_pct,
             'profileCompletenessPct': self.profile_completeness_pct,
             'overallScore':           self.overall_score,
-            'updatedAt':              self.updated_at.isoformat(),
+            'updatedAt':              self.updated_at.isoformat() if self.updated_at else None,
         }
 
 
@@ -501,7 +501,7 @@ class JitsiInterview(db.Model):
             'scheduledDate': self.scheduled_date,
             'scheduledTime': self.scheduled_time,
             'status':        self.status,
-            'createdAt':     self.created_at.isoformat(),
+            'createdAt':     self.created_at.isoformat() if self.created_at else None,
         }
 
 
@@ -571,7 +571,7 @@ class AIAnswer(db.Model):
             'aiQuestionId':  self.ai_question_id,
             'transcript':    self.transcript,
             'audioDurationSecs': self.audio_duration_secs,
-            'createdAt':     self.created_at.isoformat(),
+            'createdAt':     self.created_at.isoformat() if self.created_at else None,
         }
 
 
@@ -598,7 +598,7 @@ class AIResult(db.Model):
             'confidenceScore':    self.confidence_score,
             'finalRecommendation': self.final_recommendation,
             'feedbackReport':     self.feedback_report,
-            'gradedAt':           self.graded_at.isoformat(),
+            'gradedAt':           self.graded_at.isoformat() if self.graded_at else None,
         }
 
 
@@ -642,7 +642,7 @@ class Notification(db.Model):
             'title':     self.title,
             'message':   self.message,
             'isRead':    self.is_read,
-            'createdAt': self.created_at.isoformat(),
+            'createdAt': self.created_at.isoformat() if self.created_at else None,
         }
 
 
