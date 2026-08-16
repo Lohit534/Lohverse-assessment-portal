@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../../api/axios';
-import { useAuth } from '../../context/AuthContext';
 import '../StudentDashboard.css';
 
 export default function Courses() {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,18 +36,7 @@ export default function Courses() {
             </div>
           </div>
           <div className="lv-nav__actions" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-            <button className="lv-btn-ghost" onClick={() => navigate('/')} style={{ color: '#a78bfa', background: 'none', border: 'none', cursor: 'pointer' }}>Home</button>
-            {user ? (
-              <>
-                <button className="lv-btn-ghost" onClick={() => navigate('/dashboard/profile')} style={{ color: '#fff', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer' }}>My Dashboard</button>
-                <button className="lv-btn-solid" onClick={logout} style={{ background: '#ef4444', color: '#fff', padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer' }}>Log Out</button>
-              </>
-            ) : (
-              <>
-                <button className="lv-btn-ghost" onClick={() => navigate('/login')} style={{ color: '#fff', background: 'none', border: 'none', cursor: 'pointer' }}>Sign In</button>
-                <button className="lv-btn-solid" onClick={() => navigate('/register')} style={{ background: '#7c3aed', color: '#fff', padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer', fontWeight: '500' }}>Register</button>
-              </>
-            )}
+            <button className="lv-btn-solid" onClick={() => navigate('/')} style={{ background: '#7c3aed', color: '#fff', padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer', fontWeight: '500' }}>Back to Home</button>
           </div>
         </div>
       </header>

@@ -203,7 +203,7 @@ class Course(db.Model):
             'instructor':  self.instructor,
             'imageUrl':    self.image_url,
             'syllabus':    syllabus_data,
-            'createdAt':   self.created_at.isoformat()
+            'createdAt':   self.created_at.isoformat() if self.created_at else None
         }
 
 
@@ -526,7 +526,7 @@ class AIInterview(db.Model):
             'skills':      self.skills,
             'difficulty':  self.difficulty,
             'status':      self.status,
-            'createdAt':   self.created_at.isoformat(),
+            'createdAt':   self.created_at.isoformat() if self.created_at else None,
         }
 
 
@@ -619,7 +619,7 @@ class LiveFeedback(db.Model):
             'interviewId': self.interview_id,
             'rating':      self.rating,
             'notes':       self.notes,
-            'createdAt':   self.created_at.isoformat(),
+            'createdAt':   self.created_at.isoformat() if self.created_at else None,
         }
 
 
