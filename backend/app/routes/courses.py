@@ -36,8 +36,7 @@ def list_courses():
 def get_course_detail(course_id):
     course = Course.query.get_or_404(course_id)
     d = course.to_dict()
-    linked_assessments = Assessment.query.filter_by(course_id=course.id).all()
-    d['assessments'] = [a.to_dict() for a in linked_assessments]
+
     return jsonify({'course': d}), 200
 
 # ── RECRUITER/ADMIN ENDPOINTS ─────────────────────────────────
@@ -67,9 +66,7 @@ def create_course():
     db.session.add(course)
     db.session.flush()
     
-    assessment_ids = data.get('assessmentIds') or []
-    if assessment_ids:
-        Assessment.query.filter(Assessment.id.in_(assessment_ids)).update({Assessment.course_id: course.id}, synchronize_session=False)
+
         
     db.session.commit()
     return jsonify({'message': 'Course created successfully', 'course': course.to_dict()}), 201
@@ -101,11 +98,7 @@ def update_course(course_id):
     if 'syllabus' in data:
         course.syllabus = json.dumps(data['syllabus'] or [])
         
-    if 'assessmentIds' in data:
-        Assessment.query.filter_by(course_id=course.id).update({Assessment.course_id: None}, synchronize_session=False)
-        new_ids = data['assessmentIds'] or []
-        if new_ids:
-            Assessment.query.filter(Assessment.id.in_(new_ids)).update({Assessment.course_id: course.id}, synchronize_session=False)
+
             
     db.session.commit()
     return jsonify({'message': 'Course updated successfully', 'course': course.to_dict()}), 200

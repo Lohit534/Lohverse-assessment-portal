@@ -238,10 +238,10 @@ Optimize recursions using Memoization (Top-Down cache) or Tabulation (Bottom-Up 
             "instructor": "Dr. Lohit AI",
             "imageUrl": "",
             "syllabus": [
-                {"title": "Introduction to Python Basics", "description": "Learn variable declarations, basic string methods, numbers, and basic boolean comparisons.", "topics": "Variables, strings, expressions, math operators", "studyMaterial": py_ch1},
-                {"title": "Control Flow & Functions", "description": "Write reusable logic blocks with conditionals, for-loops, while-loops, and functional returns.", "topics": "if/else, loops, def keywords, return statements", "studyMaterial": py_ch2},
-                {"title": "Numerical Computing & Data Analytics", "description": "Step into multidimensional arrays with NumPy and clean structured datasets using Pandas.", "topics": "NumPy arrays, Pandas DataFrames, indexing, cleaning data", "studyMaterial": py_ch3},
-                {"title": "Scikit-Learn Regression & Classification", "description": "Train your first supervised Machine Learning algorithms using linear regression and decision trees.", "topics": "Train/test split, model.fit(), evaluation metrics", "studyMaterial": py_ch4}
+                {"title": "Introduction to Python Basics", "description": "Learn variable declarations, basic string methods, numbers, and basic boolean comparisons.", "topics": "Variables, strings, expressions, math operators", "studyMaterial": py_ch1, "gfgLink": "https://www.geeksforgeeks.org/python-variables/", "leetcodeLinks": "https://leetcode.com/problems/two-sum/,https://leetcode.com/problems/palindrome-number/"},
+                {"title": "Control Flow & Functions", "description": "Write reusable logic blocks with conditionals, for-loops, while-loops, and functional returns.", "topics": "if/else, loops, def keywords, return statements", "studyMaterial": py_ch2, "gfgLink": "https://www.geeksforgeeks.org/decision-making-python-else-nested-elif/", "leetcodeLinks": "https://leetcode.com/problems/fizz-buzz/"},
+                {"title": "Numerical Computing & Data Analytics", "description": "Step into multidimensional arrays with NumPy and clean structured datasets using Pandas.", "topics": "NumPy arrays, Pandas DataFrames, indexing, cleaning data", "studyMaterial": py_ch3, "gfgLink": "https://www.geeksforgeeks.org/numpy-tutorial/", "leetcodeLinks": "https://leetcode.com/problems/majority-element/"},
+                {"title": "Scikit-Learn Regression & Classification", "description": "Train your first supervised Machine Learning algorithms using linear regression and decision trees.", "topics": "Train/test split, model.fit(), evaluation metrics", "studyMaterial": py_ch4, "gfgLink": "https://www.geeksforgeeks.org/supervised-unsupervised-learning/", "leetcodeLinks": "https://leetcode.com/problems/single-number/"}
             ]
         },
         {
@@ -252,10 +252,10 @@ Optimize recursions using Memoization (Top-Down cache) or Tabulation (Bottom-Up 
             "instructor": "Prof. Sarah Dev",
             "imageUrl": "",
             "syllabus": [
-                {"title": "Semantic HTML5 & Flexbox/Grid", "description": "Structure layouts according to modern browser accessibility guidelines and style responsive grids.", "topics": "Tags, Flexbox directions, grid definitions, media queries", "studyMaterial": web_ch1},
-                {"title": "Asynchronous JavaScript (ES6+)", "description": "Understand how JavaScript engines handle non-blocking events, Promises, and fetch API operations.", "topics": "Arrow functions, destructuring, promises, async/await", "studyMaterial": web_ch2},
-                {"title": "React Component State & Hooks", "description": "Develop dynamic client interfaces using functional components, useState, useEffect, and custom hooks.", "topics": "Components, props, state, hooks, virtual DOM", "studyMaterial": web_ch3},
-                {"title": "Node.js REST APIs with Express & Databases", "description": "Spin up a local backend server to process JSON payloads, map request parameters, and save to database.", "topics": "Express routers, CORS, middlewares, SQL queries", "studyMaterial": web_ch4}
+                {"title": "Semantic HTML5 & Flexbox/Grid", "description": "Structure layouts according to modern browser accessibility guidelines and style responsive grids.", "topics": "Tags, Flexbox directions, grid definitions, media queries", "studyMaterial": web_ch1, "gfgLink": "https://www.geeksforgeeks.org/html-semantic-elements/", "leetcodeLinks": ""},
+                {"title": "Asynchronous JavaScript (ES6+)", "description": "Understand how JavaScript engines handle non-blocking events, Promises, and fetch API operations.", "topics": "Arrow functions, destructuring, promises, async/await", "studyMaterial": web_ch2, "gfgLink": "https://www.geeksforgeeks.org/javascript-promises/", "leetcodeLinks": ""},
+                {"title": "React Component State & Hooks", "description": "Develop dynamic client interfaces using functional components, useState, useEffect, and custom hooks.", "topics": "Components, props, state, hooks, virtual DOM", "studyMaterial": web_ch3, "gfgLink": "https://www.geeksforgeeks.org/reactjs-state-in-react/", "leetcodeLinks": ""},
+                {"title": "Node.js REST APIs with Express & Databases", "description": "Spin up a local backend server to process JSON payloads, map request parameters, and save to database.", "topics": "Express routers, CORS, middlewares, SQL queries", "studyMaterial": web_ch4, "gfgLink": "https://www.geeksforgeeks.org/express-js-router/", "leetcodeLinks": ""}
             ]
         },
         {
@@ -266,10 +266,10 @@ Optimize recursions using Memoization (Top-Down cache) or Tabulation (Bottom-Up 
             "instructor": "Alex Chen (M.Tech)",
             "imageUrl": "",
             "syllabus": [
-                {"title": "Array Manipulations & Sliding Window", "description": "Optimize search bounds on array listings using double-pointers and dynamic resizing windows.", "topics": "Two-pointer, sliding window, prefix sums, binary search", "studyMaterial": dsa_ch1},
-                {"title": "Stacks, Queues & Linked Lists", "description": "Build custom linear collections from scratch and handle pointer adjustments cleanly in-memory.", "topics": "Singly linked list, node insertions, stack/queue push/pop", "studyMaterial": dsa_ch2},
-                {"title": "Recursion & Binary Tree Traversals", "description": "Write recursive call stacks to traverse nodes in depth-first (in-order, pre-order, post-order) layouts.", "topics": "Tree structures, recursion limits, BST operations", "studyMaterial": dsa_ch3},
-                {"title": "Dynamic Programming & Graphs", "description": "Bypass redundant computes via memoization arrays and navigate graph networks using BFS and DFS.", "topics": "Memoization, tabulation, adjacency lists, shortest path", "studyMaterial": dsa_ch4}
+                {"title": "Array Manipulations & Sliding Window", "description": "Optimize search bounds on array listings using double-pointers and dynamic resizing windows.", "topics": "Two-pointer, sliding window, prefix sums, binary search", "studyMaterial": dsa_ch1, "gfgLink": "https://www.geeksforgeeks.org/two-pointers-technique/", "leetcodeLinks": "https://leetcode.com/problems/container-with-most-water/,https://leetcode.com/problems/minimum-size-subarray-sum/"},
+                {"title": "Stacks, Queues & Linked Lists", "description": "Build custom linear collections from scratch and handle pointer adjustments cleanly in-memory.", "topics": "Singly linked list, node insertions, stack/queue push/pop", "studyMaterial": dsa_ch2, "gfgLink": "https://www.geeksforgeeks.org/linked-list-data-structure/", "leetcodeLinks": "https://leetcode.com/problems/reverse-linked-list/,https://leetcode.com/problems/valid-parentheses/"},
+                {"title": "Recursion & Binary Tree Traversals", "description": "Write recursive call stacks to traverse nodes in depth-first (in-order, pre-order, post-order) layouts.", "topics": "Tree structures, recursion limits, BST operations", "studyMaterial": dsa_ch3, "gfgLink": "https://www.geeksforgeeks.org/binary-tree-data-structure/", "leetcodeLinks": "https://leetcode.com/problems/maximum-depth-of-binary-tree/,https://leetcode.com/problems/binary-tree-inorder-traversal/"},
+                {"title": "Dynamic Programming & Graphs", "description": "Bypass redundant computes via memoization arrays and navigate graph networks using BFS and DFS.", "topics": "Memoization, tabulation, adjacency lists, shortest path", "studyMaterial": dsa_ch4, "gfgLink": "https://www.geeksforgeeks.org/introduction-to-dynamic-programming/", "leetcodeLinks": "https://leetcode.com/problems/climbing-stairs/,https://leetcode.com/problems/number-of-islands/"}
             ]
         }
     ]

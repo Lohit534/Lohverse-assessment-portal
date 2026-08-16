@@ -5,7 +5,6 @@ import '../RecruiterDashboard.css';
 
 export default function CourseManager() {
   const [courses, setCourses] = useState([]);
-  const [assessments, setAssessments] = useState([]);
   const [loading, setLoading] = useState(true);
   
   const [isEditing, setIsEditing] = useState(false);
@@ -17,19 +16,14 @@ export default function CourseManager() {
   const [instructor, setInstructor] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [syllabus, setSyllabus] = useState([]);
-  const [selectedAssessmentIds, setSelectedAssessmentIds] = useState([]);
 
   const loadData = () => {
     setLoading(true);
-    Promise.all([
-      API.get('/courses'),
-      API.get('/assessments/')
-    ])
-      .then(([cRes, aRes]) => {
+    API.get('/courses')
+      .then((cRes) => {
         setCourses(cRes.data.courses || []);
-        setAssessments(aRes.data.assessments || []);
       })
-      .catch(() => toast.error('Failed to load courses or assessments'))
+      .catch(() => toast.error('Failed to load courses'))
       .finally(() => setLoading(false));
   };
 
@@ -45,7 +39,6 @@ export default function CourseManager() {
     setInstructor('');
     setImageUrl('');
     setSyllabus([]);
-    setSelectedAssessmentIds([]);
   };
 
   const openEditForm = async (courseId) => {
@@ -62,7 +55,6 @@ export default function CourseManager() {
       setInstructor(c.instructor || '');
       setImageUrl(c.imageUrl || '');
       setSyllabus(c.syllabus || []);
-      setSelectedAssessmentIds((c.assessments || []).map(a => a.id));
     } catch (e) {
       toast.error('Failed to load course details');
     } finally {
@@ -71,7 +63,7 @@ export default function CourseManager() {
   };
 
   const handleAddChapter = () => {
-    setSyllabus(prev => [...prev, { title: '', description: '', topics: '' }]);
+    setSyllabus(prev => [...prev, { title: '', description: '', topics: '', studyMaterial: '', gfgLink: '', leetcodeLinks: '' }]);
   };
 
   const handleRemoveChapter = (idx) => {
@@ -86,12 +78,6 @@ export default function CourseManager() {
     });
   };
 
-  const handleAssessmentToggle = (id) => {
-    setSelectedAssessmentIds(prev => 
-      prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]
-    );
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!title.trim()) return toast.error('Course title is required');
@@ -103,8 +89,7 @@ export default function CourseManager() {
       duration,
       instructor,
       imageUrl,
-      syllabus,
-      assessmentIds: selectedAssessmentIds
+      syllabus
     };
 
     try {
@@ -123,7 +108,7 @@ export default function CourseManager() {
   };
 
   const handleDelete = async (courseId) => {
-    if (!window.confirm('Delete this course? Linked assessments will be unlinked.')) return;
+    if (!window.confirm('Delete this course?')) return;
     try {
       await API.delete(`/recruiter/courses/${courseId}`);
       toast.success('Course deleted successfully');
@@ -140,7 +125,7 @@ export default function CourseManager() {
       <div className="rp-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
         <div>
           <h1 className="rp-title">📚 Course Management</h1>
-          <p className="rp-sub">Create curricula and map assessments to custom learning tracks.</p>
+          <p className="rp-sub">Create curricula, add GFG references, and map LeetCode practice problems.</p>
         </div>
         {!isEditing && (
           <button className="rp-btn-blue" onClick={openCreateForm}>
@@ -200,9 +185,9 @@ export default function CourseManager() {
             {syllabus.length === 0 ? (
               <p style={{ color: '#9ca3af', fontSize: '0.9rem', fontStyle: 'italic' }}>No chapters added yet. Click "Add Chapter" to create your curriculum.</p>
             ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 {syllabus.map((chapter, idx) => (
-                  <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '1rem', position: 'relative' }}>
+                  <div key={idx} style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '8px', padding: '1.25rem', position: 'relative' }}>
                     <button type="button" onClick={() => handleRemoveChapter(idx)} style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', background: 'none', border: 'none', color: '#ef4444', fontSize: '1.2rem', cursor: 'pointer' }}>
                       ✕
                     </button>
@@ -211,28 +196,20 @@ export default function CourseManager() {
                       <input type="text" placeholder="Chapter Title" className="rp-input" value={chapter.title} onChange={e => handleChapterChange(idx, 'title', e.target.value)} />
                       <textarea placeholder="Brief overview of chapter goals" className="rp-textarea" rows="2" value={chapter.description} onChange={e => handleChapterChange(idx, 'description', e.target.value)} />
                       <input type="text" placeholder="Topics covered (comma-separated)" className="rp-input" value={chapter.topics} onChange={e => handleChapterChange(idx, 'topics', e.target.value)} />
-                      <textarea placeholder="Chapter Study Material (text / code snippets for candidate tutorials)" className="rp-textarea" rows="3" value={chapter.studyMaterial || ''} onChange={e => handleChapterChange(idx, 'studyMaterial', e.target.value)} />
+                      <textarea placeholder="Chapter Study Material (text / code snippets for candidate tutorials)" className="rp-textarea" rows="4" value={chapter.studyMaterial || ''} onChange={e => handleChapterChange(idx, 'studyMaterial', e.target.value)} />
+                      
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', marginTop: '0.25rem' }}>
+                        <div className="rp-form-group" style={{ margin: 0 }}>
+                          <label className="rp-label" style={{ fontSize: '0.75rem', color: '#a78bfa' }}>GeeksforGeeks Reference Link (URL)</label>
+                          <input type="url" placeholder="https://www.geeksforgeeks.org/..." className="rp-input" value={chapter.gfgLink || ''} onChange={e => handleChapterChange(idx, 'gfgLink', e.target.value)} />
+                        </div>
+                        <div className="rp-form-group" style={{ margin: 0 }}>
+                          <label className="rp-label" style={{ fontSize: '0.75rem', color: '#a78bfa' }}>LeetCode Practice Links (comma-separated URLs)</label>
+                          <input type="text" placeholder="https://leetcode.com/problems/...,https://..." className="rp-input" value={chapter.leetcodeLinks || ''} onChange={e => handleChapterChange(idx, 'leetcodeLinks', e.target.value)} />
+                        </div>
+                      </div>
                     </div>
                   </div>
-                ))}
-              </div>
-            )}
-          </div>
-
-          <div style={{ borderTop: '1px solid rgba(255,255,255,0.06)', paddingTop: '1.5rem' }}>
-            <h3 style={{ marginBottom: '1rem' }}>📝 Link Assessments</h3>
-            {assessments.length === 0 ? (
-              <p style={{ color: '#9ca3af', fontSize: '0.9rem' }}>No assessments created yet.</p>
-            ) : (
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(220px, 1fr))', gap: '0.75rem' }}>
-                {assessments.map(a => (
-                  <label key={a.id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '6px', padding: '0.75rem', cursor: 'pointer' }}>
-                    <input type="checkbox" checked={selectedAssessmentIds.includes(a.id)} onChange={() => handleAssessmentToggle(a.id)} />
-                    <div>
-                      <div style={{ fontSize: '0.9rem', fontWeight: '600' }}>{a.title}</div>
-                      <div style={{ fontSize: '0.75rem', color: '#9ca3af' }}>{a.assessmentType}</div>
-                    </div>
-                  </label>
                 ))}
               </div>
             )}

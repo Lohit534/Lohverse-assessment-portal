@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import API from '../../api/axios';
-import { useAuth } from '../../context/AuthContext';
-import { toast } from '../../components/Toast';
 import '../StudentDashboard.css';
 
 export default function CourseDetail() {
@@ -10,12 +8,8 @@ export default function CourseDetail() {
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState('syllabus');
   const [expandedChapters, setExpandedChapters] = useState({});
-  const [showAuthModal, setShowAuthModal] = useState(false);
-  const [pendingAssessmentId, setPendingAssessmentId] = useState(null);
   
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,25 +28,6 @@ export default function CourseDetail() {
 
   const toggleChapter = (index) => {
     setExpandedChapters(prev => ({ ...prev, [index]: !prev[index] }));
-  };
-
-  const handleStartAssessment = (assessmentId) => {
-    if (!user) {
-      setPendingAssessmentId(assessmentId);
-      setShowAuthModal(true);
-    } else {
-      navigate(`/dashboard/assessments`);
-      toast.info('Redirected to assessments page. Locate this assessment and start.');
-    }
-  };
-
-  const handleAuthModalRedirect = (type) => {
-    setShowAuthModal(false);
-    if (type === 'login') {
-      navigate('/login');
-    } else {
-      navigate('/register');
-    }
   };
 
   if (loading) {
@@ -86,17 +61,6 @@ export default function CourseDetail() {
           </div>
           <div className="lv-nav__actions" style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
             <button className="lv-btn-ghost" onClick={() => navigate('/courses')} style={{ color: '#a78bfa', background: 'none', border: 'none', cursor: 'pointer' }}>All Courses</button>
-            {user ? (
-              <>
-                <button className="lv-btn-ghost" onClick={() => navigate('/dashboard/profile')} style={{ color: '#fff', background: 'rgba(255,255,255,0.05)', padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer' }}>My Dashboard</button>
-                <button className="lv-btn-solid" onClick={logout} style={{ background: '#ef4444', color: '#fff', padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer' }}>Log Out</button>
-              </>
-            ) : (
-              <>
-                <button className="lv-btn-ghost" onClick={() => navigate('/login')} style={{ color: '#fff', background: 'none', border: 'none', cursor: 'pointer' }}>Sign In</button>
-                <button className="lv-btn-solid" onClick={() => navigate('/register')} style={{ background: '#7c3aed', color: '#fff', padding: '0.5rem 1rem', borderRadius: '6px', border: 'none', cursor: 'pointer' }}>Register</button>
-              </>
-            )}
           </div>
         </div>
       </header>
@@ -134,116 +98,95 @@ export default function CourseDetail() {
         </div>
       </section>
 
-      {/* Tabs */}
-      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '2rem' }}>
-        <div style={{ display: 'flex', gap: '2rem', borderBottom: '1px solid rgba(255,255,255,0.06)', marginBottom: '2rem', paddingBottom: '0.5rem' }}>
-          <button onClick={() => setActiveTab('syllabus')} style={{ background: 'none', border: 'none', color: activeTab === 'syllabus' ? '#a78bfa' : '#9ca3af', borderBottom: activeTab === 'syllabus' ? '2px solid #7c3aed' : 'none', padding: '0.5rem 1rem', fontSize: '1.1rem', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}>
-            📚 Syllabus Curriculum
-          </button>
-          <button onClick={() => setActiveTab('assessments')} style={{ background: 'none', border: 'none', color: activeTab === 'assessments' ? '#a78bfa' : '#9ca3af', borderBottom: activeTab === 'assessments' ? '2px solid #7c3aed' : 'none', padding: '0.5rem 1rem', fontSize: '1.1rem', fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' }}>
-            📝 Assessments ({course.assessments?.length || 0})
-          </button>
-        </div>
+      {/* Curriculum Accordion */}
+      <section style={{ maxWidth: '900px', margin: '0 auto', padding: '3rem 2rem' }}>
+        <h2 style={{ fontSize: '1.75rem', fontWeight: '800', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          📚 Course Syllabus Curriculum
+        </h2>
+        
+        {(!course.syllabus || course.syllabus.length === 0) ? (
+          <p style={{ color: '#9ca3af', textAlign: 'center', padding: '3rem' }}>Syllabus contents are being prepared by faculty. Stay tuned!</p>
+        ) : (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            {course.syllabus.map((chapter, idx) => {
+              const isExpanded = expandedChapters[idx];
+              
+              // Parse Leetcode Links
+              const leetcodeList = chapter.leetcodeLinks
+                ? chapter.leetcodeLinks.split(',').map(link => link.trim()).filter(Boolean)
+                : [];
 
-        {/* Tab Contents */}
-        {activeTab === 'syllabus' ? (
-          <div>
-            {(!course.syllabus || course.syllabus.length === 0) ? (
-              <p style={{ color: '#9ca3af', textAlign: 'center', padding: '3rem' }}>Syllabus contents are being prepared by faculty. Stay tuned!</p>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                {course.syllabus.map((chapter, idx) => {
-                  const isExpanded = expandedChapters[idx];
-                  return (
-                    <div key={idx} style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '8px', overflow: 'hidden' }}>
-                      <div onClick={() => toggleChapter(idx)} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.01)' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                          <span style={{ color: '#a78bfa', fontWeight: '700', fontSize: '1.1rem' }}>{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</span>
-                          <span style={{ fontWeight: '600', fontSize: '1.05rem' }}>{chapter.title}</span>
-                        </div>
-                        <span style={{ fontSize: '0.9rem', color: '#9ca3af' }}>{isExpanded ? '▲' : '▼'}</span>
-                      </div>
+              return (
+                <div key={idx} style={{ background: 'rgba(255, 255, 255, 0.02)', border: '1px solid rgba(255, 255, 255, 0.05)', borderRadius: '8px', overflow: 'hidden', transition: 'all 0.3s' }}>
+                  <div onClick={() => toggleChapter(idx)} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '1.25rem', cursor: 'pointer', background: 'rgba(255, 255, 255, 0.01)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                      <span style={{ color: '#a78bfa', fontWeight: '700', fontSize: '1.1rem' }}>{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</span>
+                      <span style={{ fontWeight: '600', fontSize: '1.05rem' }}>{chapter.title}</span>
+                    </div>
+                    <span style={{ fontSize: '0.9rem', color: '#9ca3af' }}>{isExpanded ? '▲' : '▼'}</span>
+                  </div>
+                  
+                  {isExpanded && (
+                    <div style={{ padding: '1.5rem', borderTop: '1px solid rgba(255, 255, 255, 0.04)', background: 'rgba(0,0,0,0.2)', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                       
-                      {isExpanded && (
-                        <div style={{ padding: '1.25rem', borderTop: '1px solid rgba(255, 255, 255, 0.04)', background: 'rgba(0,0,0,0.2)' }}>
-                          <p style={{ color: '#d1d5db', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1rem' }}>{chapter.description}</p>
-                          {chapter.topics && (
-                            <div style={{ marginBottom: '1.25rem' }}>
-                              <h4 style={{ fontSize: '0.85rem', color: '#a78bfa', textTransform: 'uppercase', marginBottom: '0.4rem', fontWeight: '700' }}>Topics covered:</h4>
-                              <p style={{ color: '#9ca3af', fontSize: '0.9rem' }}>{chapter.topics}</p>
-                            </div>
+                      <div>
+                        <h4 style={{ fontSize: '0.85rem', color: '#a78bfa', textTransform: 'uppercase', marginBottom: '0.4rem', fontWeight: '700' }}>Overview:</h4>
+                        <p style={{ color: '#d1d5db', fontSize: '0.95rem', lineHeight: '1.6' }}>{chapter.description}</p>
+                      </div>
+
+                      {chapter.topics && (
+                        <div>
+                          <h4 style={{ fontSize: '0.85rem', color: '#a78bfa', textTransform: 'uppercase', marginBottom: '0.4rem', fontWeight: '700' }}>Topics covered:</h4>
+                          <p style={{ color: '#9ca3af', fontSize: '0.9rem' }}>{chapter.topics}</p>
+                        </div>
+                      )}
+
+                      {/* GFG & LeetCode Professional Redirection Links */}
+                      {(chapter.gfgLink || leetcodeList.length > 0) && (
+                        <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginTop: '0.5rem', padding: '1rem', background: 'rgba(255,255,255,0.02)', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.04)' }}>
+                          {chapter.gfgLink && (
+                            <a href={chapter.gfgLink} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#22c55e', color: '#fff', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '700', textDecoration: 'none', transition: 'all 0.2s' }}>
+                              <span>🟢</span> GeeksforGeeks Reference Course
+                            </a>
                           )}
-                          {chapter.studyMaterial && (
-                            <div style={{ marginTop: '1.5rem', background: '#07070e', border: '1px solid rgba(124,58,237,0.2)', borderRadius: '8px', padding: '1.5rem' }}>
-                              <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#a78bfa', fontSize: '0.95rem', fontWeight: '700', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.5rem' }}>
-                                📖 Chapter Tutorial Guide
-                              </h4>
-                              <div style={{ color: '#d1d5db', fontSize: '0.92rem', lineHeight: '1.7', whiteSpace: 'pre-wrap', fontFamily: 'Courier New, monospace', background: 'rgba(255,255,255,0.01)', padding: '1rem', borderRadius: '6px' }}>
-                                {chapter.studyMaterial}
-                              </div>
-                            </div>
-                          )}
+                          
+                          {leetcodeList.map((link, lIdx) => {
+                            // Extract problem name from URL for clean label
+                            let problemName = `Practice Problem ${lIdx + 1}`;
+                            try {
+                              const pathParts = new URL(link).pathname.split('/').filter(Boolean);
+                              if (pathParts[0] === 'problems' && pathParts[1]) {
+                                problemName = pathParts[1].replace(/-/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
+                              }
+                            } catch (e) {}
+
+                            return (
+                              <a key={lIdx} href={link} target="_blank" rel="noopener noreferrer" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#eab308', color: '#000', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.85rem', fontWeight: '700', textDecoration: 'none', transition: 'all 0.2s' }}>
+                                <span>💻</span> {problemName} (LeetCode)
+                              </a>
+                            );
+                          })}
+                        </div>
+                      )}
+
+                      {chapter.studyMaterial && (
+                        <div style={{ marginTop: '0.5rem', background: '#07070e', border: '1px solid rgba(124,58,237,0.2)', borderRadius: '8px', padding: '1.5rem' }}>
+                          <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#a78bfa', fontSize: '0.95rem', fontWeight: '700', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.5rem' }}>
+                            📖 Chapter Tutorial Guide
+                          </h4>
+                          <div style={{ color: '#d1d5db', fontSize: '0.92rem', lineHeight: '1.7', whiteSpace: 'pre-wrap', fontFamily: 'Courier New, monospace', background: 'rgba(255,255,255,0.01)', padding: '1rem', borderRadius: '6px' }}>
+                            {chapter.studyMaterial}
+                          </div>
                         </div>
                       )}
                     </div>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        ) : (
-          <div>
-            {(!course.assessments || course.assessments.length === 0) ? (
-              <div style={{ textAlign: 'center', padding: '4rem 2rem', background: 'rgba(255, 255, 255, 0.01)', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-                <p style={{ color: '#9ca3af', fontSize: '1.05rem', marginBottom: '1rem' }}>No assessments are currently linked to this course.</p>
-              </div>
-            ) : (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                {course.assessments.map(assess => (
-                  <div key={assess.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: '10px', padding: '1.5rem' }}>
-                    <div>
-                      <span style={{ background: 'rgba(124, 58, 237, 0.1)', color: '#a78bfa', padding: '0.2rem 0.6rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: '600', textTransform: 'uppercase' }}>{assess.assessmentType}</span>
-                      <h3 style={{ fontSize: '1.2rem', fontWeight: '700', marginTop: '0.5rem', marginBottom: '0.5rem' }}>{assess.title}</h3>
-                      <div style={{ display: 'flex', gap: '1.5rem', fontSize: '0.85rem', color: '#9ca3af' }}>
-                        <span>⏱ {assess.durationMins} mins</span>
-                        <span>• Passing: {assess.passingMarks}/{assess.totalMarks}</span>
-                        <span>• Questions: {assess.questionCount}</span>
-                      </div>
-                    </div>
-                    <button onClick={() => handleStartAssessment(assess.id)} style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', color: '#fff', border: 'none', padding: '0.7rem 1.5rem', borderRadius: '8px', fontSize: '0.9rem', fontWeight: '600', cursor: 'pointer' }}>
-                      Start Assessment
-                    </button>
-                  </div>
-                ))}
-              </div>
-            )}
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </section>
-
-      {/* Auth Modal */}
-      {showAuthModal && (
-        <div style={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, background: 'rgba(0, 0, 0, 0.8)', backdropFilter: 'blur(8px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 }}>
-          <div style={{ background: '#11111f', border: '1px solid rgba(124, 58, 237, 0.2)', borderRadius: '16px', padding: '2.5rem', maxWidth: '450px', width: '90%', textAlign: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.5)' }}>
-            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>🛡️</div>
-            <h2 style={{ fontSize: '1.5rem', fontWeight: '800', marginBottom: '0.75rem' }}>Sign Up to Start Assessment</h2>
-            <p style={{ color: '#9ca3af', fontSize: '0.95rem', lineHeight: '1.5', marginBottom: '2rem' }}>
-              Attempting course assessments requires a free candidate profile. Create your profile to get proctored scores and matching placements.
-            </p>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-              <button onClick={() => handleAuthModalRedirect('register')} style={{ background: '#7c3aed', color: '#fff', border: 'none', padding: '0.8rem', borderRadius: '8px', fontSize: '1rem', fontWeight: '600', cursor: 'pointer' }}>
-                Create Free Account (Sign Up)
-              </button>
-              <button onClick={() => handleAuthModalRedirect('login')} style={{ background: 'rgba(255, 255, 255, 0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', padding: '0.8rem', borderRadius: '8px', fontSize: '1rem', fontWeight: '600', cursor: 'pointer' }}>
-                I already have an account (Log In)
-              </button>
-              <button onClick={() => setShowAuthModal(false)} style={{ background: 'none', border: 'none', color: '#9ca3af', padding: '0.5rem', fontSize: '0.85rem', cursor: 'pointer', marginTop: '0.5rem' }}>
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
