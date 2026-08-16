@@ -14,6 +14,221 @@ logger = logging.getLogger('lohverse')
 def seed_default_courses():
     import json
     from app.models import Course
+    try:
+        Course.query.delete()
+        db.session.commit()
+    except Exception:
+        db.session.rollback()
+
+    py_ch1 = """1. Variable Declarations
+In Python, variables are dynamically typed. Assign a value using '=':
+   x = 10
+   name = 'Lohverse'
+   price = 49.99
+   is_active = True
+
+2. Data Types
+   - Integer: Whole numbers (e.g. 42)
+   - Float: Decimal values (e.g. 3.14)
+   - String: Wrapped text (e.g. "Python")
+   - Boolean: Logical True or False
+
+3. Core Math Operations
+   Use +, -, *, / for math. Use '//' for integer division, and '%' for modulo (remainder)."""
+
+    py_ch2 = """1. Conditional Branches
+Use if/elif/else to evaluate conditions:
+   if score >= 90:
+       print('A')
+   elif score >= 80:
+       print('B')
+   else:
+       print('Fail')
+
+2. Loops
+   - For loop: Iterate over ranges:
+     for i in range(5):
+         print(i) # Prints 0 to 4
+   - While loop: Iterate while a statement is True.
+
+3. Reusable Functions
+Define functions using the 'def' keyword:
+   def add_numbers(a, b):
+       return a + b"""
+
+    py_ch3 = """1. NumPy Arrays
+NumPy offers high-performance vectors and matrices:
+   import numpy as np
+   arr = np.array([1, 2, 3])
+   print(arr * 2) # [2, 4, 6]
+
+2. Pandas DataFrames
+Pandas represents tabular records with labeled axes:
+   import pandas as pd
+   data = {'Name': ['Alice', 'Bob'], 'Age': [25, 30]}
+   df = pd.DataFrame(data)
+   print(df.describe()) # Statistical summary"""
+
+    py_ch4 = """1. Machine Learning Workflow
+   - Step 1: Split variables into features (X) and target (y).
+   - Step 2: Perform train/test split (80% train, 20% test).
+   - Step 3: Instantiate model estimator and run .fit().
+   - Step 4: Validate predictions on test metrics.
+
+2. Linear Regression Code Example
+   from sklearn.model_selection import train_test_split
+   from sklearn.linear_model import LinearRegression
+
+   X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+   model = LinearRegression()
+   model.fit(X_train, y_train)
+   accuracy = model.score(X_test, y_test)
+   print(f'R2 Score: {accuracy}')"""
+
+    web_ch1 = """1. HTML5 Semantics
+Use semantic tags like <header>, <nav>, <main>, <article>, and <footer> to structure your pages for high browser readability and SEO.
+
+2. CSS Flexbox Layouts
+Set display: flex to align items dynamically:
+   .container {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+   }
+
+3. CSS Grid
+Define grid-template-columns for advanced layouts:
+   .grid-container {
+       display: grid;
+       grid-template-columns: repeat(3, 1fr);
+       gap: 1rem;
+   }"""
+
+    web_ch2 = """1. Promises
+A Promise represents the eventual completion (or failure) of an asynchronous operation:
+   const fetchData = () => {
+       return new Promise((resolve, reject) => {
+           setTimeout(() => resolve('Data loaded'), 1000);
+       });
+   };
+
+2. Async/Await
+Use async/await syntax to write cleaner, linear asynchronous execution code:
+   async function loadData() {
+       try {
+           const res = await fetchData();
+           console.log(res); // Prints 'Data loaded'
+       } catch (err) {
+           console.error(err);
+       }
+   }"""
+
+    web_ch3 = """1. Component State
+State allows components to retain data across renders:
+   import React, { useState } from 'react';
+
+   function Counter() {
+       const [count, setCount] = useState(0);
+       return <button onClick={() => setCount(count + 1)}>Count: {count}</button>;
+   }
+
+2. Effect Hook
+Use useEffect to sync with external systems (like fetching database data on mount):
+   useEffect(() => {
+       console.log('Component mounted');
+   }, []); // Empty dependency array means this runs once"""
+
+    web_ch4 = """1. Express Server
+Spin up an HTTP server that listens to port requests:
+   const express = require('express');
+   const app = express();
+   app.use(express.json());
+
+   app.get('/api/greeting', (req, res) => {
+       res.json({ message: 'Hello from Node.js!' });
+   });
+
+   app.listen(5000, () => console.log('Server active on port 5000'));
+
+2. Database Connect
+Query SQL records inside endpoint handlers:
+   db.query('SELECT * FROM users', (err, results) => {
+       if (err) throw err;
+       res.json(results);
+   });"""
+
+    dsa_ch1 = """1. Array Manipulations
+Optimize array traversal algorithms to avoid O(N^2) brute force nested loops.
+
+2. Two-Pointer Technique
+Solve problems like checking if an array is sorted or finding pairs with a specific sum:
+   def has_target_sum(arr, target):
+       left = 0
+       right = len(arr) - 1
+       while left < right:
+           current = arr[left] + arr[right]
+           if current == target:
+               return True
+           elif current < target:
+               left += 1
+           else:
+               right -= 1
+       return False"""
+
+    dsa_ch2 = """1. Stacks (LIFO)
+Operations include push (insert element) and pop (remove last inserted element):
+   stack = []
+   stack.append(10) # Push
+   val = stack.pop() # Pop
+
+2. Queues (FIFO)
+Operations include enqueue (insert at tail) and dequeue (remove from head):
+   from collections import deque
+   queue = deque()
+   queue.append(20) # Enqueue
+   val = queue.popleft() # Dequeue
+
+3. Linked List Structure
+Nodes pointing sequentially in-memory:
+   class Node:
+       def __init__(self, val):
+           self.val = val
+           self.next = None"""
+
+    dsa_ch3 = """1. Recursion
+A function calling itself with a base condition to prevent stack overflow:
+   def factorial(n):
+       if n <= 1: return 1
+       return n * factorial(n - 1)
+
+2. Binary Tree Node
+Nodes branching into left and right subtrees:
+   class TreeNode:
+       def __init__(self, val):
+           self.val = val
+           self.left = None
+           self.right = None
+
+3. In-Order Traversal (Left -> Root -> Right)
+   def inorder(root):
+       if root:
+           inorder(root.left)
+           print(root.val)
+           inorder(root.right)"""
+
+    dsa_ch4 = """1. Dynamic Programming
+Optimize recursions using Memoization (Top-Down cache) or Tabulation (Bottom-Up table):
+   # Memoized Fibonacci
+   def fib(n, memo={}):
+       if n in memo: return memo[n]
+       if n <= 1: return n
+       memo[n] = fib(n-1, memo) + fib(n-2, memo)
+       return memo[n]
+
+2. Graph Traversals
+   - BFS (Breadth-First Search): Uses a queue to explore node levels iteratively.
+   - DFS (Depth-First Search): Uses recursion or a stack to explore branch depths."""
+
     courses_data = [
         {
             "title": "Python Basics & Machine Learning",
@@ -23,10 +238,10 @@ def seed_default_courses():
             "instructor": "Dr. Lohit AI",
             "imageUrl": "",
             "syllabus": [
-                {"title": "Introduction to Python Basics", "description": "Learn variable declarations, basic string methods, numbers, and basic boolean comparisons.", "topics": "Variables, strings, expressions, math operators"},
-                {"title": "Control Flow & Functions", "description": "Write reusable logic blocks with conditionals, for-loops, while-loops, and functional returns.", "topics": "if/else, loops, def keywords, return statements"},
-                {"title": "Numerical Computing & Data Analytics", "description": "Step into multidimensional arrays with NumPy and clean structured datasets using Pandas.", "topics": "NumPy arrays, Pandas DataFrames, indexing, cleaning data"},
-                {"title": "Scikit-Learn Regression & Classification", "description": "Train your first supervised Machine Learning algorithms using linear regression and decision trees.", "topics": "Train/test split, model.fit(), evaluation metrics"}
+                {"title": "Introduction to Python Basics", "description": "Learn variable declarations, basic string methods, numbers, and basic boolean comparisons.", "topics": "Variables, strings, expressions, math operators", "studyMaterial": py_ch1},
+                {"title": "Control Flow & Functions", "description": "Write reusable logic blocks with conditionals, for-loops, while-loops, and functional returns.", "topics": "if/else, loops, def keywords, return statements", "studyMaterial": py_ch2},
+                {"title": "Numerical Computing & Data Analytics", "description": "Step into multidimensional arrays with NumPy and clean structured datasets using Pandas.", "topics": "NumPy arrays, Pandas DataFrames, indexing, cleaning data", "studyMaterial": py_ch3},
+                {"title": "Scikit-Learn Regression & Classification", "description": "Train your first supervised Machine Learning algorithms using linear regression and decision trees.", "topics": "Train/test split, model.fit(), evaluation metrics", "studyMaterial": py_ch4}
             ]
         },
         {
@@ -37,10 +252,10 @@ def seed_default_courses():
             "instructor": "Prof. Sarah Dev",
             "imageUrl": "",
             "syllabus": [
-                {"title": "Semantic HTML5 & Flexbox/Grid", "description": "Structure layouts according to modern browser accessibility guidelines and style responsive grids.", "topics": "Tags, Flexbox directions, grid definitions, media queries"},
-                {"title": "Asynchronous JavaScript (ES6+)", "description": "Understand how JavaScript engines handle non-blocking events, Promises, and fetch API operations.", "topics": "Arrow functions, destructuring, promises, async/await"},
-                {"title": "React Component State & Hooks", "description": "Develop dynamic client interfaces using functional components, useState, useEffect, and custom hooks.", "topics": "Components, props, state, hooks, virtual DOM"},
-                {"title": "Node.js REST APIs with Express & Databases", "description": "Spin up a local backend server to process JSON payloads, map request parameters, and save to database.", "topics": "Express routers, CORS, middlewares, SQL queries"}
+                {"title": "Semantic HTML5 & Flexbox/Grid", "description": "Structure layouts according to modern browser accessibility guidelines and style responsive grids.", "topics": "Tags, Flexbox directions, grid definitions, media queries", "studyMaterial": web_ch1},
+                {"title": "Asynchronous JavaScript (ES6+)", "description": "Understand how JavaScript engines handle non-blocking events, Promises, and fetch API operations.", "topics": "Arrow functions, destructuring, promises, async/await", "studyMaterial": web_ch2},
+                {"title": "React Component State & Hooks", "description": "Develop dynamic client interfaces using functional components, useState, useEffect, and custom hooks.", "topics": "Components, props, state, hooks, virtual DOM", "studyMaterial": web_ch3},
+                {"title": "Node.js REST APIs with Express & Databases", "description": "Spin up a local backend server to process JSON payloads, map request parameters, and save to database.", "topics": "Express routers, CORS, middlewares, SQL queries", "studyMaterial": web_ch4}
             ]
         },
         {
@@ -51,10 +266,10 @@ def seed_default_courses():
             "instructor": "Alex Chen (M.Tech)",
             "imageUrl": "",
             "syllabus": [
-                {"title": "Array Manipulations & Sliding Window", "description": "Optimize search bounds on array listings using double-pointers and dynamic resizing windows.", "topics": "Two-pointer, sliding window, prefix sums, binary search"},
-                {"title": "Stacks, Queues & Linked Lists", "description": "Build custom linear collections from scratch and handle pointer adjustments cleanly in-memory.", "topics": "Singly linked list, node insertions, stack/queue push/pop"},
-                {"title": "Recursion & Binary Tree Traversals", "description": "Write recursive call stacks to traverse nodes in depth-first (in-order, pre-order, post-order) layouts.", "topics": "Tree structures, recursion limits, BST operations"},
-                {"title": "Dynamic Programming & Graphs", "description": "Bypass redundant computes via memoization arrays and navigate graph networks using BFS and DFS.", "topics": "Memoization, tabulation, adjacency lists, shortest path"}
+                {"title": "Array Manipulations & Sliding Window", "description": "Optimize search bounds on array listings using double-pointers and dynamic resizing windows.", "topics": "Two-pointer, sliding window, prefix sums, binary search", "studyMaterial": dsa_ch1},
+                {"title": "Stacks, Queues & Linked Lists", "description": "Build custom linear collections from scratch and handle pointer adjustments cleanly in-memory.", "topics": "Singly linked list, node insertions, stack/queue push/pop", "studyMaterial": dsa_ch2},
+                {"title": "Recursion & Binary Tree Traversals", "description": "Write recursive call stacks to traverse nodes in depth-first (in-order, pre-order, post-order) layouts.", "topics": "Tree structures, recursion limits, BST operations", "studyMaterial": dsa_ch3},
+                {"title": "Dynamic Programming & Graphs", "description": "Bypass redundant computes via memoization arrays and navigate graph networks using BFS and DFS.", "topics": "Memoization, tabulation, adjacency lists, shortest path", "studyMaterial": dsa_ch4}
             ]
         }
     ]

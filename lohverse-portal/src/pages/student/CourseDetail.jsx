@@ -168,9 +168,19 @@ export default function CourseDetail() {
                         <div style={{ padding: '1.25rem', borderTop: '1px solid rgba(255, 255, 255, 0.04)', background: 'rgba(0,0,0,0.2)' }}>
                           <p style={{ color: '#d1d5db', fontSize: '0.95rem', lineHeight: '1.6', marginBottom: '1rem' }}>{chapter.description}</p>
                           {chapter.topics && (
-                            <div>
-                              <h4 style={{ fontSize: '0.85rem', color: '#a78bfa', textTransform: 'uppercase', marginBottom: '0.5rem', fontWeight: '700' }}>Topics covered:</h4>
+                            <div style={{ marginBottom: '1.25rem' }}>
+                              <h4 style={{ fontSize: '0.85rem', color: '#a78bfa', textTransform: 'uppercase', marginBottom: '0.4rem', fontWeight: '700' }}>Topics covered:</h4>
                               <p style={{ color: '#9ca3af', fontSize: '0.9rem' }}>{chapter.topics}</p>
+                            </div>
+                          )}
+                          {chapter.studyMaterial && (
+                            <div style={{ marginTop: '1.5rem', background: '#07070e', border: '1px solid rgba(124,58,237,0.2)', borderRadius: '8px', padding: '1.5rem' }}>
+                              <h4 style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#a78bfa', fontSize: '0.95rem', fontWeight: '700', marginBottom: '1rem', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '0.5rem' }}>
+                                📖 Chapter Tutorial Guide
+                              </h4>
+                              <div style={{ color: '#d1d5db', fontSize: '0.92rem', lineHeight: '1.7', whiteSpace: 'pre-wrap', fontFamily: 'Courier New, monospace', background: 'rgba(255,255,255,0.01)', padding: '1rem', borderRadius: '6px' }}>
+                                {chapter.studyMaterial}
+                              </div>
                             </div>
                           )}
                         </div>

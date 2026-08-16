@@ -211,6 +211,7 @@ export default function CourseManager() {
                       <input type="text" placeholder="Chapter Title" className="rp-input" value={chapter.title} onChange={e => handleChapterChange(idx, 'title', e.target.value)} />
                       <textarea placeholder="Brief overview of chapter goals" className="rp-textarea" rows="2" value={chapter.description} onChange={e => handleChapterChange(idx, 'description', e.target.value)} />
                       <input type="text" placeholder="Topics covered (comma-separated)" className="rp-input" value={chapter.topics} onChange={e => handleChapterChange(idx, 'topics', e.target.value)} />
+                      <textarea placeholder="Chapter Study Material (text / code snippets for candidate tutorials)" className="rp-textarea" rows="3" value={chapter.studyMaterial || ''} onChange={e => handleChapterChange(idx, 'studyMaterial', e.target.value)} />
                     </div>
                   </div>
                 ))}
