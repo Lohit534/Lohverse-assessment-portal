@@ -11,6 +11,66 @@ logging.basicConfig(
 logger = logging.getLogger('lohverse')
 
 
+def seed_default_courses():
+    import json
+    from app.models import Course
+    courses_data = [
+        {
+            "title": "Python Basics & Machine Learning",
+            "description": "Master core Python syntax and step into the world of data modeling, linear regression, and predictive AI classifiers.",
+            "difficulty": "intermediate",
+            "duration": "6 hours",
+            "instructor": "Dr. Lohit AI",
+            "imageUrl": "",
+            "syllabus": [
+                {"title": "Introduction to Python Basics", "description": "Learn variable declarations, basic string methods, numbers, and basic boolean comparisons.", "topics": "Variables, strings, expressions, math operators"},
+                {"title": "Control Flow & Functions", "description": "Write reusable logic blocks with conditionals, for-loops, while-loops, and functional returns.", "topics": "if/else, loops, def keywords, return statements"},
+                {"title": "Numerical Computing & Data Analytics", "description": "Step into multidimensional arrays with NumPy and clean structured datasets using Pandas.", "topics": "NumPy arrays, Pandas DataFrames, indexing, cleaning data"},
+                {"title": "Scikit-Learn Regression & Classification", "description": "Train your first supervised Machine Learning algorithms using linear regression and decision trees.", "topics": "Train/test split, model.fit(), evaluation metrics"}
+            ]
+        },
+        {
+            "title": "Full Stack Web Development (React & Node.js)",
+            "description": "Build high-performance web applications using modern UI libraries and asynchronous server engines.",
+            "difficulty": "beginner",
+            "duration": "12 hours",
+            "instructor": "Prof. Sarah Dev",
+            "imageUrl": "",
+            "syllabus": [
+                {"title": "Semantic HTML5 & Flexbox/Grid", "description": "Structure layouts according to modern browser accessibility guidelines and style responsive grids.", "topics": "Tags, Flexbox directions, grid definitions, media queries"},
+                {"title": "Asynchronous JavaScript (ES6+)", "description": "Understand how JavaScript engines handle non-blocking events, Promises, and fetch API operations.", "topics": "Arrow functions, destructuring, promises, async/await"},
+                {"title": "React Component State & Hooks", "description": "Develop dynamic client interfaces using functional components, useState, useEffect, and custom hooks.", "topics": "Components, props, state, hooks, virtual DOM"},
+                {"title": "Node.js REST APIs with Express & Databases", "description": "Spin up a local backend server to process JSON payloads, map request parameters, and save to database.", "topics": "Express routers, CORS, middlewares, SQL queries"}
+            ]
+        },
+        {
+            "title": "Data Structures & Advanced Algorithms",
+            "description": "Prepare for technical whiteboard interviews. Analyze space-time complexity and optimize code architectures.",
+            "difficulty": "advanced",
+            "duration": "8 hours",
+            "instructor": "Alex Chen (M.Tech)",
+            "imageUrl": "",
+            "syllabus": [
+                {"title": "Array Manipulations & Sliding Window", "description": "Optimize search bounds on array listings using double-pointers and dynamic resizing windows.", "topics": "Two-pointer, sliding window, prefix sums, binary search"},
+                {"title": "Stacks, Queues & Linked Lists", "description": "Build custom linear collections from scratch and handle pointer adjustments cleanly in-memory.", "topics": "Singly linked list, node insertions, stack/queue push/pop"},
+                {"title": "Recursion & Binary Tree Traversals", "description": "Write recursive call stacks to traverse nodes in depth-first (in-order, pre-order, post-order) layouts.", "topics": "Tree structures, recursion limits, BST operations"},
+                {"title": "Dynamic Programming & Graphs", "description": "Bypass redundant computes via memoization arrays and navigate graph networks using BFS and DFS.", "topics": "Memoization, tabulation, adjacency lists, shortest path"}
+            ]
+        }
+    ]
+    for c in courses_data:
+        course = Course(
+            title=c["title"],
+            description=c["description"],
+            difficulty=c["difficulty"],
+            duration=c["duration"],
+            instructor=c["instructor"],
+            image_url=c["imageUrl"],
+            syllabus=json.dumps(c["syllabus"])
+        )
+        db.session.add(course)
+    db.session.commit()
+
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
@@ -185,6 +245,9 @@ def create_app():
         try:
             db.create_all()
             auto_migrate(db.engine)
+            from app.models import Course
+            if Course.query.count() == 0:
+                seed_default_courses()
             logger.info('Database tables created and auto-migrations executed successfully')
         except Exception as e:
             logger.error(f'Database initialization/migration error: {e}')

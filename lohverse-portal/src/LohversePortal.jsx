@@ -242,7 +242,7 @@ export default function LohversePortal({ onRegister, onSignIn }) {
               <h3>{a.cat}</h3>
               <p>{a.count} Assessments</p>
               <span className="lv-assess-level">{a.level}</span>
-              <button className="lv-btn-explore">Explore →</button>
+              <button className="lv-btn-explore" onClick={() => navigate('/courses')}>Explore →</button>
             </div>
           ))}
         </div>
