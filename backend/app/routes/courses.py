@@ -17,6 +17,13 @@ def _is_recruiter():
 
 @courses_bp.route('/courses', methods=['GET'])
 def list_courses():
+    if Course.query.count() == 0:
+        try:
+            from app import seed_default_courses
+            seed_default_courses()
+        except Exception:
+            pass
+
     courses = Course.query.order_by(Course.created_at.desc()).all()
     data = []
     for c in courses:

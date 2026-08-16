@@ -1,37 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import API from './api/axios';
 import './LohversePortal.css';
-
-const tests = [
-  {
-    id: 1,
-    title: 'Java Fundamentals Assessment',
-    duration: '60 mins',
-    questions: '25 Questions',
-    attempts: '2 Attempts Remaining',
-    availability: 'Available until Dec 31, 2026',
-    status: 'start',
-    tag: 'Java',
-  },
-  {
-    id: 2,
-    title: 'Data Structures Quiz',
-    duration: '45 mins',
-    questions: '20 Questions',
-    status: 'Scheduled',
-    availability: 'Available from jun 15, 2026',
-    tag: 'DSA',
-  },
-  {
-    id: 3,
-    title: 'Full Stack Web Development',
-    duration: '90 mins',
-    questions: '35 Questions',
-    status: 'Scheduled',
-    availability: 'Available from jun 10, 2026',
-    tag: 'Web',
-  },
-];
 
 const features = [
   {
@@ -57,10 +27,10 @@ const features = [
 ];
 
 const steps = [
-  { num: '01', title: 'Register', desc: 'Create your free Lohverse account and complete your candidate profile.' },
-  { num: '02', title: 'Take Assessment', desc: 'Attempt your assigned tests securely from any device, anytime.' },
-  { num: '03', title: 'Get Results', desc: 'Receive instant AI-analysed feedback and performance insights.' },
-  { num: '04', title: 'Get Hired', desc: 'Top scorers are shortlisted and connected directly with recruiters.' },
+  { num: '01', title: 'Explore Paths', desc: 'Browse our curriculum tracks publicly and choose your specialization.' },
+  { num: '02', title: 'Register Account', desc: 'Create your free Lohverse profile and upload your resume PDF.' },
+  { num: '03', title: 'Solve Assessments', desc: 'Attempt coding challenges and MCQs on our split-screen editor.' },
+  { num: '04', title: 'Get Shortlisted', desc: 'Top scorers are linked directly with recruiter search boards.' },
 ];
 
 const stats = [
@@ -69,38 +39,47 @@ const stats = [
   { value: '15K+', label: 'Jobs Applied' },
 ];
 
-
 export default function LohversePortal({ onRegister, onSignIn }) {
   const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('all');
+  const [courses, setCourses] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredTests = activeTab === 'all' ? tests : tests.filter(t =>
-    activeTab === 'available' ? t.status === 'start' : t.status === 'Scheduled'
-  );
+  useEffect(() => {
+    API.get('/courses')
+      .then(res => {
+        setCourses(res.data.courses || []);
+      })
+      .catch(err => {
+        console.error('Failed to load courses on landing page', err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
 
   return (
     <div className={`lv-root ${darkMode ? 'dark' : ''}`}>
       {/* ── NAVBAR ── */}
       <header className="lv-nav">
         <div className="lv-nav__inner">
-          <div className="lv-nav__logo">
+          <div className="lv-nav__logo" onClick={() => navigate('/')} style={{ cursor: 'pointer' }}>
             <div className="lv-logo-icon">
               <span>L</span>
             </div>
             <div className="lv-logo-text">
               <span className="lv-logo-main">Lohverse</span>
-              <span className="lv-logo-sub">SECURE EXAMINATION PORTAL</span>
+              <span className="lv-logo-sub">LEARNING & ASSESSMENT PORTAL</span>
             </div>
           </div>
 
           <nav className={`lv-nav__links ${mobileMenuOpen ? 'open' : ''}`}>
             <a href="#home">Home</a>
             <a href="#features">Features</a>
-            <a href="#assessments">Assessments</a>
+            <a href="#courses">Courses Track</a>
             <a href="#how-it-works">How It Works</a>
-            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/courses'); }}>Courses</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/courses'); }}>Syllabus</a>
           </nav>
 
           <div className="lv-nav__actions">
@@ -121,73 +100,83 @@ export default function LohversePortal({ onRegister, onSignIn }) {
         <div className="lv-hero__left">
           <div className="lv-badge">
             <span className="lv-badge__dot" />
-            Student Assessment Portal
+            Lohverse Learning & Assessments
           </div>
 
           <h1 className="lv-hero__title">
-            Lohverse <span className="lv-hero__accent">Recruitment</span><br />Portal
+            Lohverse <span className="lv-hero__accent">Learning</span><br />Portal
           </h1>
 
           <p className="lv-hero__desc">
-            Complete your placement assessment for Lohverse recruitment drives.
-            Access assigned tests, take secure exams, and track your results all in one place.
+            Explore programming tracks, master multi-chapter syllabus paths, and benchmark your engineering skills with industry coding challenges.
           </p>
 
           <div className="lv-hero__ctas">
-            <button className="lv-btn-primary" onClick={onRegister}>Start Your Assessment</button>
-            <button className="lv-btn-outline">Already Registered?</button>
+            <button className="lv-btn-primary" onClick={() => navigate('/courses')}>Explore Learning Tracks</button>
+            <button className="lv-btn-outline" onClick={onRegister}>Sign Up & Take Exam</button>
           </div>
 
           <div className="lv-hero__checks">
-            <span><span className="lv-check">✓</span> Secure Proctored Exams</span>
-            <span><span className="lv-check">✓</span> Easy Submission</span>
-            <span><span className="lv-check">✓</span> Instant Results</span>
+            <span><span className="lv-check">✓</span> Self-Paced Courses</span>
+            <span><span className="lv-check">✓</span> Monaco Code Runner</span>
+            <span><span className="lv-check">✓</span> Direct Placement Connect</span>
           </div>
         </div>
 
+        {/* Dynamic Available Courses instead of Assigned Tests */}
         <div className="lv-hero__right">
           <div className="lv-tests-card">
             <div className="lv-tests-card__header">
-              <div className="lv-tests-icon">📋</div>
+              <div className="lv-tests-icon">📚</div>
               <div>
-                <h2>Your Assigned Tests</h2>
-                <p>{tests.length} tests available</p>
+                <h2>Featured Courses</h2>
+                <p>Prepare for placement drives</p>
               </div>
-              <span className="lv-active-badge">Active</span>
+              <span className="lv-active-badge" style={{ background: 'rgba(124, 58, 237, 0.15)', color: '#a78bfa' }}>Available</span>
             </div>
 
-            <div className="lv-tab-row">
-              {['all', 'available', 'scheduled'].map(tab => (
-                <button
-                  key={tab}
-                  className={`lv-tab ${activeTab === tab ? 'active' : ''}`}
-                  onClick={() => setActiveTab(tab)}
-                >
-                  {tab.charAt(0).toUpperCase() + tab.slice(1)}
-                </button>
-              ))}
-            </div>
-
-            <div className="lv-tests-list">
-              {filteredTests.map(test => (
-                <div key={test.id} className="lv-test-item">
-                  <div className="lv-test-tag">{test.tag}</div>
-                  <div className="lv-test-info">
-                    <h3>{test.title}</h3>
-                    <div className="lv-test-meta">
-                      <span>⏱ {test.duration}</span>
-                      <span>• {test.questions}</span>
-                      {test.attempts && <span>• {test.attempts}</span>}
-                    </div>
-                    <p className="lv-test-avail">{test.availability}</p>
-                  </div>
-                  {test.status === 'start'
-                    ? <button className="lv-btn-start" onClick={onRegister}>Start Test</button>
-                    : <span className="lv-scheduled-badge">{test.status}</span>
-                  }
+            <div className="lv-tests-list" style={{ minHeight: '240px' }}>
+              {loading ? (
+                <div style={{ color: '#a78bfa', textAlign: 'center', padding: '4rem 0', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                  <span style={{ animation: 'spin 1s linear infinite' }}>⟳</span>
+                  <span>Loading courses…</span>
                 </div>
-              ))}
+              ) : courses.length === 0 ? (
+                <div style={{ color: '#9ca3af', textAlign: 'center', padding: '4rem 0' }}>
+                  <p>No learning courses loaded.</p>
+                  <p style={{ fontSize: '0.8rem', color: '#6b7280', marginTop: '0.5rem' }}>Courses will seed dynamically when the server runs.</p>
+                </div>
+              ) : (
+                courses.slice(0, 3).map(course => (
+                  <div key={course.id} className="lv-test-item">
+                    <div className="lv-test-tag" style={{
+                      background: course.difficulty === 'advanced' ? 'rgba(239, 68, 68, 0.15)' : course.difficulty === 'intermediate' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                      color: course.difficulty === 'advanced' ? '#f87171' : course.difficulty === 'intermediate' ? '#fbbf24' : '#34d399'
+                    }}>
+                      {course.difficulty}
+                    </div>
+                    <div className="lv-test-info">
+                      <h3>{course.title}</h3>
+                      <div className="lv-test-meta">
+                        <span>⏱ {course.duration || 'Self-paced'}</span>
+                        <span>• By {course.instructor || 'Lohverse Faculty'}</span>
+                      </div>
+                    </div>
+                    <button className="lv-btn-start" onClick={() => navigate(`/courses/${course.id}`)} style={{ background: 'linear-gradient(135deg, #7c3aed, #4f46e5)', width: 'auto', padding: '0.4rem 1rem' }}>
+                      Explore
+                    </button>
+                  </div>
+                ))
+              )}
             </div>
+            
+            {!loading && courses.length > 3 && (
+              <div style={{ textAlign: 'center', marginTop: '1rem', borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '1rem' }}>
+                <button onClick={() => navigate('/courses')} style={{ background: 'none', border: 'none', color: '#a78bfa', cursor: 'pointer', fontSize: '0.9rem', fontWeight: '600' }}>
+                  View All {courses.length} Courses →
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -222,27 +211,24 @@ export default function LohversePortal({ onRegister, onSignIn }) {
         </div>
       </section>
 
-      {/* ── ASSESSMENTS SECTION ── */}
-      <section className="lv-section lv-assess-section" id="assessments">
-        <div className="lv-section__label">Assessments</div>
-        <h2 className="lv-section__title">Available <span className="lv-accent">Test Categories</span></h2>
-        <p className="lv-section__sub">Choose from a wide range of technical and aptitude assessments tailored to your target role.</p>
+      {/* ── ASSESSMENTS/COURSES SECTION ── */}
+      <section className="lv-section lv-assess-section" id="courses">
+        <div className="lv-section__label">Course Curriculum</div>
+        <h2 className="lv-section__title">Available <span className="lv-accent">Learning Modules</span></h2>
+        <p className="lv-section__sub">Browse and specializate in backend engineering, interactive frontends, or algorithm interview tracks.</p>
 
         <div className="lv-assess-grid">
           {[
-            { icon: '☕', cat: 'Java & Backend', count: 12, level: 'Beginner to Expert' },
-            { icon: '⚛️', cat: 'Frontend & React', count: 9, level: 'Intermediate' },
-            { icon: '🗄️', cat: 'Databases & SQL', count: 7, level: 'All Levels' },
-            { icon: '🐍', cat: 'Python & ML', count: 11, level: 'Intermediate to Expert' },
-            { icon: '☁️', cat: 'Cloud & DevOps', count: 8, level: 'Advanced' },
-            { icon: '🧠', cat: 'Aptitude & Logic', count: 15, level: 'All Levels' },
+            { icon: '🐍', cat: 'Python & ML Track', count: '4 Chapters', level: 'Intermediate to Expert' },
+            { icon: '⚛️', cat: 'Frontend & React Track', count: '4 Chapters', level: 'Beginner to Expert' },
+            { icon: '🧠', cat: 'Data Structures & Algorithmic Track', count: '4 Chapters', level: 'Advanced' },
           ].map((a, i) => (
-            <div className="lv-assess-card" key={i}>
+            <div className="lv-assess-card" key={i} onClick={() => navigate('/courses')} style={{ cursor: 'pointer' }}>
               <span className="lv-assess-icon">{a.icon}</span>
               <h3>{a.cat}</h3>
-              <p>{a.count} Assessments</p>
+              <p>{a.count}</p>
               <span className="lv-assess-level">{a.level}</span>
-              <button className="lv-btn-explore" onClick={() => navigate('/courses')}>Explore →</button>
+              <button className="lv-btn-explore" onClick={(e) => { e.stopPropagation(); navigate('/courses'); }}>Explore →</button>
             </div>
           ))}
         </div>
@@ -266,15 +252,14 @@ export default function LohversePortal({ onRegister, onSignIn }) {
         </div>
       </section>
 
-
       {/* ── CTA BANNER ── */}
       <section className="lv-cta-banner">
         <div className="lv-cta-banner__inner">
           <h2>Ready to Kickstart Your Career?</h2>
           <p>Join 50,000+ candidates who have already taken the first step with Lohverse.</p>
           <div className="lv-cta-banner__btns">
-            <button className="lv-btn-white">Start Your Assessment</button>
-            <button className="lv-btn-outline-white">Learn More</button>
+            <button className="lv-btn-white" onClick={() => navigate('/courses')}>Start Learning Tracks</button>
+            <button className="lv-btn-outline-white" onClick={onRegister}>Create Profile</button>
           </div>
         </div>
       </section>
@@ -288,7 +273,7 @@ export default function LohversePortal({ onRegister, onSignIn }) {
             </div>
             <div>
               <div className="lv-logo-main">Lohverse</div>
-              <div className="lv-logo-sub">SECURE EXAMINATION PORTAL</div>
+              <div className="lv-logo-sub">SECURE LEARNING & PLACEMENT PORTAL</div>
             </div>
           </div>
           <p className="lv-footer__tagline">Empowering candidates. Enabling recruiters. Transforming careers.</p>
@@ -296,36 +281,32 @@ export default function LohversePortal({ onRegister, onSignIn }) {
           <div className="lv-footer__links">
             <div className="lv-footer__col">
               <h4>Platform</h4>
-              <a href="#">Student Portal</a>
-              <a href="#">Recruiter Dashboard</a>
-              <a href="#">Analytics Suite</a>
-              <a href="#">API Access</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/courses'); }}>Learning Catalog</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/login'); }}>Student Portal</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); navigate('/register'); }}>Assessment Core</a>
             </div>
             <div className="lv-footer__col">
               <h4>Company</h4>
               <a href="#">About Us</a>
               <a href="#">Careers</a>
               <a href="#">Blog</a>
-              <a href="#">Press</a>
             </div>
             <div className="lv-footer__col">
               <h4>Support</h4>
               <a href="#">Help Center</a>
               <a href="#">Contact Us</a>
               <a href="#">Status</a>
-              <a href="#">Community</a>
             </div>
             <div className="lv-footer__col">
               <h4>Legal</h4>
               <a href="#">Privacy Policy</a>
               <a href="#">Terms of Service</a>
               <a href="#">Cookie Policy</a>
-              <a href="#">GDPR</a>
             </div>
           </div>
 
           <div className="lv-footer__bottom">
-            <span>© 2025 Lohverse. All rights reserved.</span>
+            <span>© 2026 Lohverse. All rights reserved.</span>
             <div className="lv-footer__socials">
               <a href="#" aria-label="Twitter">𝕏</a>
               <a href="#" aria-label="LinkedIn">in</a>
