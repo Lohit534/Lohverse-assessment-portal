@@ -46,13 +46,22 @@ def list_assessments():
         assessments = Assessment.query.filter_by(created_by=user_id)\
                                       .order_by(Assessment.created_at.desc()).all()
     else:
-        # Students only see assessments for jobs they are shortlisted for
+        # Students see assessments for jobs they are shortlisted for, OR assessments linked to learning courses
         shortlisted_apps = Application.query.filter_by(student_id=user_id, status='shortlisted').all()
         shortlisted_job_ids = [app.job_id for app in shortlisted_apps]
+        
+        from sqlalchemy import or_
         if shortlisted_job_ids:
-            assessments = Assessment.query.filter(Assessment.job_id.in_(shortlisted_job_ids)).order_by(Assessment.created_at.desc()).all()
+            assessments = Assessment.query.filter(
+                or_(
+                    Assessment.job_id.in_(shortlisted_job_ids),
+                    Assessment.course_id.isnot(None)
+                )
+            ).order_by(Assessment.created_at.desc()).all()
         else:
-            assessments = []
+            assessments = Assessment.query.filter(
+                Assessment.course_id.isnot(None)
+            ).order_by(Assessment.created_at.desc()).all()
 
     result = []
     for a in assessments:
