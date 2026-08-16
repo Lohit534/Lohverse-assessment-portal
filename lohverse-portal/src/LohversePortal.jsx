@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './LohversePortal.css';
 
 const tests = [
@@ -70,6 +71,7 @@ const stats = [
 
 
 export default function LohversePortal({ onRegister, onSignIn }) {
+  const navigate = useNavigate();
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('all');
@@ -98,6 +100,7 @@ export default function LohversePortal({ onRegister, onSignIn }) {
             <a href="#features">Features</a>
             <a href="#assessments">Assessments</a>
             <a href="#how-it-works">How It Works</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); navigate('/courses'); }}>Courses</a>
           </nav>
 
           <div className="lv-nav__actions">

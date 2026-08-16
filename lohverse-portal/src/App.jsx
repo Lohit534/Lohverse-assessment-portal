@@ -12,6 +12,8 @@ import './App.css'
 const ForgotPassword   = lazy(() => import('./pages/ForgotPassword'))
 const ResetPassword    = lazy(() => import('./pages/ResetPassword'))
 const StudentDashboard = lazy(() => import('./pages/StudentDashboard'))
+const Courses          = lazy(() => import('./pages/student/Courses'))
+const CourseDetail     = lazy(() => import('./pages/student/CourseDetail'))
 
 function HomeRedirect() {
   const { user } = useAuth()
@@ -54,6 +56,8 @@ export default function App() {
         <Route path="/login"             element={<SignInPage />} />
         <Route path="/forgot-password"   element={<ForgotPassword />} />
         <Route path="/reset-password"    element={<ResetPassword />} />
+        <Route path="/courses"           element={<Courses />} />
+        <Route path="/courses/:id"       element={<CourseDetail />} />
         <Route
           path="/dashboard/*"
           element={

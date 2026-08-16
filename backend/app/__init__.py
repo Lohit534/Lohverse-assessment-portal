@@ -84,12 +84,14 @@ def create_app():
     from app.routes.student     import student_bp
     from app.routes.jobs        import jobs_bp
     from app.routes.assessments import assessments_bp
+    from app.routes.courses     import courses_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(recruiter_bp)
     app.register_blueprint(student_bp)
     app.register_blueprint(jobs_bp)
     app.register_blueprint(assessments_bp)
+    app.register_blueprint(courses_bp)
 
     # ── Health check ──
     @app.route('/api/health')
@@ -166,6 +168,8 @@ def create_app():
             with db_engine.begin() as conn:
                 if 'assessment_type' not in columns:
                     conn.execute(sa.text("ALTER TABLE assessments ADD COLUMN assessment_type VARCHAR(30) NOT NULL DEFAULT 'mcq'"))
+                if 'course_id' not in columns:
+                    conn.execute(sa.text("ALTER TABLE assessments ADD COLUMN course_id INT NULL"))
 
         # 3. Migrate assessment_attempts table
         if 'assessment_attempts' in inspector.get_table_names():

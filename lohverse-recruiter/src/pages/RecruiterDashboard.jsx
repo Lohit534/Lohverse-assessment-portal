@@ -13,6 +13,7 @@ import CandidateDetail from './recruiter/CandidateDetail';
 import Interviews       from './recruiter/Interviews';
 import InterviewRoom    from './recruiter/InterviewRoom';
 import JobApplicants    from './recruiter/JobApplicants';
+import CourseManager    from './recruiter/CourseManager';
 import './RecruiterDashboard.css';
 
 const NAV = [
@@ -21,6 +22,7 @@ const NAV = [
   { to: '/dashboard/assessments', icon: '📝', label: 'Assessments' },
   { to: '/dashboard/interviews',  icon: '📹', label: 'Interviews' },
   { to: '/dashboard/candidates',  icon: '👥', label: 'Candidates' },
+  { to: '/dashboard/courses',     icon: '📚', label: 'Courses' },
 ];
 
 export default function RecruiterDashboard() {
@@ -102,6 +104,7 @@ export default function RecruiterDashboard() {
           <Route path="interviews"    element={<Interviews />} />
           <Route path="interview-room/:roomId" element={<InterviewRoom />} />
           <Route path="candidates"    element={<Candidates />} />
+          <Route path="courses"       element={<CourseManager />} />
           <Route path="jobs/:jobId/applicants" element={<JobApplicants />} />
           <Route path="candidates/:id" element={<CandidateDetail />} />
           <Route path="*"            element={<Navigate to="/dashboard" replace />} />

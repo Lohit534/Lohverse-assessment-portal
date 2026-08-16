@@ -173,6 +173,40 @@ class Job(db.Model):
         }
 
 
+class Course(db.Model):
+    """Learning Course containing modules/syllabus and optional assessment links"""
+    __tablename__ = 'courses'
+
+    id           = db.Column(db.Integer, primary_key=True)
+    title        = db.Column(db.String(200), nullable=False)
+    description  = db.Column(db.Text, nullable=True)
+    difficulty   = db.Column(db.String(30), nullable=False, default='beginner')   # beginner | intermediate | advanced
+    duration     = db.Column(db.String(50), nullable=True)   # e.g. "6 hours", "4 weeks"
+    instructor   = db.Column(db.String(100), nullable=True)
+    image_url    = db.Column(db.String(255), nullable=True)
+    syllabus     = db.Column(db.Text, nullable=True)   # JSON string of chapters
+    created_at   = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+
+    assessments  = db.relationship('Assessment', backref='course', lazy=True)
+
+    def to_dict(self):
+        try:
+            syllabus_data = json.loads(self.syllabus) if self.syllabus else []
+        except Exception:
+            syllabus_data = []
+        return {
+            'id':          self.id,
+            'title':       self.title,
+            'description': self.description,
+            'difficulty':  self.difficulty,
+            'duration':    self.duration,
+            'instructor':  self.instructor,
+            'imageUrl':    self.image_url,
+            'syllabus':    syllabus_data,
+            'createdAt':   self.created_at.isoformat()
+        }
+
+
 class Assessment(db.Model):
     """Assessment (test) linked optionally to a job"""
     __tablename__ = 'assessments'
@@ -180,6 +214,7 @@ class Assessment(db.Model):
     id             = db.Column(db.Integer, primary_key=True)
     created_by     = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
     job_id         = db.Column(db.Integer, db.ForeignKey('jobs.id'), nullable=True)
+    course_id      = db.Column(db.Integer, db.ForeignKey('courses.id'), nullable=True)
     title          = db.Column(db.String(200), nullable=False)
     description    = db.Column(db.Text, nullable=True)
     duration_mins  = db.Column(db.Integer, nullable=False, default=60)
@@ -202,6 +237,7 @@ class Assessment(db.Model):
             'id':           self.id,
             'createdBy':    self.created_by,
             'jobId':        self.job_id,
+            'courseId':     self.course_id,
             'title':        self.title,
             'description':  self.description,
             'durationMins': self.duration_mins,
