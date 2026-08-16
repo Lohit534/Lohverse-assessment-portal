@@ -100,7 +100,7 @@ export default function Register({ onBack }) {
           <div className="rg-success__icon">🎉</div>
           <h2>Registration Successful!</h2>
           <p>Welcome to Lohverse, <strong>{form.fullName}</strong>! Your account has been created successfully.</p>
-          <button className="rg-btn-primary" onClick={() => navigate('/dashboard/profile', { replace: true })}>Go to Dashboard →</button>
+          <button className="rg-btn-primary" onClick={() => navigate('/dashboard/assessments', { replace: true })}>Go to Dashboard →</button>
         </div>
       </div>
     );

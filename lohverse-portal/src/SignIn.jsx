@@ -34,7 +34,7 @@ export default function SignIn({ onBack, onRegister }) {
         setErrors({ submit: 'This is the student portal. Recruiters please use the Recruiter Console.' });
         return;
       }
-      navigate('/dashboard/profile', { replace: true });
+      navigate('/dashboard/assessments', { replace: true });
     } catch (err) {
       setErrors({ submit: err.response?.data?.error || 'Invalid email or password' });
     } finally {

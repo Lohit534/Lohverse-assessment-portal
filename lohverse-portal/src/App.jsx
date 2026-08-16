@@ -18,7 +18,7 @@ const CourseDetail     = lazy(() => import('./pages/student/CourseDetail'))
 function HomeRedirect() {
   const { user } = useAuth()
   const navigate = useNavigate()
-  if (user?.role === 'student') return <Navigate to="/dashboard/profile" replace />
+  if (user?.role === 'student') return <Navigate to="/dashboard/assessments" replace />
   return <LohversePortal
     onRegister={() => navigate('/register')}
     onSignIn={() => navigate('/login')}
