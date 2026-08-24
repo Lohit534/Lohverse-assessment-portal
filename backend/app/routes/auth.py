@@ -245,3 +245,71 @@ def reset_password():
 
     return jsonify({'message': 'Password reset successful. You can now log in.'}), 200
 
+
+
+# ── POST /api/auth/supabase-login ───────────────────────────────────────────
+@auth_bp.route('/supabase-login', methods=['POST'])
+def supabase_login():
+    import requests
+    
+    body = request.get_json(silent=True) or {}
+    access_token = body.get('accessToken')
+    if not access_token:
+        return jsonify({'error': 'accessToken is required'}), 400
+        
+    supabase_url = os.getenv("SUPABASE_URL") or "https://uqsrzmbfmwywslxzcyxz.supabase.co"
+    supabase_anon_key = os.getenv("SUPABASE_ANON_KEY") or os.getenv("VITE_SUPABASE_ANON_KEY") or ""
+    
+    # Verify the Supabase token and fetch user details
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "apikey": supabase_anon_key
+    }
+    
+    try:
+        user_response = requests.get(f"{supabase_url}/auth/v1/user", headers=headers)
+        if user_response.status_code != 200:
+            return jsonify({'error': 'Invalid or expired Supabase token'}), 401
+            
+        supabase_user = user_response.json()
+        email = supabase_user.get('email', '').lower().strip()
+        user_metadata = supabase_user.get('user_metadata', {})
+        full_name = user_metadata.get('full_name') or user_metadata.get('name') or email.split('@')[0]
+        
+        if not email:
+            return jsonify({'error': 'Email not provided by Supabase'}), 400
+            
+        # Check if student already exists
+        user = User.query.filter_by(email=email).first()
+        if not user:
+            # Auto-register new student
+            user = User(
+                full_name=full_name,
+                roll_number='OAUTH_STUDENT',
+                phone='',
+                address='',
+                email=email,
+                role='student'
+            )
+            # Generate a secure random password since they use OAuth
+            import secrets
+            user.set_password(secrets.token_urlsafe(16))
+            db.session.add(user)
+            db.session.commit()
+            
+        elif user.role != 'student':
+            return jsonify({'error': 'This email is registered with a non-student role'}), 403
+            
+        # Issue local JWT tokens
+        access_token_jwt = create_access_token(identity=str(user.id))
+        refresh_token_jwt = create_refresh_token(identity=str(user.id))
+        
+        return jsonify({
+            'message': 'SSO login successful',
+            'user': user.to_dict(),
+            'accessToken': access_token_jwt,
+            'refreshToken': refresh_token_jwt
+        }), 200
+        
+    except Exception as e:
+        return jsonify({'error': 'Supabase verification failed', 'message': str(e)}), 500

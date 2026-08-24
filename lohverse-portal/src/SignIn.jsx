@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
+import { supabase } from './supabase';
 import './SignIn.css';
 
 export default function SignIn({ onBack, onRegister }) {
@@ -10,6 +11,20 @@ export default function SignIn({ onBack, onRegister }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPass, setShowPass] = useState(false);
+
+  const handleOAuthLogin = async (provider) => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      if (error) throw error;
+    } catch (err) {
+      setErrors({ submit: err.message || 'OAuth login failed' });
+    }
+  };
 
   const set = (k, v) => { setForm(f => ({ ...f, [k]: v })); setErrors(e => ({ ...e, [k]: '' })); };
 
@@ -142,10 +157,10 @@ export default function SignIn({ onBack, onRegister }) {
 
           {/* SSO buttons */}
           <div className="si-sso">
-            <button className="si-sso-btn">
+            <button type="button" className="si-sso-btn" onClick={() => handleOAuthLogin("google")}>
               <span>G</span> Continue with Google
             </button>
-            <button className="si-sso-btn">
+            <button type="button" className="si-sso-btn" onClick={() => handleOAuthLogin("linkedin")}>
               <span style={{fontFamily:'serif'}}>in</span> Continue with LinkedIn
             </button>
           </div>
